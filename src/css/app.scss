@@ -1,1 +1,13 @@
-// app global css in SCSS form
+body {
+    font-family: 'oblivionregular';
+    background-color: $dark;
+}
+
+.font-secondary {
+    font-family: 'magic_cardsnormal';
+}
+
+a {
+    color: inherit;
+    text-decoration: inherit;
+}

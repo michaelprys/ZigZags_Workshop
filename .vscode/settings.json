@@ -1,16 +1,33 @@
 {
-  "editor.bracketPairColorization.enabled": true,
-  "editor.guides.bracketPairs": true,
-  "editor.formatOnSave": true,
-  "editor.defaultFormatter": "esbenp.prettier-vscode",
-  "editor.codeActionsOnSave": [
-    "source.fixAll.eslint"
-  ],
-  "eslint.validate": [
-    "javascript",
-    "javascriptreact",
-    "typescript",
-    "vue"
-  ],
-  "typescript.tsdk": "node_modules/typescript/lib"
+    "editor.bracketPairColorization.enabled": true,
+    "editor.guides.bracketPairs": true,
+    "editor.formatOnSave": true,
+    "editor.defaultFormatter": "esbenp.prettier-vscode",
+    "editor.codeActionsOnSave": ["source.fixAll.eslint"],
+    "eslint.validate": ["javascript", "javascriptreact", "typescript", "vue"],
+    "typescript.tsdk": "node_modules/typescript/lib",
+    "files.exclude": {
+        "**/.git": true,
+        "**/.svn": false,
+        "**/.hg": false,
+        "**/CVS": false,
+        "**/.DS_Store": false,
+        "**/Thumbs.db": false,
+        "**/.gitattributes": false,
+        ".idea": false,
+        ".vscode": false,
+        "LICENSE": false,
+        "**/pnpm-lock.yaml": true,
+        "**/postcss.config.js": true,
+        "**/.gitignore": true,
+        "**/.npmrc": true,
+        "**/.prettierrc.json": true,
+        "**/.prettierignore": true,
+        "**/.quasar": true,
+        "**/.vscode": true,
+        "**/node_modules": true,
+        "**/boot": true,
+        "**/tsconfig.json": true
+    },
+    "explorerExclude.backup": {}
 }
