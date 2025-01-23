@@ -2,13 +2,16 @@
 
 <template>
     <q-layout view="lHh Lpr lFf">
-        <q-header class="relative-position flex justify-between items-center q-py-lg q-pl-lg q-pr-xl" elevated>
+        <q-header
+            class="relative-position flex justify-between items-center q-py-lg q-pl-lg q-pr-xl bg-dark-page"
+            elevated
+        >
             <div
-                class="absolute-position absolute-top fit"
+                class="absolute-top fit"
                 style="
                     background-image: url('./src/assets/images/header-texture.avif');
                     background-size: 100.8% 114%;
-                    filter: brightness(80%) hue-rotate(100deg);
+                    filter: brightness(85%) hue-rotate(-5deg);
                 "
             ></div>
             <RouterLink to="/" class="q-pl-sm q-py-sm z-top flex items-center q-gutter-lg">
@@ -19,14 +22,14 @@
                     height="72px"
                     alt="Zigzag's Workshop logo"
                 />
-                <div class="flex column font-secondary text-accent">
+                <div class="flex column font-secondary text-secondary">
                     <span class="text-h6">Zigzag's</span>
                     <span class="text-h4">Workshop</span>
                 </div>
             </RouterLink>
 
             <div class="flex q-gutter-xl">
-                <q-tabs class="text-subtitle1 text-accent">
+                <q-tabs class="text-subtitle1 text-secondary">
                     <q-tab class="q-px-lg" name="home">Home</q-tab>
                     <q-tab class="q-px-lg" name="about">About</q-tab>
                     <q-tab class="q-px-lg" name="shop">Shop</q-tab>
