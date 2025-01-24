@@ -27,7 +27,8 @@
         "**/.vscode": true,
         "**/node_modules": true,
         "**/boot": true,
-        "**/tsconfig.json": true
+        "**/tsconfig.json": true,
+        "**/README.md": true
     },
     "explorerExclude.backup": {}
 }

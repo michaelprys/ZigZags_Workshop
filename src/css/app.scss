@@ -1,6 +1,7 @@
 body {
     font-family: 'oblivionregular';
-    background-color: $dark-page;
+    background-color: $dark;
+    color: $accent;
 }
 
 .font-secondary {
@@ -10,4 +11,11 @@ body {
 a {
     color: inherit;
     text-decoration: inherit;
+}
+
+.section {
+    min-height: calc(100svh - 160px);
+    display: flex;
+    justify-content: center;
+    align-items: center;
 }

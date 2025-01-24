@@ -2,7 +2,7 @@
     "name": "zigzags-workshop",
     "version": "0.0.1",
     "description": "Come over for a minute. I've got a deal for you!",
-    "productName": "ZigZag's Workshop",
+    "productName": "Zigzag's Workshop",
     "author": "michaelprys",
     "type": "module",
     "private": true,
