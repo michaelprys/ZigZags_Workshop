@@ -1,19 +1,14 @@
 import { defineConfig } from '#q-app/wrappers';
-import { fileURLToPath } from 'node:url';
 
 export default defineConfig(() => {
     return {
         boot: [],
 
-        css: ['app.scss', 'font-face.scss'],
+        css: ['app.css', 'variables.css'],
 
         extras: ['roboto-font', 'material-icons'],
 
         build: {
-            alias: {
-                '@': fileURLToPath(new URL('./src', import.meta.url)),
-            },
-
             target: {
                 browser: ['es2022', 'firefox115', 'chrome115', 'safari14'],
                 node: 'node20',

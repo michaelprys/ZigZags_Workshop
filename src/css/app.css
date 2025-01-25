@@ -1,0 +1,52 @@
+@font-face {
+    font-family: 'TrajanusBricks';
+    src: url('fonts/trajanusbricks-webfont.woff2') format('woff2');
+    font-weight: normal;
+    font-style: normal;
+}
+@font-face {
+    font-family: 'magic_cardsnormal';
+    src: url('fonts/magiccardsnormal-webfont.woff2') format('woff2');
+    font-weight: normal;
+    font-style: normal;
+}
+@font-face {
+    font-family: 'oblivionregular';
+    src: url('fonts/oblivion-font-webfont.woff2') format('woff2');
+    font-weight: normal;
+    font-style: normal;
+}
+
+a {
+    color: inherit;
+    text-decoration: inherit;
+}
+
+body {
+    font-family: 'oblivionregular';
+    background-color: var(--q-dark-page);
+    color: var(--q-accent);
+}
+
+.font-secondary {
+    font-family: 'magic_cardsnormal';
+}
+
+.font-extra {
+    font-family: 'TrajanusBricks';
+}
+
+.text-glow-dark {
+    text-shadow: 3px 5px 5px rgba(21, 21, 21, 0.5);
+}
+
+.text-glow-light {
+    text-shadow: 3px 5px 5px rgba(157, 157, 157, 0.5);
+}
+
+.section {
+    min-height: calc(100svh - 160px);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}

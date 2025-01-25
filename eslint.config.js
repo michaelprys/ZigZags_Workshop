@@ -63,6 +63,8 @@ export default [
                     order: ['script', 'template', 'style'],
                 },
             ],
+            'vue/static-class-names-order': ['error'],
+            'vue/attributes-order': ['error'],
         },
     },
 

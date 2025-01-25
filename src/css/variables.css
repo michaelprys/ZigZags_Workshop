@@ -1,0 +1,19 @@
+:root {
+    --q-primary: #e5e0c8;
+    --q-secondary: #bd9b4e;
+
+    /* --q-primary: #e5e0c8;
+    --q-secondary: #8d0e04; */
+
+    /* --q-primary: #8d0e04;
+    --q-secondary: #e5e0c8; */
+
+    --q-accent: #ffffff;
+    --q-dark: #170f0b;
+    --q-dark-page: #100d0c;
+    /* --q-dark-page: #110d0b; */
+    --q-positive: #204a1d;
+    --q-negative: #d41506;
+    --q-info: #878582;
+    --q-warning: #bf8360;
+}
