@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import IconCart from 'src/components/icons/IconCart.vue';
+import ItemScrollTop from 'src/components/items/ItemScrollTop.vue';
 // import { ref } from 'vue';
 
 // const drawer = ref(false);
@@ -29,9 +30,9 @@ import IconCart from 'src/components/icons/IconCart.vue';
                 </div>
             </RouterLink>
 
-            <div class="flex q-gutter-xl">
-                <div class="flex items-center">
-                    <q-tabs class="q-mr-xl text-subtitle1">
+            <div class="flex q-gutter-lg">
+                <div class="flex items-center q-gutter-x-xl">
+                    <q-tabs class="text-subtitle1">
                         <q-tab class="q-px-lg text-primary" name="home">Home</q-tab>
                         <q-tab class="q-px-lg text-primary" name="goods">Workshop</q-tab>
                         <q-tab class="font-extra q-px-lg text-secondary text-subtitle2" name="blackMarket"
@@ -40,7 +41,7 @@ import IconCart from 'src/components/icons/IconCart.vue';
                         <q-tab class="q-px-lg text-primary" name="about">About</q-tab>
                         <q-tab class="q-px-lg text-primary" name="delivery">Login</q-tab>
                     </q-tabs>
-                    <q-btn class="text-primary text-subtitle1" unelevated fab-mini>
+                    <q-btn class="text-primary text-subtitle1" unelevated square>
                         <IconCart />
                     </q-btn>
                 </div>
@@ -87,15 +88,14 @@ import IconCart from 'src/components/icons/IconCart.vue';
             </q-scroll-area>
         </q-drawer> -->
 
-        <q-page-container class="q-pa-md">
+        <q-page-container>
+            <Teleport to="body">
+                <ItemScrollTop />
+            </Teleport>
+
             <div
                 class="absolute-top fit"
-                style="
-                    background-image: url('src/assets/common/bg.avif');
-                    background-size: cover;
-                    opacity: 25%;
-                    z-index: -1;
-                "
+                style="background-image: url('src/assets/common/bg.avif'); opacity: 23%; z-index: -1"
             ></div>
             <router-view />
         </q-page-container>

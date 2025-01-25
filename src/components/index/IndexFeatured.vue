@@ -60,7 +60,7 @@ const slides = [
                                 :class="content.col"
                             >
                                 <q-img
-                                    class="full-height inner slide-image"
+                                    class="full-height inner rounded shadow-1"
                                     :src="`src/assets/index/featured/${content.name}.jpeg`"
                                 />
                             </div>
@@ -75,10 +75,5 @@ const slides = [
 <style scoped>
 :deep(.q-carousel__control) {
     margin-top: -2rem;
-}
-
-.slide-image {
-    border: 4px solid var(--q-dark);
-    border-radius: 0.375em;
 }
 </style>

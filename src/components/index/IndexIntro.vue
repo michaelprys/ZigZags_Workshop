@@ -6,8 +6,8 @@ const text = ref('');
 
 <template>
     <section class="section-intro">
-        <div class="relative-position section-intro__inner text-center">
-            <div class="absolute-top fit shadow-8">
+        <div class="relative-position section-intro__inner shadow-8 text-center">
+            <div class="absolute-top fit rounded">
                 <q-parallax class="fit">
                     <template v-slot:media>
                         <video
@@ -48,8 +48,7 @@ const text = ref('');
 }
 
 .section-intro__inner {
-    border: 4px solid var(--q-dark);
-    border-radius: 0.75em;
+    /* border: 4px solid var(--q-dark); */
     width: 1480px;
     height: 640px;
 }
