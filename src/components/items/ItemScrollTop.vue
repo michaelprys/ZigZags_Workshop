@@ -21,15 +21,15 @@ onBeforeUnmount(() => {
 </script>
 
 <template>
-    <a
+    <RouterLink
         class="custom-button fade-in-secondary"
         :class="{ 'is-crossed': isCrossed, 'is-not-crossed': !isCrossed }"
-        href="#"
+        to="/"
         aria-label="Go to the beginning of the page"
-        style="box-shadow: inset 0 0 0 200px rgba(255, 255, 255, 0.08)"
+        style="box-shadow: inset 0 0 0 12.5rem rgba(255, 255, 255, 0.08)"
     >
         <IconArrow />
-    </a>
+    </RouterLink>
 </template>
 
 <style scoped>
@@ -37,15 +37,16 @@ onBeforeUnmount(() => {
     position: fixed;
     bottom: 3.8rem;
     right: 3rem;
-    border-radius: 0.1875rem;
+    border-radius: 0.3rem;
     background-color: rgba(35, 35, 35, 0.3);
     padding: 0.5em;
+    -webkit-user-drag: none;
     color: var(--q-primary);
     backdrop-filter: blur(0.5rem);
     transition:
         transform 0.3s linear,
         background-color 0.1s linear;
-    box-shadow: inset 0 0 0 200px rgba(255, 255, 255, 0.08);
+    box-shadow: inset 0 0 0 12.5rem rgba(255, 255, 255, 0.08);
 }
 .custom-button svg {
     display: flex;

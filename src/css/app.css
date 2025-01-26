@@ -16,9 +16,11 @@
     font-weight: normal;
     font-style: normal;
 }
-
-html {
-    scroll-behavior: smooth;
+@font-face {
+    font-family: 'BLKCHCRY';
+    src: url('fonts/BLKCHCRY.tf') format('ttf');
+    font-weight: normal;
+    font-style: normal;
 }
 
 a {
@@ -40,19 +42,12 @@ body {
     font-family: 'TrajanusBricks';
 }
 
+.font-quote {
+    font-family: 'BLKCHCRY';
+}
+
 .text-glow-dark {
-    text-shadow: 3px 5px 5px rgba(21, 21, 21, 0.5);
-}
-
-.text-glow-light {
-    text-shadow: 3px 5px 5px rgba(157, 157, 157, 0.5);
-}
-
-.section {
-    min-height: calc(100svh - 160px);
-    display: flex;
-    justify-content: center;
-    align-items: center;
+    text-shadow: 0.1875rem 0.3125rem 0.3125rem rgba(21, 21, 21, 0.5);
 }
 
 .divider {
@@ -60,6 +55,7 @@ body {
     content: '';
     width: 100%;
     height: 1px;
+    top: 0;
     background-color: #1e1e1e;
     position: relative;
     display: block;
@@ -80,4 +76,14 @@ body {
 
 .rounded {
     border-radius: 0.5em;
+}
+
+.sr-only {
+    clip: rect(0 0 0 0);
+    clip-path: inset(50%);
+    height: 1px;
+    overflow: hidden;
+    position: absolute;
+    white-space: nowrap;
+    width: 1px;
 }

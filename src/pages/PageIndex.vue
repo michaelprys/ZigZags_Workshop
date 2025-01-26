@@ -5,11 +5,9 @@ import IndexBlackMarket from 'src/components/index/IndexBlackMarket.vue';
 </script>
 
 <template>
-    <q-page class="q-pa-md">
+    <q-page>
         <IndexIntro />
-        <div class="divider"></div>
         <IndexFeatured />
-        <div class="divider"></div>
         <IndexBlackMarket />
     </q-page>
 </template>

@@ -20,6 +20,13 @@ export default defineRouter(function (/* { store, ssrContext } */) {
 
     const Router = createRouter({
         scrollBehavior(to, from, savedPosition) {
+            if (to.hash || to.fullPath === '/') {
+                return {
+                    el: to.hash || 'body',
+                    behavior: 'smooth',
+                };
+            }
+
             if (savedPosition) {
                 return savedPosition;
             } else {
