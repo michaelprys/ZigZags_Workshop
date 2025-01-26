@@ -33,7 +33,7 @@ const text = ref('');
                         <h3 class="q-my-lg text-h5 text-secondary">I got the best deals anywhere</h3>
                         <q-input v-model="text" label-color="info" color="secondary" dark label="Search an item">
                             <template v-slot:append>
-                                <q-btn class="bg-primary text-dark">Search</q-btn>
+                                <q-btn color="primary" text-color="dark">Search</q-btn>
                             </template>
                         </q-input>
                     </div>
