@@ -23,6 +23,10 @@
     font-style: normal;
 }
 
+:root {
+    --rounded: 0.5em;
+}
+
 body,
 h1,
 h2,
@@ -89,10 +93,6 @@ body {
 .divider::after {
     content: '';
     position: absolute;
-}
-
-.rounded {
-    border-radius: 0.5em;
 }
 
 .sr-only {

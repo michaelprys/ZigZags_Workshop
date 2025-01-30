@@ -70,7 +70,7 @@ onMounted(() => {
 
                                 <div class="button-animation"></div>
                             </div>
-                            <q-route-tab class="text-subtitle1" unelevated square>
+                            <q-route-tab :to="{ name: 'stash' }" class="text-subtitle1" unelevated square>
                                 <IconLoot class="loot shadow-6" style="color: var(--q-primary)" />
                             </q-route-tab>
                         </q-tabs>
@@ -138,6 +138,9 @@ onMounted(() => {
                     <i v-else-if="route.name === 'workshop'">If it's hard to find, it's probably here.</i>
                     <i v-else-if="route.name === 'black-market'"
                         >Why settle for what's available, when you can have what's exclusive?
+                    </i>
+                    <i v-else-if="route.name === 'stash'"
+                        >A goblin's life is full of risks... and the rewards are always shiny.
                     </i>
                 </q>
             </div>

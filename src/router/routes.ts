@@ -15,6 +15,11 @@ const routes: RouteRecordRaw[] = [
                 name: 'our-story',
                 component: () => import('pages/PageOurStory.vue'),
             },
+            {
+                path: 'stash',
+                name: 'stash',
+                component: () => import('pages/PageStash.vue'),
+            },
         ],
     },
 

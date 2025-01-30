@@ -7,7 +7,7 @@
     <section class="flex flex-center fullscreen q-pa-md text-center text-white">
         <div class="" style="max-width: 700px">
             <q-img
-                src="~assets/not-found/not-found.jpeg"
+                src="~assets/not-found/not-found.avif"
                 style="width: 250px; border-radius: 50%"
                 class="shadow-4"
             ></q-img>

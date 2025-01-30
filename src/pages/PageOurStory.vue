@@ -14,19 +14,21 @@
 
             <div class="flex flex-center q-px-md" style="max-width: 90rem; margin-inline: auto; padding-top: 4em">
                 <div>
-                    <h2 class="text-h3">About workshop</h2>
+                    <h2 class="text-h3">Origins</h2>
                     <p class="q-mt-xl text-info text-subtitle1">
-                        ZigZag, a clever goblin with a knack for gadgets, wasn't happy just fixin' wagons and makin' a
-                        few copper. One day, after a couple o' mishaps, he decided to build a workshop — ZigZag's "Gear
-                        & Gadgets" — using scrap parts and a few stolen blueprints. His creations became popular fast,
-                        especially among adventurers needing custom gear. But ZigZag had bigger dreams. He saw a chance
-                        to make real profit and set up the Goblin Black Market, where rare goods could be sold in
-                        secret. Now ZigZag's got a thriving business, all while stayin' a few steps ahead of trouble!
+                        ZigZag, a clever goblin with a talent for tinkering, was never content with just fixing wagons
+                        and earning a few copper. After a series of small mishaps, he decided to build his own workshop
+                        — crafted from scraps and a few borrowed blueprints. His inventions quickly became popular,
+                        especially among adventurers who needed custom gear. But ZigZag's ambitions went beyond just
+                        repair work. He saw an opportunity in the shadows and began selling rare items in the Goblin
+                        Black Market. Not the mastermind behind it, but a trusted merchant among the many shady vendors.
+                        Now, ZigZag runs a thriving business, all while carefully staying one step ahead of the law...
+                        and his competitors.
                     </p>
                 </div>
 
                 <div style="padding-bottom: 8.5em" class="q-my-xl">
-                    <h2 class="q-mt-xl text-h4 text-secondary" style="text-align: center">Gear & Gadgets</h2>
+                    <h2 class="q-mt-xl text-h4 text-secondary" style="text-align: center">Zigzag's Workshop</h2>
 
                     <div class="column q-mt-xl text-info">
                         <div
@@ -40,8 +42,8 @@
                                 <span class="q-mt-sm text-subtitle1">
                                     Closed on Sundays (<i>unless there's a big deal</i>).
                                 </span>
-                                <span class="q-mt-sm text-subtitle1">
-                                    Custom gadget orders, Explosive discounts, Sneaky deals.
+                                <span class="q-mt-sm text-positive text-subtitle1">
+                                    Custom engineering orders, Explosive discounts, Sneaky deals.
                                 </span>
                             </div>
 
@@ -120,7 +122,7 @@
                                 <span class="q-mt-sm text-subtitle1" style="text-align: center"
                                     >Must have <b>Ogre's Eye</b> with you to enter</span
                                 >
-                                <span class="q-mt-sm text-subtitle1" style="text-align: center"
+                                <span class="q-mt-sm text-positive text-subtitle1" style="text-align: center"
                                     >Exclusive bargains, Hidden relics, Forbidden treasures — for the bold!</span
                                 >
                                 <span class="q-mt-sm text-h6 text-negative" style="text-align: center"

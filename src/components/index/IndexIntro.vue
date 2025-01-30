@@ -31,18 +31,32 @@ const text = ref('');
                     <div>
                         <h2 class="text-glow-dark text-h3 text-primary">Time is money, friend!</h2>
                         <h3 class="q-mt-lg text-h5 text-secondary">I got the best deals anywhere</h3>
-                        <q-input
-                            v-model="text"
+
+                        <q-select
+                            v-model="model"
                             class="q-mt-lg"
                             label-color="info"
                             color="secondary"
                             dark
                             label="Search for loot"
+                            use-input
+                            hide-selected
+                            fill-input
+                            input-debounce="0"
+                            :options="options"
+                            style="width: 100%"
+                            @filter="filterFn"
                         >
-                            <template v-slot:append>
-                                <q-btn color="primary" text-color="dark">Search</q-btn>
+                            <template v-slot:no-option>
+                                <q-item>
+                                    <q-item-section class="text-primary"> No results </q-item-section>
+                                </q-item>
                             </template>
-                        </q-input>
+                        </q-select>
+
+                        <div class="q-pa-md">
+                            <div class="q-gutter-md row"></div>
+                        </div>
                     </div>
                 </div>
             </div>
