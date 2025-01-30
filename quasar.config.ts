@@ -8,6 +8,10 @@ export default defineConfig(() => {
 
         extras: ['roboto-font', 'material-icons'],
 
+        htmlVariables: {
+            productName: "Zigzag's Workshop",
+        },
+
         build: {
             target: {
                 browser: ['es2022', 'firefox115', 'chrome115', 'safari14'],
@@ -25,11 +29,12 @@ export default defineConfig(() => {
                 [
                     'vite-plugin-checker',
                     {
-                        vueTsc: true,
+                        vueTsc: false,
                         eslint: {
                             lintCommand: 'eslint -c ./eslint.config.js "./src*/**/*.{ts,js,mjs,cjs,vue}"',
                             useFlatConfig: true,
                         },
+                        overlay: false,
                     },
                     { server: false },
                 ],

@@ -34,6 +34,7 @@ onBeforeUnmount(() => {
 
 <style scoped>
 .custom-button {
+    z-index: 300;
     position: fixed;
     bottom: 3.8rem;
     right: 3rem;

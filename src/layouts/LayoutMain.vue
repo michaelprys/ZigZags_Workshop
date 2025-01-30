@@ -1,27 +1,52 @@
 <script setup lang="ts">
-import IconCart from 'src/components/icons/IconCart.vue';
+import IconLoot from 'src/components/icons/IconLoot.vue';
 import ItemScrollTop from 'src/components/items/ItemScrollTop.vue';
+import { ref, onMounted } from 'vue';
+import { useRoute } from 'vue-router';
 
-// import { ref } from 'vue';
+const route = useRoute();
 
-// const drawer = ref(false);
+const footerImageRef = ref<HTMLImageElement | null>(null);
+const isVideoLoaded = ref(false);
+
+const onLoaded = () => {
+    isVideoLoaded.value = true;
+    setTimeout(() => {
+        isVideoLoaded.value = true;
+    }, 100);
+};
+
+const getSrc = (ext: string) => {
+    return new URL(`/src/assets/footer/zigzag.${ext}`, import.meta.url).href;
+};
+
+onMounted(() => {
+    const img = new Image();
+    img.onload = onLoaded;
+    img.src = getSrc('avif');
+});
 </script>
 
 <template>
     <q-layout view="lhh LpR lff">
         <q-header
-            class="bg-dark-page bg-transparent justify-between q-px-md q-py-lg"
+            class="bg-dark-page bg-transparent justify-between q-py-lg"
             style="box-shadow: 0rem 0.25rem 0.625rem rgba(0, 0, 0, 0.5)"
         >
-            <div class="flex justify-between">
+            <div class="flex justify-between q-px-md">
                 <div class="absolute-top fit header-texture"></div>
+
                 <RouterLink class="flex items-center q-gutter-lg q-pl-sm relative-position" to="/">
-                    <img
-                        style="margin-bottom: 0.5625rem; filter: hue-rotate(335deg) contrast(105%)"
-                        src="src/assets/common/logo.avif"
-                        width="109px"
-                        height="62px"
+                    <q-img
+                        style="
+                            width: 109px;
+                            height: 62px;
+                            margin-bottom: 0.5625rem;
+                            filter: hue-rotate(335deg) contrast(105%);
+                        "
+                        src="~assets/common/logo.avif"
                         alt="Zigzag's Workshop logo"
+                        :spinnerSize="'0'"
                     />
                     <div class="column font-secondary text-primary">
                         <span class="text-h6">Zigzag's</span>
@@ -32,34 +57,70 @@ import ItemScrollTop from 'src/components/items/ItemScrollTop.vue';
                 <div class="flex q-gutter-lg">
                     <div class="flex items-center q-gutter-x-xl">
                         <q-tabs class="text-subtitle1">
-                            <q-tab class="q-px-lg text-primary" name="home">Home</q-tab>
-                            <q-tab class="q-px-lg text-primary" name="goods">Workshop</q-tab>
-                            <q-tab class="font-extra q-px-lg text-secondary text-subtitle2" name="blackMarket"
-                                >Black Market</q-tab
-                            >
-                            <q-tab class="q-px-lg text-primary" name="about">About</q-tab>
-                            <q-tab class="q-px-lg text-primary" name="delivery">Login</q-tab>
+                            <q-route-tab class="q-px-lg text-primary" :to="{ name: 'home' }">Base</q-route-tab>
+                            <q-route-tab class="q-px-lg text-primary" to="/our-story">Our story</q-route-tab>
+                            <q-route-tab class="q-px-lg text-primary" :to="{ name: 'workshop' }">Workshop</q-route-tab>
+                            <div class="custom-tab">
+                                <q-route-tab
+                                    class="custom-font font-extra q-px-lg text-secondary text-subtitle2"
+                                    :to="{ name: 'black-market' }"
+                                    name="black-market"
+                                    >Black Market</q-route-tab
+                                >
+
+                                <div class="button-animation"></div>
+                            </div>
+                            <q-route-tab class="text-subtitle1" unelevated square>
+                                <IconLoot class="loot shadow-6" style="color: var(--q-primary)" />
+                            </q-route-tab>
                         </q-tabs>
-                        <q-btn class="text-subtitle1" unelevated square>
-                            <IconCart class="cart" />
-                        </q-btn>
                     </div>
                     <!-- <q-btn padding="none">
                     <q-avatar rounded>
-                        <img
-                            style="object-fit: cover; filter: grayscale(40%)"
-                            src="https://i.redd.it/5k3vtg13qsj31.jpg"
-                        />
+                          <q-img
+                        style=" object-fit: cover; filter: grayscale(40%)
+                        "
+                        src="https://i.redd.it/5k3vtg13qsj31.jpg"
+                        :spinnerSize="'0'"
+                    />
                     </q-avatar>
                 </q-btn> -->
                 </div>
             </div>
         </q-header>
 
-        <q-footer class="q-px-md" style="background-color: var(--q-dark-page); z-index: -1">
+        <q-footer class="footer relative-position">
+            <div class="zigzag">
+                <div class="zigzag__wrapper">
+                    <q-img
+                        ref="footerImageRef"
+                        class="zigzag__image"
+                        src="~assets/footer/zigzag.avif"
+                        style="width: 9.375rem; height: 9.375rem"
+                        alt="Zigzag"
+                    />
+
+                    <video
+                        :style="{ opacity: isVideoLoaded ? 1 : 0 }"
+                        class="zigzag__candle"
+                        width="1920"
+                        height="1080"
+                        loop
+                        muted
+                        autoplay
+                        disablePictureInPicture="true"
+                        disableRemotePlayback="true"
+                        controlslist="nodownload nofullscreen noremoteplayback"
+                    >
+                        <source src="~assets/footer/candle.mp4" type="video/mp4" />
+                    </video>
+                </div>
+            </div>
+
             <div class="divider"></div>
 
             <div
+                class="q-px-md"
                 style="
                     max-width: 48.375rem;
                     width: 100%;
@@ -70,8 +131,13 @@ import ItemScrollTop from 'src/components/items/ItemScrollTop.vue';
                 "
             >
                 <q class="font-quote text-h6 text-info">
-                    <i
+                    <i v-if="route.name === 'home'"
                         >Not everything that glitters is worth a coin&nbsp; — &nbsp;but Zigzag always has what you need
+                    </i>
+                    <i v-else-if="route.name === 'our-story'">Some deals are too good for daylight.</i>
+                    <i v-else-if="route.name === 'workshop'">If it's hard to find, it's probably here.</i>
+                    <i v-else-if="route.name === 'black-market'"
+                        >Why settle for what's available, when you can have what's exclusive?
                     </i>
                 </q>
             </div>
@@ -109,17 +175,16 @@ import ItemScrollTop from 'src/components/items/ItemScrollTop.vue';
             </q-scroll-area>
         </q-drawer> -->
 
-        <q-page-container class="q-px-md relative-position">
+        <q-page-container>
             <Teleport to="body">
                 <ItemScrollTop />
             </Teleport>
 
-            <div
-                class="absolute-bottom fit"
-                style="background-image: url('src/assets/common/bg.avif'); opacity: 23%; z-index: -1"
-            ></div>
-
-            <router-view />
+            <RouterView #="{ Component }">
+                <Transition name="fade" mode="out-in">
+                    <component :is="Component" :key="$route.path" />
+                </Transition>
+            </RouterView>
         </q-page-container>
     </q-layout>
 </template>
@@ -134,7 +199,7 @@ import ItemScrollTop from 'src/components/items/ItemScrollTop.vue';
             rgba(39, 22, 11, 0.82) 100%
         ),
         linear-gradient(90deg, #000 -40%, rgba(0, 0, 0, 0) 50%, rgba(0, 0, 0, 0) 55%, rgba(0, 0, 0, 0) 55%, #000 170%),
-        linear-gradient(0deg, rgba(0, 0, 0, 0.25) 0%, rgba(0, 0, 0, 0.25) 100%), url('src/assets/common/header1.webp');
+        linear-gradient(0deg, rgba(0, 0, 0, 0.25) 0%, rgba(0, 0, 0, 0.25) 100%), url('/src/assets/common/header.webp');
     mask-image: linear-gradient(to bottom, black 95%, transparent 100%);
     /* type 1 */
     /* filter: sepia(30%) hue-rotate(340deg) brightness(20%); */
@@ -150,7 +215,98 @@ import ItemScrollTop from 'src/components/items/ItemScrollTop.vue';
     background-blend-mode: color, normal, normal, normal, normal;
 }
 
+.footer {
+    background-color: transparent;
+    z-index: 0;
+}
+
 .cart {
     color: var(--q-primary);
+}
+
+/* zigzag */
+
+.zigzag {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding-top: 7.5em;
+    padding-bottom: 1.875em;
+    user-select: none;
+}
+
+.zigzag::before {
+    content: '';
+    position: absolute;
+    top: 9.6rem;
+    left: calc(50% - 2.95rem);
+    transform: translateX(-50%);
+    width: 4rem;
+    height: 4rem;
+    background: linear-gradient(
+            oklch(from var(--q-dark-page) l c h / 0.23),
+            oklch(from var(--q-dark-page) l c h / 0.23)
+        ),
+        url('/src/assets/footer/patch.avif');
+    background-position: center;
+    pointer-events: none;
+    mask-image: radial-gradient(circle, rgb(255, 255, 255) 50%, rgba(255, 255, 255, 0) 100%);
+}
+
+.zigzag__wrapper {
+    position: relative;
+}
+
+.zigzag__image {
+    height: 9.375rem;
+    width: 9.375rem;
+
+    filter: brightness(70%) contrast(93%);
+    transition: filter 0.2s linear;
+    cursor: pointer;
+}
+.zigzag__image:hover {
+    filter: brightness(90%);
+}
+.zigzag__candle {
+    position: absolute;
+    width: 1.875rem;
+    height: 1.875rem;
+    left: 0.9rem;
+    top: 3.75rem;
+    mix-blend-mode: screen;
+    object-fit: cover;
+    filter: brightness(110%) blur(0.0437rem);
+    margin-top: 0.5rem;
+}
+
+/* button animation */
+.custom-tab {
+    position: relative;
+}
+
+.button-animation {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    width: 100%;
+    height: 2px;
+    background: linear-gradient(90deg, rgba(0, 0, 0, 0) 0%, var(--q-warning) 50%, rgba(0, 0, 0, 0) 100%);
+    transform-origin: top center;
+    transform: scaleX(0);
+    transition: transform 0.3s ease-in-out;
+}
+.custom-tab:hover .button-animation {
+    transform: scaleX(1);
+}
+
+.custom-font {
+    transition:
+        color 0.3s ease-in-out,
+        text-shadow 0.3s ease-in-out;
+}
+.custom-tab:hover .custom-font {
+    color: var(--q-warning) !important;
+    text-shadow: #170101 0px 0px 8px;
 }
 </style>

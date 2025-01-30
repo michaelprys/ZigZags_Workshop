@@ -20,6 +20,10 @@ export default defineRouter(function (/* { store, ssrContext } */) {
 
     const Router = createRouter({
         scrollBehavior(to, from, savedPosition) {
+            if (savedPosition) {
+                return savedPosition;
+            }
+
             if (to.hash || to.fullPath === '/') {
                 return {
                     el: to.hash || 'body',
@@ -27,11 +31,7 @@ export default defineRouter(function (/* { store, ssrContext } */) {
                 };
             }
 
-            if (savedPosition) {
-                return savedPosition;
-            } else {
-                return { left: 0, top: 0 };
-            }
+            return { left: 0, top: 0 };
         },
         routes,
 

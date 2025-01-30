@@ -1,26 +1,39 @@
 @font-face {
     font-family: 'TrajanusBricks';
-    src: url('fonts/trajanusbricks-webfont.woff2') format('woff2');
+    src: url('./fonts/trajanusbricks-webfont.woff2') format('woff2');
     font-weight: normal;
     font-style: normal;
 }
 @font-face {
     font-family: 'magic_cardsnormal';
-    src: url('fonts/magiccardsnormal-webfont.woff2') format('woff2');
+    src: url('./fonts/magiccardsnormal-webfont.woff2') format('woff2');
     font-weight: normal;
     font-style: normal;
 }
 @font-face {
     font-family: 'oblivionregular';
-    src: url('fonts/oblivion-font-webfont.woff2') format('woff2');
+    src: url('./fonts/oblivion-font-webfont.woff2') format('woff2');
     font-weight: normal;
     font-style: normal;
 }
 @font-face {
     font-family: 'BLKCHCRY';
-    src: url('fonts/BLKCHCRY.tf') format('ttf');
+    src: url('./fonts/BLKCHCRY.tf') format('ttf');
     font-weight: normal;
     font-style: normal;
+}
+
+body,
+h1,
+h2,
+h3,
+h4,
+p,
+figure,
+blockquote,
+dl,
+dd {
+    margin: 0;
 }
 
 a {
@@ -30,7 +43,11 @@ a {
 
 body {
     font-family: 'oblivionregular';
-    background-color: var(--q-dark-page);
+    background: linear-gradient(
+            oklch(from var(--q-dark-page) l c h / 0.23),
+            oklch(from var(--q-dark-page) l c h / 0.23)
+        ),
+        url('/src/assets/common/bg.avif');
     color: var(--q-primary);
 }
 
@@ -86,4 +103,16 @@ body {
     position: absolute;
     white-space: nowrap;
     width: 1px;
+}
+
+/* transitions */
+
+.fade-enter-active,
+.fade-leave-active {
+    transition: opacity 150ms ease;
+}
+
+.fade-enter-from,
+.fade-leave-to {
+    opacity: 0;
 }
