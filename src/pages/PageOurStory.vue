@@ -15,15 +15,20 @@
             <div class="flex flex-center q-px-md" style="max-width: 90rem; margin-inline: auto; padding-top: 4em">
                 <div>
                     <h2 class="text-h3">Origins</h2>
-                    <p class="q-mt-xl text-info text-subtitle1">
-                        ZigZag, a clever goblin with a talent for tinkering, was never content with just fixing wagons
-                        and earning a few copper. After a series of small mishaps, he decided to build his own workshop
-                        — crafted from scraps and a few borrowed blueprints. His inventions quickly became popular,
-                        especially among adventurers who needed custom gear. But ZigZag's ambitions went beyond just
-                        repair work. He saw an opportunity in the shadows and began selling rare items in the Goblin
-                        Black Market. Not the mastermind behind it, but a trusted merchant among the many shady vendors.
-                        Now, ZigZag runs a thriving business, all while carefully staying one step ahead of the law...
-                        and his competitors.
+                    <p class="q-mt-lg text-info text-subtitle1">
+                        ZigZag, a goblin with a knack for tinkering, never settled for just fixing wagons and snatching
+                        up a few copper. After a bunch of mishaps, he slapped together his own workshop, built from
+                        scraps and borrowed blueprints. His gadgets started catching the eye of adventurers, but
+                        ZigZag's sights were set higher. He dipped his toes into the Goblin Black Market, selling rare
+                        trinkets to the shady folk. Now, ZigZag's known as a trusted merchant, always one step ahead of
+                        the law... and his rivals. But there's one thing that gets ZigZag's heart racing more than
+                        anything — the Mystic Trinket Boxes. The moment one shows up, his eyes light up, and he'd trade
+                        anything for it. Why? Because these boxes are a rare gem, stuffed with magical goodies... or so
+                        the stories say. Most adventurers are too scared to open 'em, afraid of the wild, unpredictable
+                        magic that could come pouring out. But ZigZag? He knows deep down, there's always something
+                        <i>good</i>
+                        hiding inside, and he'll go to any lengths to get his hands on one. Those boxes... they're his
+                        true obsession.
                     </p>
                 </div>
 
@@ -125,8 +130,9 @@
                                 <span class="q-mt-sm text-positive text-subtitle1" style="text-align: center"
                                     >Exclusive bargains, Hidden relics, Forbidden treasures — for the bold!</span
                                 >
-                                <span class="q-mt-sm text-h6 text-negative" style="text-align: center"
-                                    >Caution: Watch your pockets, sharp eyes everywhere!
+                                <span class="q-mt-sm text-h6" style="text-align: center"
+                                    ><span class="text-negative">Caution:</span> Watch your pockets, sharp eyes
+                                    everywhere!
                                 </span>
                             </div>
                             <q-img
