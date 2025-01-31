@@ -16,6 +16,11 @@ const routes: RouteRecordRaw[] = [
                 component: () => import('pages/PageOurStory.vue'),
             },
             {
+                path: 'workshop',
+                name: 'workshop',
+                component: () => import('pages/PageWorkshop.vue'),
+            },
+            {
                 path: 'stash',
                 name: 'stash',
                 component: () => import('pages/PageStash.vue'),
