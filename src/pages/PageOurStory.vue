@@ -47,7 +47,7 @@
                                 <span class="q-mt-sm text-subtitle1">
                                     Closed on Sundays (<i>unless there's a big deal</i>).
                                 </span>
-                                <span class="q-mt-sm text-positive text-subtitle1">
+                                <span class="q-mt-sm text-subtitle1" style="color: var(--q-text-extra)">
                                     Custom engineering orders, Explosive discounts, Sneaky deals.
                                 </span>
                             </div>
@@ -127,7 +127,9 @@
                                 <span class="q-mt-sm text-subtitle1" style="text-align: center"
                                     >Must have <b>Ogre's Eye</b> with you to enter</span
                                 >
-                                <span class="q-mt-sm text-positive text-subtitle1" style="text-align: center"
+                                <span
+                                    class="q-mt-sm text-subtitle1"
+                                    style="text-align: center; color: var(--q-text-extra)"
                                     >Exclusive bargains, Hidden relics, Forbidden treasures — for the bold!</span
                                 >
                                 <span class="q-mt-sm text-h6" style="text-align: center"

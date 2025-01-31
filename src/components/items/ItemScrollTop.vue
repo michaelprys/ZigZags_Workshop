@@ -4,32 +4,38 @@ import { onBeforeUnmount, onMounted, ref } from 'vue';
 
 const isCrossed = ref(false);
 
-function scrollToTop() {
+const handleScroll = () => {
     if (window.scrollY >= 360) {
         isCrossed.value = true;
     } else {
         isCrossed.value = false;
     }
-}
+};
+
+const scrollToTop = () => {
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+
+    handleScroll();
+};
 
 onMounted(() => {
-    window.addEventListener('scroll', scrollToTop);
+    window.addEventListener('scroll', handleScroll);
 });
 onBeforeUnmount(() => {
-    window.removeEventListener('scroll', scrollToTop);
+    window.removeEventListener('scroll', handleScroll);
 });
 </script>
 
 <template>
-    <RouterLink
+    <q-btn
         class="custom-button fade-in-secondary"
         :class="{ 'is-crossed': isCrossed, 'is-not-crossed': !isCrossed }"
-        to="/"
         aria-label="Go to the beginning of the page"
         style="box-shadow: inset 0 0 0 12.5rem rgba(255, 255, 255, 0.08)"
+        @click="scrollToTop"
     >
         <IconArrow />
-    </RouterLink>
+    </q-btn>
 </template>
 
 <style scoped>

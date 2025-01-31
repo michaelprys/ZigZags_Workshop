@@ -45,7 +45,7 @@ export default defineConfig(() => {
         },
 
         framework: {
-            plugins: [],
+            plugins: ['Notify'],
         },
 
         animations: [],

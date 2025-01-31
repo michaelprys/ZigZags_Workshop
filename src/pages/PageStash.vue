@@ -1,13 +1,16 @@
 <script setup lang="ts">
-import { ref } from 'vue';
+import { ref, reactive } from 'vue';
+import { useQuasar } from 'quasar';
+import { useRouter } from 'vue-router';
 
 const activeSlide = ref(2);
+const myForm = ref(null);
 
 const imgSrc = (name: string) => {
     return new URL(`/src/assets/index/featured/${name}.avif`, import.meta.url).href;
 };
 
-const slides = [
+const stashItems = ref([
     [
         { name: 'image-7', src: imgSrc('image-7') },
         { name: 'image-8', src: imgSrc('image-8') },
@@ -20,7 +23,7 @@ const slides = [
         { name: 'image-4', src: imgSrc('image-4') },
         { name: 'image-5', src: imgSrc('image-5') },
     ],
-];
+]);
 
 const dialog = ref(false);
 
@@ -36,10 +39,57 @@ const paymentTypes = [
     { label: 'Magic gems', value: 'magic-gems', conversionRate: 250 },
     { label: 'Mystic Trinket Box', value: 'mystic-trinket-box', conversionRate: 100 },
 ];
+
+const $q = useQuasar();
+const router = useRouter();
+
+const trade = ref(false);
+const loading = ref(false);
+
+const onSubmit = async () => {
+    if (!myForm.value) return;
+    try {
+        const success = await myForm.value.validate();
+        if (!success) {
+            $q.notify({
+                type: 'negative',
+                message: "Something went wrong. Where's my gold?!",
+                position: 'bottom-right',
+                classes: 'toast',
+            });
+            return;
+        }
+
+        loading.value = true;
+
+        setTimeout(() => {
+            loading.value = false;
+            dialog.value = false;
+            trade.value = true;
+
+            stashItems.value = [];
+
+            router.push('/');
+
+            $q.notify({
+                type: 'positive',
+                message: "Pleasure doin' business!",
+                position: 'bottom-right',
+                classes: 'toast',
+            });
+        }, 3000);
+    } catch (err) {
+        console.error('Validation error:', err);
+    }
+};
 </script>
 
 <template>
-    <section class="column flex-center relative-position" style="padding-top: 6.625em; padding-bottom: 8.5em">
+    <section
+        v-if="stashItems.length > 0"
+        class="column flex-center relative-position"
+        style="padding-top: 6.625em; padding-bottom: 8.5em"
+    >
         <q-img
             class="absolute-top"
             width="1024px"
@@ -50,7 +100,7 @@ const paymentTypes = [
         </q-img>
 
         <div class="column items-center q-mt-xl">
-            <span class="text-h3">Your stash</span>
+            <span class="block text-h3">Your stash</span>
 
             <div class="q-mt-sm">
                 <div class="q-pa-md">
@@ -69,7 +119,7 @@ const paymentTypes = [
                         height="24rem"
                     >
                         <q-carousel-slide
-                            v-for="(slide, idx) in slides"
+                            v-for="(slide, idx) in stashItems"
                             :key="idx"
                             class="cursor-pointer no-wrap"
                             :name="idx + 1"
@@ -99,29 +149,30 @@ const paymentTypes = [
 
             <Teleport to="body">
                 <q-dialog v-model="dialog" backdrop-filter="brightness(60%)">
-                    <q-card style="background-color: var(--q-medium); max-width: 40.25rem; width: 100%">
+                    <q-card style="background-color: var(--q-bg-modal); max-width: 40.25rem; width: 100%">
                         <q-card-section class="column q-pb-none">
                             <span class="text-h5 text-secondary">Trade details</span>
                             <span class="q-mt-sm">Form's a must! Who am I dealing with?</span>
                         </q-card-section>
 
                         <q-card-section>
-                            <q-form @submit="onSubmit" class="q-gutter-md">
+                            <q-form ref="myForm" class="q-gutter-md" @submit="onSubmit">
                                 <div class="flex q-mt-lg" style="gap: 1rem">
                                     <div class="flex" style="width: 100%; gap: 1rem">
                                         <q-input
+                                            v-model="name"
                                             style="flex: 1"
                                             filled
-                                            v-model="name"
                                             bg-color="dark"
                                             label-color="info"
                                             input-class="text-primary"
                                             label="Your name *"
+                                            lazy-rules="ondemand"
                                             :rules="[(val) => val.length > 0 || 'Please type your name']"
                                         />
                                         <q-select
-                                            style="flex: 1"
                                             v-model="territory"
+                                            style="flex: 1"
                                             :options="territories"
                                             filled
                                             dark
@@ -129,12 +180,13 @@ const paymentTypes = [
                                             label-color="info"
                                             input-class="text-primary"
                                             label="Your faction *"
+                                            lazy-rules="ondemand"
                                             :rules="[(val) => (val && val.length > 0) || 'Please select your faction']"
                                         />
                                     </div>
                                     <q-select
-                                        style="width: 100%"
                                         v-model="paymentType"
+                                        style="width: 100%"
                                         :options="paymentTypes"
                                         filled
                                         dark
@@ -142,30 +194,53 @@ const paymentTypes = [
                                         label-color="info"
                                         input-class="text-primary"
                                         label="Currency of Choice *"
+                                        lazy-rules="ondemand"
                                         :rules="[
-                                            (val) => (val) =>
-                                                (!!val && !!val.value) || 'Please select currency of choice',
+                                            (val) => (val && val.value ? true : 'Please select currency of choice'),
                                         ]"
                                     />
                                 </div>
 
-                                <div class="q-mt-lg">
-                                    <q-btn label="Trade" type="submit" color="secondary" text-color="dark" />
+                                <div class="flex justify-between q-mt-lg">
+                                    <q-btn
+                                        :loading="loading"
+                                        style="width: 160px"
+                                        type="submit"
+                                        label="Trade"
+                                        :color="loading ? 'positive' : 'secondary'"
+                                        text-color="dark"
+                                    >
+                                        <template v-slot:loading>
+                                            <q-spinner-hourglass class="on-left" />
+                                            In process...
+                                        </template>
+                                    </q-btn>
+
+                                    <q-btn v-close-popup label="Close" flat color="secondary" text-color="primary">
+                                    </q-btn>
                                 </div>
                             </q-form>
                         </q-card-section>
-
-                        <!-- <q-card-actions align="right">
-                            <q-btn flat label="Close" color="primary" v-close-popup />
-                        </q-card-actions> -->
                     </q-card>
                 </q-dialog>
             </Teleport>
         </div>
     </section>
+
+    <section v-else class="column flex-center relative-position" style="padding-top: 19em">
+        <div class="column flex-center">
+            <span class="text-h3 text-secondary">The stash is bone dry, mate!</span>
+        </div>
+    </section>
 </template>
 
 <style scoped>
+.toast {
+    bottom: 40px !important;
+    right: 40px !important;
+    padding: 60px;
+}
+
 .q-carousel__slide div:last-child {
     margin-right: 0;
 }

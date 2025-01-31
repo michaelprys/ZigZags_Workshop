@@ -1,11 +1,7 @@
-<script setup lang="ts">
-import { ref } from 'vue';
-
-const text = ref('');
-</script>
+<script setup lang="ts"></script>
 
 <template>
-    <section id="intro" style="padding-top: 4.25em; padding-bottom: 8.5em">
+    <section id="intro" style="padding-top: 4.9em; padding-bottom: 8.5em">
         <h1 class="sr-only">Introduction</h1>
 
         <div class="flex flex-center q-px-md">
