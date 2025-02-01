@@ -185,12 +185,9 @@ const quantity = ref(1);
                     <div class="column q-mr-xl wrapper">
                         <q-scroll-area dark class="panel q-pa-lg" style="height: 486px; width: 45rem">
                             <div v-for="card in 10" :key="card" class="card shadow-1">
-                                <!-- item image -->
                                 <q-img class="card__image" src="~assets/index/featured/image-1.avif" />
 
-                                <!-- content-wrapper -->
                                 <div class="flex justify-between q-pa-md" style="width: 100%">
-                                    <!-- content -->
                                     <div>
                                         <div class="column">
                                             <span class="text-bold">Sneaky Boots of Swift Exit</span>
@@ -202,10 +199,8 @@ const quantity = ref(1);
                                     </div>
 
                                     <div class="column justify-between" style="align-items: flex-end">
-                                        <!-- close btn -->
                                         <q-btn v-model="quantity" outline color="info" size="sm" dense icon="close" />
 
-                                        <!-- controls btns -->
                                         <div class="flex items-center q-gutter-x-md">
                                             <q-btn
                                                 v-model="quantity"
@@ -247,13 +242,12 @@ const quantity = ref(1);
                 </div>
             </div>
         </section>
-        <!-- </div> -->
 
-        <!-- <section v-else class="column flex-center relative-position" style="padding-top: 19em">
-        <div class="column flex-center">
-            <span class="text-h3 text-secondary">The stash is bone dry, mate!</span>
-        </div>
-    </section> -->
+        <section v-else class="column flex-center relative-position" style="padding-top: 19em">
+            <div class="column flex-center">
+                <span class="text-h3 text-secondary">The stash is bone dry, mate!</span>
+            </div>
+        </section>
     </div>
 </template>
 

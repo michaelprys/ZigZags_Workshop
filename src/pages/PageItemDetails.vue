@@ -1,26 +1,49 @@
 <script setup lang="ts"></script>
 
 <template>
-    <section id="item-details" style="padding-top: 0.2rem; padding-bottom: 10.5em">
+    <section id="item-details" class="relative-position" style="padding-top: 5.3em; padding-bottom: 7.5em">
         <h1 class="sr-only">Item details</h1>
 
-        <div class="flex" style="max-width: 53.3125rem; margin-inline: auto">
-            <q-img class="book__img" src="~assets/index/featured/image-1.avif" />
+        <div class="bg"></div>
 
-            <div class="content">
-                <div class="column">
-                    <h2 class="text-bold text-h5">Category: Gadgets</h2>
+        <div class="flex flex-center">
+            <div class="wrapper">
+                <q-img class="image" src="~assets/index/featured/image-2.avif" />
 
-                    <p class="q-mt-lg text-body2" style="text-align: justify">
-                        "Boots of Swiftness" are a coveted item in the goblin workshop, designed to enhance speed and
-                        agility. Crafted with precision and a dash of goblin ingenuity, these boots allow the wearer to
-                        move faster than ever before. Whether you're escaping a sticky situation or making a quick
-                        getaway, these boots ensure you're always one step ahead.
-                    </p>
+                <div class="content-wrapper q-pa-lg">
+                    <div class="column">
+                        <h2 class="text-bold text-h4">Boots of swiftness</h2>
 
-                    <span class="q-mt-sm text-h6">Price: 500 gold</span>
+                        <h2 class="q-mt-md text-bold text-h6 text-secondary">Category: Gadgets</h2>
 
-                    <q-btn class="button q-mt-sm" outline color="secondary" style="max-width: 6rem">Purchase</q-btn>
+                        <p class="q-mt-md text-body2" style="text-align: justify">
+                            "Boots of Swiftness" are a coveted item in the goblin workshop, designed to enhance speed
+                            and agility. Crafted with precision and a dash of goblin ingenuity, these boots allow the
+                            wearer to move faster than ever before. Whether you're escaping a sticky situation or making
+                            a quick getaway, these boots ensure you're always one step ahead.
+                        </p>
+
+                        <span class="q-mt-lg text-subtitle1">Price: 500 gold</span>
+
+                        <q-btn class="button q-mt-lg" outline color="primary" style="max-width: 6rem">Purchase</q-btn>
+                    </div>
+
+                    <div class="q-mt-lg">
+                        <h2 class="text-bold text-h6 text-secondary">How it's made</h2>
+
+                        <p class="q-mt-md text-body2" style="text-align: justify">
+                            Ahh, the <i>Boots of Swiftness</i>! A true masterpiece of goblin craftsmanship, these boots
+                            are forged in the depths of our secret workshops, hidden away from the prying eyes of those
+                            pesky adventurers. First, we gather the finest leather from the swiftest of creatures—caught
+                            with a clever trap, of course! Then, we mix in a bit of goblin magic, a dash of speed
+                            potion, and a pinch of… well, let's just say <i>"special ingredients"</i> that only goblins
+                            know about. Each boot is stitched together with the precision of a seasoned goblin artisan,
+                            ensuring that they don't just fit—they enhance every step! And once you slip them on, don't
+                            be surprised if you find yourself running faster than a greased rat on market day. Perfect
+                            for evading traps, escaping rivals, or just getting away from a sticky situation...
+                            <i>these boots will have you running circles around anyone</i>!
+                        </p>
+                    </div>
                 </div>
             </div>
         </div>
@@ -28,19 +51,43 @@
 </template>
 
 <style scoped>
-.book__img {
-    width: 380px;
-    height: 380px;
-    /* mask-image: radial-gradient(circle, rgb(255, 255, 255) 30%, rgba(255, 255, 255, 0) 68%); */
-    /* filter: sepia(0.7) brightness(85%) hue-rotate(-13deg); */
+.bg {
+    position: absolute;
+    top: 2.1rem;
+    left: calc(50% + 15rem);
+    transform: translateX(-50%);
+    max-width: 71.5rem;
+    width: 100%;
+    min-height: 40rem;
+    z-index: -1;
+    margin-block: 2.5rem;
+    background-image: url('src/assets/item-details/bg.jpeg');
+    background-position: center;
+    background-repeat: no-repeat;
+    opacity: 50%;
+    filter: brightness(50%);
+    mask-image: radial-gradient(circle, rgb(255, 255, 255) 50%, rgba(255, 255, 255, 0) 100%);
+}
+
+.wrapper {
+    display: flex;
+    justify-content: center;
+    gap: 2.5rem;
+}
+
+.content-wrapper {
+    background-color: var(--q-dark-page);
+    border: 1px solid color-mix(in srgb, var(--q-primary) 40%, black 90%);
+    border-radius: var(--rounded);
+    max-width: 40rem;
+    border-radius: 0.3125rem;
+}
+
+.image {
+    width: 28.9375rem;
+    height: 19.5rem;
+    margin-top: 5rem;
+    border-radius: 0.3125rem;
     user-select: none;
-}
-
-.content {
-}
-
-.button {
-    border: 1px solid var(--q-text-book);
-    color: var(--q-text-book);
 }
 </style>
