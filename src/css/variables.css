@@ -1,11 +1,13 @@
 :root {
     --q-primary: #e5e0c8;
     --q-secondary: #bd9b4e;
+    --q-secondary-dimmed: #927636;
 
     /* --q-primary: #e5e0c8;
     --q-secondary: #8d0e04; */
     --q-bg-modal: #1f1d1a;
     --q-text-extra: #6b8537;
+    --q-text-book: #311b0e;
 
     --q-accent: #ffffff;
     --q-dark: #140f0e;

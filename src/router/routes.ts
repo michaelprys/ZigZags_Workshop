@@ -21,6 +21,12 @@ const routes: RouteRecordRaw[] = [
                 component: () => import('pages/PageWorkshop.vue'),
             },
             {
+                path: 'workshop/:id',
+                name: 'item-details',
+                component: () => import('pages/PageItemDetails.vue'),
+                meta: { section: 'workshop' },
+            },
+            {
                 path: 'stash',
                 name: 'stash',
                 component: () => import('pages/PageStash.vue'),

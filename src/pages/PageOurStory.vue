@@ -33,7 +33,7 @@
                 </div>
 
                 <div style="padding-bottom: 8.5em" class="q-my-xl">
-                    <h2 class="q-mt-xl text-h4 text-secondary" style="text-align: center">Zigzag's Workshop</h2>
+                    <h2 class="q-mt-xl text-h4" style="text-align: center">Zigzag's Workshop</h2>
 
                     <div class="column q-mt-xl text-info">
                         <div
@@ -47,7 +47,7 @@
                                 <span class="q-mt-sm text-subtitle1">
                                     Closed on Sundays (<i>unless there's a big deal</i>).
                                 </span>
-                                <span class="q-mt-sm text-subtitle1" style="color: var(--q-text-extra)">
+                                <span class="q-mt-sm text-secondary text-subtitle1">
                                     Custom engineering orders, Explosive discounts, Sneaky deals.
                                 </span>
                             </div>
@@ -105,9 +105,7 @@
                     </p>
 
                     <div class="column">
-                        <span class="q-mt-xl text-h4 text-secondary" style="text-align: center"
-                            >Finding the market</span
-                        >
+                        <span class="q-mt-xl text-h4 text-primary" style="text-align: center">Finding the market</span>
 
                         <div class="flex justify-evenly q-mt-xl">
                             <q-img
@@ -127,9 +125,7 @@
                                 <span class="q-mt-sm text-subtitle1" style="text-align: center"
                                     >Must have <b>Ogre's Eye</b> with you to enter</span
                                 >
-                                <span
-                                    class="q-mt-sm text-subtitle1"
-                                    style="text-align: center; color: var(--q-text-extra)"
+                                <span class="q-mt-sm text-secondary text-subtitle1" style="text-align: center"
                                     >Exclusive bargains, Hidden relics, Forbidden treasures — for the bold!</span
                                 >
                                 <span class="q-mt-sm text-h6" style="text-align: center"

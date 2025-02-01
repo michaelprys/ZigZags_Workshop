@@ -142,6 +142,9 @@ onMounted(() => {
                     <i v-else-if="route.name === 'stash'"
                         >A goblin's life is full of risks... and the rewards are always shiny.
                     </i>
+                    <i v-else-if="route.name === 'item-details'"
+                        >Sparks fly, gears grind, and treasure waits for no one!
+                    </i>
                 </q>
             </div>
         </q-footer>
@@ -201,18 +204,13 @@ onMounted(() => {
             rgba(11, 5, 4, 0.66) 50%,
             rgba(39, 22, 11, 0.82) 100%
         ),
-        linear-gradient(90deg, #000 -40%, rgba(0, 0, 0, 0) 50%, rgba(0, 0, 0, 0) 55%, rgba(0, 0, 0, 0) 55%, #000 170%),
+        linear-gradient(9deg, #000 -40%, rgba(0, 0, 0, 0) 50%, rgba(0, 0, 0, 0) 55%, rgba(0, 0, 0, 0) 55%, #000 170%),
         linear-gradient(0deg, rgba(0, 0, 0, 0.25) 0%, rgba(0, 0, 0, 0.25) 100%), url('/src/assets/common/header.webp');
     mask-image: linear-gradient(to bottom, black 95%, transparent 100%);
-    /* type 1 */
-    /* filter: sepia(30%) hue-rotate(340deg) brightness(20%); */
+    width: 100%;
+    height: 100%;
 
-    /* type 2 */
-    filter: hue-rotate(370deg) saturate(70%) brightness(100%) contrast(101%);
-
-    /* type 3 */
-    /* filter: saturate(60%) brightness(110%); */
-    /* filter: hue-rotate(352deg) saturate(50%) brightness(90%); */
+    /* filter: hue-rotate(370deg) saturate(70%) brightness(100%) contrast(101%); */
 
     background-position: 0% 10%;
     background-blend-mode: color, normal, normal, normal, normal;
