@@ -1,4 +1,25 @@
-<script setup lang="ts"></script>
+<script setup lang="ts">
+import { ref } from 'vue';
+
+const image = ref<HTMLImageElement | null>(null);
+
+const moveImage = (e: MouseEvent) => {
+    if (!image.value) return;
+
+    const { left, top, width, height } = image.value.getBoundingClientRect();
+
+    const x = ((e.clientX - left) / width) * 100;
+    const y = ((e.clientY - top) / height) * 100;
+
+    image.value.style.transformOrigin = `${x}% ${y}%`;
+};
+
+const resetImage = () => {
+    if (!image.value) return;
+
+    image.value.style.transformOrigin = 'center center';
+};
+</script>
 
 <template>
     <section id="item-details" class="relative-position" style="padding-top: 5.3em; padding-bottom: 7.5em">
@@ -8,7 +29,15 @@
 
         <div class="flex flex-center">
             <div class="wrapper">
-                <q-img class="image" src="~assets/index/featured/image-2.avif" />
+                <div class="image-wrapper">
+                    <img
+                        ref="image"
+                        class="image"
+                        src="~assets/index/featured/image-2.avif"
+                        @mousemove="moveImage"
+                        @mouseleave="resetImage"
+                    />
+                </div>
 
                 <div class="content-wrapper q-pa-lg">
                     <div class="column">
@@ -83,11 +112,23 @@
     border-radius: 0.3125rem;
 }
 
-.image {
+.image-wrapper {
     width: 28.9375rem;
     height: 19.5rem;
     margin-top: 5rem;
+    overflow: hidden;
+    border-radius: 0.3125rem;
+}
+
+.image {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
     border-radius: 0.3125rem;
     user-select: none;
+}
+
+.image:hover {
+    transform: scale(1.5);
 }
 </style>

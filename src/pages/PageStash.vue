@@ -173,7 +173,13 @@ const quantity = ref(1);
                     <q-img
                         width="1024px"
                         height="1024px"
-                        style="border-radius: 50%; width: 90px; height: 90px; filter: contrast(96%) brightness(89%)"
+                        style="
+                            user-select: none;
+                            border-radius: 50%;
+                            width: 90px;
+                            height: 90px;
+                            filter: contrast(96%) brightness(89%);
+                        "
                         src="~assets/stash/goblin.jpeg"
                     >
                     </q-img>

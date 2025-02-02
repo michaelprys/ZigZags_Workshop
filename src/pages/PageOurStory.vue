@@ -152,10 +152,13 @@
                                 got it, here's how you find the entrance: head down to the old sewers near the Rat's
                                 Tail Tavern. There's a bit of a maze down there, so don't get lost — but once you reach
                                 the center, you'll find a hatch. Watch out for "Snot" at the entrance — just show him
-                                the Eye and don't bother tryin' to explain nothin' to him (just a lil' advice). The Eye
-                                really gets under his skin — he's not too fond of ogres, if you catch my drift. Anyways,
-                                AFTER you're in, all the details are yours to discover! Oh, and by the way, Snot's the
-                                giant troll, in case you're wondering.
+                                the Eye and don't bother tryin' to explain nothin' to him (just a lil' advice). Now,
+                                here's the kicker: the Eye is one-time use only. After you show it to Snot, he'll eat it
+                                right up — don't worry, it's how things work around here. The Black Market is a treasure
+                                trove, and the chances of striking it rich (or poor) there are *ten times* higher than
+                                anywhere else. But that's the thrill of it, right? Anyways, AFTER you're in, all the
+                                details are yours to discover! Oh, and by the way, Snot's the giant troll, in case
+                                you're wondering.
                             </p>
                         </div>
                     </div>
