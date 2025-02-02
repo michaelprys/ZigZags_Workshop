@@ -58,12 +58,12 @@ onMounted(() => {
                     <div class="flex items-center q-gutter-x-xl">
                         <q-tabs class="text-subtitle1">
                             <q-route-tab class="q-px-lg text-primary" :to="{ name: 'home' }">Base</q-route-tab>
-                            <q-route-tab class="q-px-lg text-primary" to="/our-story">Our story</q-route-tab>
+                            <q-route-tab class="q-px-lg text-primary" to="/guide">Guide</q-route-tab>
                             <q-route-tab class="q-px-lg text-primary" :to="{ name: 'workshop' }">Workshop</q-route-tab>
                             <div class="custom-tab">
                                 <q-route-tab
                                     class="custom-font font-extra q-px-lg text-secondary text-subtitle2"
-                                    :to="{ name: 'black-market' }"
+                                    :to="{ name: 'market-access' }"
                                     name="black-market"
                                     >Black Market</q-route-tab
                                 >
@@ -134,7 +134,7 @@ onMounted(() => {
                     <i v-if="route.name === 'home'"
                         >Not everything that glitters is worth a coin&nbsp; — &nbsp;but Zigzag always has what you need
                     </i>
-                    <i v-else-if="route.name === 'our-story'">Some deals are too good for daylight.</i>
+                    <i v-else-if="route.name === 'guide'">Some deals are too good for daylight.</i>
                     <i v-else-if="route.name === 'workshop'">If it's hard to find, it's probably here.</i>
                     <i v-else-if="route.name === 'black-market'"
                         >Why settle for what's available, when you can have what's exclusive?
@@ -144,6 +144,12 @@ onMounted(() => {
                     </i>
                     <i v-else-if="route.name === 'item-details'"
                         >Sparks fly, gears grind, and treasure waits for no one!
+                    </i>
+                    <i v-else-if="route.name === 'market-access'"
+                        >Better to steal a rat's cheese than beg for scraps.
+                    </i>
+                    <i v-else-if="route.name === 'request-access'"
+                        >A goblin's silence is worth more than gold... unless you're buying.
                     </i>
                 </q>
             </div>
@@ -206,9 +212,10 @@ onMounted(() => {
         ),
         linear-gradient(9deg, #000 -40%, rgba(0, 0, 0, 0) 50%, rgba(0, 0, 0, 0) 55%, rgba(0, 0, 0, 0) 55%, #000 170%),
         linear-gradient(0deg, rgba(0, 0, 0, 0.25) 0%, rgba(0, 0, 0, 0.25) 100%), url('/src/assets/common/header.webp');
-    mask-image: linear-gradient(to bottom, black 95%, transparent 100%);
+    /* mask-image: linear-gradient(to bottom, black 95%, transparent 100%); */
     width: 100%;
     height: 100%;
+    filter: brightness(125%);
 
     /* filter: hue-rotate(370deg) saturate(70%) brightness(100%) contrast(101%); */
 

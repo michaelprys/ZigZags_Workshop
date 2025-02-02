@@ -2,11 +2,11 @@
 
 <template>
     <q-page>
-        <section id="our-story" style="padding-bottom: 4rem">
-            <h1 class="sr-only">Our story</h1>
+        <section id="guide" style="padding-bottom: 4rem">
+            <y class="sr-only">Guide</y>
 
             <q-parallax
-                src="~assets/our-story/header.avif"
+                src="~assets/guide/header.avif"
                 style="width: 100%; height: 29rem; object-fit: cover"
                 alt="Goblin Black Market"
             >
@@ -58,7 +58,7 @@
                                     mix-blend-mode: screen;
                                     filter: contrast(103%) brightness(87%) grayscale(35%);
                                 "
-                                src="~assets/our-story/image-3.avif"
+                                src="~assets/guide/image-3.avif"
                             />
                         </div>
 
@@ -93,15 +93,15 @@
                     <p class="q-mt-xl text-subtitle1">
                         <span class="text-h4 text-primary">Beneath</span> the Undercity, where the air smells like rat
                         soup and the sewers are a mess, lies the <i>Goblin Black Market</i> — a place as old as time
-                        itself, hidden from the light. Only those with an <b>Ogre's Eye</b> get to see the secret
-                        entrance — and you better keep your wits about ya. Inside? It's a wild mess of treasures and
-                        tricks: cursed baubles, ticking bombs, and oddities that might just blow yer hands off. No
-                        questions, no returns. The market's a twisting maze of shady vendors, always ready to strike a
-                        deal, but beware — the air's thick with sneaky stealers and tricksters. Want trouble, danger, or
-                        something... <i>weird</i>? This is the place for you, but remember, things here aren't always
-                        what they seem. Don't go wanderin' off into the dark corners by yourself — who knows what
-                        strange things might be lurking. And don't be fooled, pal, everything here's gonna cost you more
-                        than you think — sometimes more than your <i>soul</i>.
+                        itself, hidden from the light. Only those with an <b>Whispering Rune</b> can hear the secrets it
+                        whispers and unlock the hidden entrance — and you better keep your wits about ya. Inside? It's a
+                        wild mess of treasures and tricks: cursed baubles, ticking bombs, and oddities that might just
+                        blow yer hands off. No questions, no returns. The market's a twisting maze of shady vendors,
+                        always ready to strike a deal, but beware — the air's thick with sneaky stealers and tricksters.
+                        Want trouble, danger, or something... <i>weird</i>? This is the place for you, but remember,
+                        things here aren't always what they seem. Don't go wanderin' off into the dark corners by
+                        yourself — who knows what strange things might be lurking. And don't be fooled, pal, everything
+                        here's gonna cost you more than you think — sometimes more than your <i>soul</i>.
                     </p>
 
                     <div class="column">
@@ -116,14 +116,14 @@
                                     text-align: center;
                                     filter: contrast(103%);
                                 "
-                                src="~assets/our-story/image-1.avif"
+                                src="~assets/guide/image-1.avif"
                             />
                             <div class="column" style="text-align: center">
                                 <span class="text-subtitle1" style="text-align: center"
                                     >Open at all hours, always waiting</span
                                 >
                                 <span class="q-mt-sm text-subtitle1" style="text-align: center"
-                                    >Must have <b>Ogre's Eye</b> with you to enter</span
+                                    >Must have <b>Cryptic Coin</b> with you to enter</span
                                 >
                                 <span class="q-mt-sm text-secondary text-subtitle1" style="text-align: center"
                                     >Exclusive bargains, Hidden relics, Forbidden treasures — for the bold!</span
@@ -140,25 +140,23 @@
                                     mix-blend-mode: screen;
                                     filter: contrast(103%);
                                 "
-                                src="~assets/our-story/image-2.avif"
+                                src="~assets/guide/image-2.avif"
                             />
                         </div>
 
                         <div class="q-mt-xl">
                             <span class="text-h4 text-primary">Undercity</span>
                             <p class="q-mt-lg text-subtitle1">
-                                Attention! ZigZag here. Alright, first thing's first. you'll need to get your hands on
-                                an Ogre's Eye from me — just swing by for a quick chat if you're interested. Once you've
-                                got it, here's how you find the entrance: head down to the old sewers near the Rat's
-                                Tail Tavern. There's a bit of a maze down there, so don't get lost — but once you reach
-                                the center, you'll find a hatch. Watch out for "Snot" at the entrance — just show him
-                                the Eye and don't bother tryin' to explain nothin' to him (just a lil' advice). Now,
-                                here's the kicker: the Eye is one-time use only. After you show it to Snot, he'll eat it
-                                right up — don't worry, it's how things work around here. The Black Market is a treasure
-                                trove, and the chances of striking it rich (or poor) there are *ten times* higher than
-                                anywhere else. But that's the thrill of it, right? Anyways, AFTER you're in, all the
-                                details are yours to discover! Oh, and by the way, Snot's the giant troll, in case
-                                you're wondering.
+                                Attention! ZigZag here. Alright, first thing's first. You'll need to get your hands on a
+                                <strong>Whispering Rune</strong> from me — just swing by for a quick chat if you're
+                                interested. This rune holds the key to an ancient agreement between the traders, and
+                                only those with the rune can access the Black Market. Once you've got it, here's how you
+                                find the entrance: head down to the old sewers near the Rat's Tail Tavern. There's a bit
+                                of a maze down there, so don't get lost — but once you reach the center, you'll find a
+                                hatch. Watch out for "Snot" at the entrance — tell him the word the rune whispers to
+                                you, and don't bother tryin' to explain nothin' to him (just a lil' advice). After that,
+                                all the details are yours to discover! Oh, and by the way, Snot's the giant troll, in
+                                case you're wondering.
                             </p>
                         </div>
                     </div>
@@ -173,7 +171,7 @@
     width: 40rem;
     height: 34rem;
     margin-block: 2.5rem;
-    background-image: url('src/assets/our-story/map.avif');
+    background-image: url('src/assets/guide/map.avif');
     /* mask-image: radial-gradient(circle, rgb(255, 255, 255) 90%, rgba(255, 255, 255, 0) 111%); */
     /* width: 100%; */
     /* height: 100%; */
@@ -185,7 +183,7 @@
 
 .map-texture {
     position: absolute;
-    background-image: url('src/assets/our-story/map-texture.avif');
+    background-image: url('src/assets/guide/map-texture.avif');
     width: 100%;
     height: 100%;
     /* top: 30px; */

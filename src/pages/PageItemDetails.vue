@@ -82,7 +82,7 @@ const resetImage = () => {
 <style scoped>
 .bg {
     position: absolute;
-    top: 2.1rem;
+    top: 2.2rem;
     left: calc(50% + 15rem);
     transform: translateX(-50%);
     max-width: 71.5rem;
@@ -93,7 +93,6 @@ const resetImage = () => {
     background-image: url('src/assets/item-details/bg.jpeg');
     background-position: center;
     background-repeat: no-repeat;
-    opacity: 50%;
     filter: brightness(50%);
     mask-image: radial-gradient(circle, rgb(255, 255, 255) 50%, rgba(255, 255, 255, 0) 100%);
 }
@@ -105,11 +104,29 @@ const resetImage = () => {
 }
 
 .content-wrapper {
-    background-color: var(--q-dark-page);
+    position: relative;
     border: 1px solid color-mix(in srgb, var(--q-primary) 40%, black 90%);
     border-radius: var(--rounded);
     max-width: 40rem;
     border-radius: 0.3125rem;
+    border: 1px solid rgba(255, 255, 255, 0.125);
+    box-shadow:
+        0 1px 1px rgba(0, 0, 0, 0.12),
+        0 2px 2px rgba(0, 0, 0, 0.12);
+}
+
+.content-wrapper::before {
+    content: '';
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    z-index: -1;
+    top: 0;
+    left: 0;
+    backdrop-filter: blur(16px) saturate(180%);
+    -webkit-backdrop-filter: blur(16px) saturate(180%);
+    background-color: rgba(17, 25, 40, 0.75);
+    filter: brightness(60%);
 }
 
 .image-wrapper {

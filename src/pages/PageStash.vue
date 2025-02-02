@@ -27,12 +27,7 @@ const stashItems = ref([
 
 const dialog = ref(false);
 
-const name = ref('');
-
-const territory = ref(null);
 const paymentType = ref(null);
-
-const territories = ['Horde', 'Alliance', 'Argent Dawn', 'Scarlet Crusade', 'Kirin Tor'];
 
 const paymentTypes = [
     { label: 'Gold', value: 'gold', conversionRate: 1 },
@@ -92,39 +87,12 @@ const quantity = ref(1);
             <q-dialog v-model="dialog" backdrop-filter="blur(8px); brightness(60%)">
                 <div class="modal">
                     <div class="column q-pb-none">
-                        <span class="text-h5 text-secondary">Trade details</span>
-                        <span class="q-mt-sm">Form's a must! Who am I dealing with?</span>
+                        <span class="text-h5 text-secondary">Complete trade</span>
                     </div>
 
                     <div>
-                        <q-form ref="myForm" class="q-gutter-md" @submit="onSubmit">
-                            <div class="flex q-mt-lg" style="gap: 1rem">
-                                <div class="flex q-mt-md" style="width: 100%; gap: 1rem">
-                                    <q-input
-                                        v-model="name"
-                                        style="flex: 1"
-                                        filled
-                                        bg-color="dark"
-                                        label-color="info"
-                                        input-class="text-primary"
-                                        label="Your name *"
-                                        lazy-rules="ondemand"
-                                        :rules="[(val) => val.length > 0 || 'Please type your name']"
-                                    />
-                                    <q-select
-                                        v-model="territory"
-                                        style="flex: 1"
-                                        :options="territories"
-                                        filled
-                                        dark
-                                        bg-color="dark"
-                                        label-color="info"
-                                        input-class="text-primary"
-                                        label="Your faction *"
-                                        lazy-rules="ondemand"
-                                        :rules="[(val) => (val && val.length > 0) || 'Please select your faction']"
-                                    />
-                                </div>
+                        <q-form ref="myForm" class="q-gutter-md q-mt-lg" @submit="onSubmit">
+                            <div class="flex" style="gap: 1rem">
                                 <q-select
                                     v-model="paymentType"
                                     style="width: 100%"
@@ -140,7 +108,7 @@ const quantity = ref(1);
                                 />
                             </div>
 
-                            <div class="flex justify-between q-mt-lg">
+                            <div class="flex justify-between q-mt-md">
                                 <q-btn
                                     :loading="loading"
                                     style="width: 160px"

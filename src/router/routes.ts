@@ -11,9 +11,9 @@ const routes: RouteRecordRaw[] = [
                 component: () => import('pages/PageIndex.vue'),
             },
             {
-                path: 'our-story',
-                name: 'our-story',
-                component: () => import('pages/PageOurStory.vue'),
+                path: 'guide',
+                name: 'guide',
+                component: () => import('src/pages/PageGuide.vue'),
             },
             {
                 path: 'workshop',
@@ -30,6 +30,16 @@ const routes: RouteRecordRaw[] = [
                 path: 'stash',
                 name: 'stash',
                 component: () => import('pages/PageStash.vue'),
+            },
+            {
+                path: 'market-access',
+                name: 'market-access',
+                component: () => import('pages/PageMarketAccess.vue'),
+            },
+            {
+                path: 'request-access',
+                name: 'request-access',
+                component: () => import('pages/PageRequestAccess.vue'),
             },
         ],
     },
