@@ -8,69 +8,76 @@ const territories = ['Horde', 'Alliance', 'Argent Dawn', 'Scarlet Crusade', 'Kir
 </script>
 
 <template>
-    <div class="relative-position">
-        <div class="bg"></div>
+    <q-page>
+        <div class="relative-position">
+            <div class="bg"></div>
 
-        <section
-            id="market-access"
-            class="flex flex-center relative-position"
-            style="padding-bottom: 8.5em; min-height: 100svh"
-        >
-            <div class="q-px-md" style="max-width: 644px; width: 100%">
-                <q-form
-                    class="q-gutter-y-md q-pa-lg shadow-10"
-                    style="
-                        background-color: var(--q-bg-modal);
+            <section
+                id="market-access"
+                class="flex flex-center relative-position"
+                style="padding-bottom: 8.5em; min-height: 100svh"
+            >
+                <div class="q-px-md" style="max-width: 644px; width: 100%">
+                    <q-form
+                        class="q-gutter-y-md q-pa-lg shadow-10"
+                        style="
+                            background-color: var(--q-bg-modal);
 
-                        width: 100%;
-                        max-width: 40rem;
-                        margin-inline: auto;
-                    "
-                >
-                    <div class="column q-mt-none">
-                        <span class="text-h5 text-secondary"
-                            >Get the rune<span class="text-subtitle1">&nbsp;&nbsp;(1000 gold)</span></span
-                        >
-                        <span class="q-mt-sm">Who am I dealing with?</span>
-                    </div>
-                    <div class="flex q-mt-md" style="width: 100%; gap: 1rem">
-                        <q-input
-                            v-model="name"
-                            style="flex: 1"
-                            filled
-                            bg-color="dark"
-                            label-color="info"
-                            input-class="text-primary"
-                            label="True name *"
-                            lazy-rules="ondemand"
-                            :rules="[(val) => val.length > 0 || 'No name? How do we call ya then?']"
-                        />
-                        <q-select
-                            v-model="territory"
-                            style="flex: 1"
-                            :options="territories"
-                            filled
-                            dark
-                            bg-color="dark"
-                            label-color="info"
-                            input-class="text-primary"
-                            label="Your faction *"
-                            lazy-rules="ondemand"
-                            :rules="[(val) => (val && val.length > 0) || 'Who do you fight for?']"
-                        />
-                    </div>
+                            width: 100%;
+                            max-width: 40rem;
+                            margin-inline: auto;
+                        "
+                    >
+                        <div class="column q-mt-none">
+                            <span class="text-h5 text-secondary"
+                                >Get a whispering rune<span class="text-subtitle1">&nbsp;&nbsp;(1000 gold)</span></span
+                            >
+                            <span class="q-mt-sm">Who am I dealing with?</span>
+                        </div>
+                        <div class="flex q-mt-md" style="width: 100%; gap: 1rem">
+                            <q-input
+                                v-model="name"
+                                style="flex: 1"
+                                filled
+                                bg-color="dark"
+                                label-color="info"
+                                input-class="text-primary"
+                                label="True name *"
+                                lazy-rules="ondemand"
+                                :rules="[(val) => val.length > 0 || 'No name? How do we call ya then?']"
+                            />
+                            <q-select
+                                v-model="territory"
+                                style="flex: 1"
+                                :options="territories"
+                                filled
+                                dark
+                                bg-color="dark"
+                                label-color="info"
+                                input-class="text-primary"
+                                label="Your faction *"
+                                lazy-rules="ondemand"
+                                :rules="[(val) => (val && val.length > 0) || 'Who do you fight for?']"
+                            />
+                        </div>
 
-                    <div class="flex items-center justify-between">
-                        <q-btn class="q-mt-none" label="Purchase" type="submit" color="secondary" text-color="dark" />
+                        <div class="flex items-center justify-between">
+                            <q-btn
+                                class="q-mt-none"
+                                label="Purchase"
+                                type="submit"
+                                color="secondary"
+                                text-color="dark"
+                            />
 
-                        <RouterLink :to="{ name: 'market-access' }"
-                            ><q-btn class="q-mt-none" flat label="Back to entrance" text-color="primary"
-                        /></RouterLink>
-                    </div>
-                </q-form>
-            </div>
-        </section>
-    </div>
+                            <RouterLink :to="{ name: 'market-access' }"
+                                ><q-btn class="q-mt-none" flat label="Back to entrance" text-color="primary"
+                            /></RouterLink>
+                        </div>
+                    </q-form>
+                </div>
+            </section></div
+    ></q-page>
 </template>
 
 <style scoped>

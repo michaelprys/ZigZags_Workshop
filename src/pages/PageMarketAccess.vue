@@ -1,50 +1,57 @@
 <script setup lang="ts"></script>
 
 <template>
-    <div class="relative-position">
-        <div class="bg"></div>
+    <q-page>
+        <div class="relative-position">
+            <div class="bg"></div>
 
-        <section
-            id="market-access"
-            class="flex flex-center relative-position"
-            style="padding-bottom: 8.5em; min-height: 100svh"
-        >
-            <div class="q-px-md" style="max-width: 644px; width: 100%">
-                <q-form
-                    class="q-gutter-y-md q-pa-lg shadow-10"
-                    style="
-                        background-color: var(--q-bg-modal);
+            <section
+                id="market-access"
+                class="flex flex-center relative-position"
+                style="padding-bottom: 8.5em; min-height: 100svh"
+            >
+                <div class="q-px-md" style="max-width: 644px; width: 100%">
+                    <q-form
+                        class="q-gutter-y-md q-pa-lg shadow-10"
+                        style="
+                            background-color: var(--q-bg-modal);
 
-                        width: 100%;
-                        max-width: 40rem;
-                        margin-inline: auto;
-                    "
-                >
-                    <h2 class="q-mt-none text-h5">You're at the entrance</h2>
-                    <q-input
-                        v-model="name"
-                        filled
-                        label="Tell special word *"
-                        dark
-                        lazy-rules
-                        :rules="[
-                            (val) =>
-                                (val && val.length > 0) ||
-                                'GRRRAAAHHH! Stop messing around — tell me the word, quickly!',
-                        ]"
-                    />
+                            width: 100%;
+                            max-width: 40rem;
+                            margin-inline: auto;
+                        "
+                    >
+                        <h2 class="q-mt-none text-h5">You're at the entrance</h2>
+                        <q-input
+                            v-model="name"
+                            filled
+                            label="Tell the word *"
+                            dark
+                            lazy-rules
+                            :rules="[
+                                (val) =>
+                                    (val && val.length > 0) ||
+                                    'GRRRAAAHHH! Stop messing around — tell me the word, quickly!',
+                            ]"
+                        />
 
-                    <div class="flex items-center justify-between">
-                        <q-btn class="q-mt-none" label="Attempt" type="submit" color="secondary" text-color="dark" />
+                        <div class="flex items-center justify-between">
+                            <q-btn
+                                class="q-mt-none"
+                                label="Attempt"
+                                type="submit"
+                                color="secondary"
+                                text-color="dark"
+                            />
 
-                        <RouterLink :to="{ name: 'request-access' }"
-                            ><q-btn class="q-mt-none" flat label="Get a whispering rune" text-color="primary"
-                        /></RouterLink>
-                    </div>
-                </q-form>
-            </div>
-        </section>
-    </div>
+                            <RouterLink :to="{ name: 'request-access' }"
+                                ><q-btn class="q-mt-none" flat label="Gain access" text-color="primary"
+                            /></RouterLink>
+                        </div>
+                    </q-form>
+                </div>
+            </section></div
+    ></q-page>
 </template>
 
 <style scoped>

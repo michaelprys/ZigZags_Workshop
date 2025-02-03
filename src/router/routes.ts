@@ -11,6 +11,22 @@ const routes: RouteRecordRaw[] = [
                 component: () => import('pages/PageIndex.vue'),
             },
             {
+                path: '',
+                component: () => import('src/layouts/LayoutVault.vue'),
+                children: [
+                    {
+                        path: 'vault',
+                        name: 'vault',
+                        component: () => import('pages/PageVault.vue'),
+                    },
+                    {
+                        path: 'setup-vault',
+                        name: 'setup-vault',
+                        component: () => import('pages/PageSetUpVault.vue'),
+                    },
+                ],
+            },
+            {
                 path: 'guide',
                 name: 'guide',
                 component: () => import('src/pages/PageGuide.vue'),

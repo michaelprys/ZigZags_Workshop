@@ -57,11 +57,16 @@ onMounted(() => {
                 <div class="flex q-gutter-lg">
                     <div class="flex items-center q-gutter-x-xl">
                         <q-tabs class="text-subtitle1">
-                            <q-route-tab class="q-px-lg text-primary" :to="{ name: 'home' }">Base</q-route-tab>
-                            <q-route-tab class="q-px-lg text-primary" to="/guide">Guide</q-route-tab>
-                            <q-route-tab class="q-px-lg text-primary" :to="{ name: 'workshop' }">Workshop</q-route-tab>
+                            <q-route-tab exact class="q-px-lg text-primary" :to="{ name: 'home' }">Base</q-route-tab>
+
+                            <q-route-tab exact class="q-px-lg text-primary" to="/guide">Guide</q-route-tab>
+                            <q-route-tab exact class="q-px-lg text-primary" :to="{ name: 'vault' }">Vault</q-route-tab>
+                            <q-route-tab exact class="q-px-lg text-primary" :to="{ name: 'workshop' }"
+                                >Workshop</q-route-tab
+                            >
                             <div class="custom-tab">
                                 <q-route-tab
+                                    exact
                                     class="custom-font font-extra q-px-lg text-secondary text-subtitle2"
                                     :to="{ name: 'market-access' }"
                                     name="black-market"
@@ -70,7 +75,7 @@ onMounted(() => {
 
                                 <div class="button-animation"></div>
                             </div>
-                            <q-route-tab :to="{ name: 'stash' }" class="text-subtitle1" unelevated square>
+                            <q-route-tab exact :to="{ name: 'stash' }" class="text-subtitle1" unelevated square>
                                 <IconLoot class="loot shadow-6" style="color: var(--q-primary)" />
                             </q-route-tab>
                         </q-tabs>
@@ -151,6 +156,7 @@ onMounted(() => {
                     <i v-else-if="route.name === 'request-access'"
                         >A goblin's silence is worth more than gold... unless you're buying.
                     </i>
+                    <i v-else-if="route.name === 'vault'">The shadows whisper, but only the brave dare to listen. </i>
                 </q>
             </div>
         </q-footer>
@@ -194,7 +200,7 @@ onMounted(() => {
 
             <RouterView #="{ Component }">
                 <Transition name="fade" mode="out-in">
-                    <component :is="Component" :key="$route.path" />
+                    <component :is="Component" />
                 </Transition>
             </RouterView>
         </q-page-container>

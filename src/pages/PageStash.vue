@@ -82,147 +82,161 @@ const quantity = ref(1);
 </script>
 
 <template>
-    <div>
-        <Teleport to="body">
-            <q-dialog v-model="dialog" backdrop-filter="blur(8px); brightness(60%)">
-                <div class="modal">
-                    <div class="column q-pb-none">
-                        <span class="text-h5 text-secondary">Complete trade</span>
+    <q-page>
+        <div>
+            <Teleport to="body">
+                <q-dialog v-model="dialog" backdrop-filter="blur(8px); brightness(60%)">
+                    <div class="modal">
+                        <div class="column q-pb-none">
+                            <span class="text-h5 text-secondary">Complete trade</span>
+                        </div>
+
+                        <div>
+                            <q-form ref="myForm" class="q-gutter-md q-mt-lg" @submit="onSubmit">
+                                <div class="flex" style="gap: 1rem">
+                                    <q-select
+                                        v-model="paymentType"
+                                        style="width: 100%"
+                                        :options="paymentTypes"
+                                        filled
+                                        dark
+                                        bg-color="dark"
+                                        label-color="info"
+                                        input-class="text-primary"
+                                        label="Currency of Choice *"
+                                        lazy-rules="ondemand"
+                                        :rules="[
+                                            (val) => (val && val.value ? true : 'Please select currency of choice'),
+                                        ]"
+                                    />
+                                </div>
+
+                                <div class="flex justify-between q-mt-md">
+                                    <q-btn
+                                        :loading="loading"
+                                        style="width: 160px"
+                                        type="submit"
+                                        label="Trade"
+                                        :color="loading ? 'positive' : 'secondary'"
+                                        text-color="dark"
+                                    >
+                                        <template v-slot:loading>
+                                            <q-spinner-hourglass class="on-left" />
+                                            In process...
+                                        </template>
+                                    </q-btn>
+
+                                    <q-btn v-close-popup label="Close" flat color="secondary" text-color="primary">
+                                    </q-btn>
+                                </div>
+                            </q-form>
+                        </div>
+                    </div>
+                </q-dialog>
+            </Teleport>
+
+            <section
+                v-if="stashItems.length > 0"
+                class="column flex-center relative-position"
+                style="padding-top: 2em; padding-bottom: 8.5em"
+            >
+                <div class="q-pa-md">
+                    <div class="column items-center q-gutter-lg">
+                        <q-img
+                            width="1024px"
+                            height="1024px"
+                            style="
+                                user-select: none;
+                                border-radius: 50%;
+                                width: 90px;
+                                height: 90px;
+                                filter: contrast(96%) brightness(89%);
+                            "
+                            src="~assets/stash/goblin.jpeg"
+                        >
+                        </q-img>
+
+                        <h1 class="block text-h4">Your stash</h1>
                     </div>
 
-                    <div>
-                        <q-form ref="myForm" class="q-gutter-md q-mt-lg" @submit="onSubmit">
-                            <div class="flex" style="gap: 1rem">
-                                <q-select
-                                    v-model="paymentType"
-                                    style="width: 100%"
-                                    :options="paymentTypes"
-                                    filled
-                                    dark
-                                    bg-color="dark"
-                                    label-color="info"
-                                    input-class="text-primary"
-                                    label="Currency of Choice *"
-                                    lazy-rules="ondemand"
-                                    :rules="[(val) => (val && val.value ? true : 'Please select currency of choice')]"
-                                />
-                            </div>
+                    <div class="flex q-mt-lg">
+                        <div class="column q-mr-xl wrapper">
+                            <q-scroll-area dark class="panel q-pa-lg" style="height: 486px; width: 45rem">
+                                <div v-for="card in 10" :key="card" class="card shadow-1">
+                                    <q-img class="card__image" src="~assets/index/featured/image-1.avif" />
 
-                            <div class="flex justify-between q-mt-md">
-                                <q-btn
-                                    :loading="loading"
-                                    style="width: 160px"
-                                    type="submit"
-                                    label="Trade"
-                                    :color="loading ? 'positive' : 'secondary'"
-                                    text-color="dark"
-                                >
-                                    <template v-slot:loading>
-                                        <q-spinner-hourglass class="on-left" />
-                                        In process...
-                                    </template>
-                                </q-btn>
-
-                                <q-btn v-close-popup label="Close" flat color="secondary" text-color="primary"> </q-btn>
-                            </div>
-                        </q-form>
-                    </div>
-                </div>
-            </q-dialog>
-        </Teleport>
-
-        <section
-            v-if="stashItems.length > 0"
-            class="column flex-center relative-position"
-            style="padding-top: 2em; padding-bottom: 8.5em"
-        >
-            <div class="q-pa-md">
-                <div class="column items-center q-gutter-lg">
-                    <q-img
-                        width="1024px"
-                        height="1024px"
-                        style="
-                            user-select: none;
-                            border-radius: 50%;
-                            width: 90px;
-                            height: 90px;
-                            filter: contrast(96%) brightness(89%);
-                        "
-                        src="~assets/stash/goblin.jpeg"
-                    >
-                    </q-img>
-
-                    <h1 class="block text-h4">Your stash</h1>
-                </div>
-
-                <div class="flex q-mt-lg">
-                    <div class="column q-mr-xl wrapper">
-                        <q-scroll-area dark class="panel q-pa-lg" style="height: 486px; width: 45rem">
-                            <div v-for="card in 10" :key="card" class="card shadow-1">
-                                <q-img class="card__image" src="~assets/index/featured/image-1.avif" />
-
-                                <div class="flex justify-between q-pa-md" style="width: 100%">
-                                    <div>
-                                        <div class="column">
-                                            <span class="text-bold">Sneaky Boots of Swift Exit</span>
-                                            <span class="text-bold">Enchantments: None</span>
-                                            <span class="q-mt-lg text-bold"
-                                                ><span class="text-secondary">Price</span>: 250 Gold</span
-                                            >
+                                    <div class="flex justify-between q-pa-md" style="width: 100%">
+                                        <div>
+                                            <div class="column">
+                                                <span class="text-bold">Sneaky Boots of Swift Exit</span>
+                                                <span class="text-bold">Enchantments: None</span>
+                                                <span class="q-mt-lg text-bold"
+                                                    ><span class="text-secondary">Price</span>: 250 Gold</span
+                                                >
+                                            </div>
                                         </div>
-                                    </div>
 
-                                    <div class="column justify-between" style="align-items: flex-end">
-                                        <q-btn v-model="quantity" outline color="info" size="sm" dense icon="close" />
-
-                                        <div class="flex items-center q-gutter-x-md">
+                                        <div class="column justify-between" style="align-items: flex-end">
                                             <q-btn
                                                 v-model="quantity"
+                                                outline
+                                                color="info"
+                                                size="sm"
                                                 dense
-                                                icon="remove"
-                                                @click="quantity > 1 ? quantity-- : 0"
+                                                icon="close"
                                             />
-                                            <span>{{ quantity }}</span>
-                                            <q-btn
-                                                v-model="quantity"
-                                                dense
-                                                icon="add"
-                                                @click="quantity < 5 ? quantity++ : 5"
-                                            />
+
+                                            <div class="flex items-center q-gutter-x-md">
+                                                <q-btn
+                                                    v-model="quantity"
+                                                    dense
+                                                    icon="remove"
+                                                    @click="quantity > 1 ? quantity-- : 0"
+                                                />
+                                                <span>{{ quantity }}</span>
+                                                <q-btn
+                                                    v-model="quantity"
+                                                    dense
+                                                    icon="add"
+                                                    @click="quantity < 5 ? quantity++ : 5"
+                                                />
+                                            </div>
                                         </div>
                                     </div>
                                 </div>
-                            </div>
-                        </q-scroll-area>
-                    </div>
+                            </q-scroll-area>
+                        </div>
 
-                    <div
-                        class="column price q-pa-lg"
-                        style="background-color: var(--q-dark-page); border-radius: var(--rounded); height: 100%"
-                    >
-                        <span class="text-subtitle1"><span class="text-secondary">💰 Base price:</span> 250 Gold</span>
-                        <span class="q-mt-xs text-subtitle1"
-                            ><span class="text-secondary">💎 Goblin Tax:</span> +50 Gold</span
+                        <div
+                            class="column price q-pa-lg"
+                            style="background-color: var(--q-dark-page); border-radius: var(--rounded); height: 100%"
                         >
+                            <span class="text-subtitle1"
+                                ><span class="text-secondary">💰 Base price:</span> 250 Gold</span
+                            >
+                            <span class="q-mt-xs text-subtitle1"
+                                ><span class="text-secondary">💎 Goblin Tax:</span> +50 Gold</span
+                            >
 
-                        <div class="divider-single q-my-md"></div>
+                            <div class="divider-single q-my-md"></div>
 
-                        <span class="q-mt-xs text-subtitle1"
-                            ><span class="text-secondary">Final Price: </span>300 Gold</span
-                        >
+                            <span class="q-mt-xs text-subtitle1"
+                                ><span class="text-secondary">Final Price: </span>300 Gold</span
+                            >
 
-                        <q-btn class="q-mt-md" outline color="primary" @click="dialog = true">Begin trade</q-btn>
+                            <q-btn class="q-mt-md" outline color="primary" @click="dialog = true">Begin trade</q-btn>
+                        </div>
                     </div>
                 </div>
-            </div>
-        </section>
+            </section>
 
-        <section v-else class="column flex-center relative-position" style="padding-top: 19em">
-            <div class="column flex-center">
-                <span class="text-h3 text-secondary">The stash is bone dry, mate!</span>
-            </div>
-        </section>
-    </div>
+            <section v-else class="column flex-center relative-position" style="padding-top: 19em">
+                <div class="column flex-center">
+                    <span class="text-h3 text-secondary">The stash is bone dry, mate!</span>
+                </div>
+            </section>
+        </div></q-page
+    >
 </template>
 
 <style scoped>
