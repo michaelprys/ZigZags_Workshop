@@ -13,7 +13,7 @@ console.log(isAuthorized.value);
             <div class="bg"></div>
 
             <section
-                id="market-access"
+                id="black-market-access"
                 class="flex flex-center relative-position"
                 style="padding-bottom: 8.5em; min-height: 100svh"
             >
@@ -65,7 +65,7 @@ console.log(isAuthorized.value);
 }
 
 .bg {
-    background-image: url('src/assets/market-access/bg.avif');
+    background-image: url('src/assets/black-market-access/bg.avif');
     position: absolute;
     top: 0;
     left: 0;

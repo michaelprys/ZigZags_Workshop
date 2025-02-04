@@ -6,7 +6,7 @@ const current = ref(5);
 
 <template>
     <q-page>
-        <div class="bg"></div>
+        <div class="overlay"></div>
 
         <section id="workshop" style="padding-top: 4.625em; padding-bottom: 8.5em">
             <h1 class="text-center text-h3 text-negative">Trade in Shadows</h1>
@@ -27,7 +27,7 @@ const current = ref(5);
                             <div class="card__image-wrapper">
                                 <q-img
                                     class="card__image"
-                                    src="~assets/index/featured/image-7.avif"
+                                    src="~assets/index/featured/image-3.avif"
                                     style="height: 210px"
                                 />
                             </div>
@@ -67,7 +67,7 @@ const current = ref(5);
                             <q-card-actions class="flex justify-between">
                                 <q-btn flat color="primary">💰 &nbsp Add to stash </q-btn>
                                 <q-btn flat color="info">
-                                    <RouterLink :to="{ name: 'item-details', params: { id: 1 } }">
+                                    <RouterLink :to="{ name: 'black-market-details', params: { id: 1 } }">
                                         Details
                                     </RouterLink></q-btn
                                 >
@@ -93,7 +93,7 @@ const current = ref(5);
 </template>
 
 <style scoped>
-.bg {
+.overlay {
     position: absolute;
     top: 0;
     left: 0;
@@ -107,7 +107,7 @@ const current = ref(5);
     /* background: linear-gradient(to bottom, rgba(10, 0, 50, 0.4) 0%, rgba(50, 0, 0, 0.2) 50%, rgba(0, 0, 0, 0) 80%); */
 }
 
-.bg::before {
+.overlay::before {
     content: '';
     /* position: fixed; */
     position: absolute;
@@ -156,7 +156,7 @@ const current = ref(5);
 }
 
 :deep(.q-checkbox__svg),
-:deep(.q-checkbox__bg) {
+:deep(.q-checkbox__overlay) {
     background: var(--q-negative-dimmed);
     outline: var(--q-negative);
     border-color: var(--q-negative-dimmed);

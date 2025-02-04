@@ -250,7 +250,6 @@ watch(
 
 .footer {
     background-color: transparent;
-    z-index: 0;
 }
 
 .cart {

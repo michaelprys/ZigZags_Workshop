@@ -48,7 +48,7 @@ const current = ref(5);
                             <q-card-actions class="flex justify-between">
                                 <q-btn flat color="primary"> 💰 &nbsp Add to stash </q-btn>
                                 <q-btn flat color="info">
-                                    <RouterLink :to="{ name: 'item-details', params: { id: 1 } }">
+                                    <RouterLink :to="{ name: 'workshop-details', params: { id: 1 } }">
                                         Details
                                     </RouterLink></q-btn
                                 >

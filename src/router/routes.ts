@@ -18,11 +18,6 @@ const routes: RouteRecordRaw[] = [
                         path: 'access-vault',
                         name: 'access-vault',
                         component: () => import('pages/PageAccessVault.vue'),
-                        // beforeEnter(to, from, next) {
-                        //     console.log('vault beforeEnter');
-                        //     console.log('to: ', to, 'from: ', from);
-                        //     next();
-                        // },
                     },
                     {
                         path: 'setup-vault',
@@ -48,8 +43,8 @@ const routes: RouteRecordRaw[] = [
             },
             {
                 path: 'workshop/:id',
-                name: 'item-details',
-                component: () => import('pages/PageItemDetails.vue'),
+                name: 'workshop-details',
+                component: () => import('pages/PageWorkshopDetails.vue'),
                 meta: { section: 'workshop' },
             },
             {
@@ -58,18 +53,19 @@ const routes: RouteRecordRaw[] = [
                 component: () => import('pages/PageStash.vue'),
             },
             {
-                path: 'market-access',
-                name: 'market-access',
-                component: () => import('pages/PageMarketAccess.vue'),
+                path: 'black-black-market-access',
+                name: 'black-black-market-access',
+                component: () => import('src/pages/PageBlackMarketAccess.vue'),
             },
             {
                 path: 'black-market',
                 name: 'black-market',
                 component: () => import('pages/PageBlackMarket.vue'),
-                beforeEnter: (to, from, next) => {
-                    // next({ name: 'market-access' });
-                    next();
-                },
+            },
+            {
+                path: 'black-market-details/:id',
+                name: 'black-market-details',
+                component: () => import('pages/PageBlackMarketDetails.vue'),
             },
             {
                 path: 'merchant',

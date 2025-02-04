@@ -10,7 +10,7 @@ const isAuthorized = ref(false);
             <div class="bg"></div>
 
             <section
-                id="market-access"
+                id="black-market-access"
                 class="flex flex-center relative-position"
                 style="padding-bottom: 8.5em; min-height: 100svh"
             >
@@ -29,7 +29,7 @@ const isAuthorized = ref(false);
                         <h2 class="q-mt-none text-h5 text-secondary">Looks like you're short on gold.</h2>
                         <span>Check your Vault balance before making a deal.</span>
 
-                        <RouterLink :to="{ name: 'market-access' }"
+                        <RouterLink :to="{ name: 'black-market-access' }"
                             ><q-btn color="secondary" label="Go to vault" text-color="dark"
                         /></RouterLink>
                     </q-form>
@@ -87,7 +87,7 @@ const isAuthorized = ref(false);
                                 text-color="dark"
                             />
 
-                            <RouterLink :to="{ name: 'market-access' }"
+                            <RouterLink :to="{ name: 'black-market-access' }"
                                 ><q-btn class="q-mt-none" flat label="Back to entrance" text-color="primary"
                             /></RouterLink>
                         </div>

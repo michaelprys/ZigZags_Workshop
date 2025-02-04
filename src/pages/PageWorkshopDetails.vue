@@ -23,10 +23,11 @@ const resetImage = () => {
 
 <template>
     <q-page>
-        <section id="item-details" class="relative-position" style="padding-top: 5.3em; padding-bottom: 8.5em">
+        <section id="workshop-details" class="relative-position" style="padding-top: 5.3em; padding-bottom: 8.5em">
             <h1 class="sr-only">Item details</h1>
 
             <div class="bg"></div>
+            <div class="overlay"></div>
 
             <div class="flex flex-center">
                 <div class="wrapper">
@@ -95,11 +96,26 @@ const resetImage = () => {
     min-height: 40rem;
     z-index: -1;
     margin-block: 2.5rem;
-    background-image: url('src/assets/item-details/bg.avif');
+    background-image: url('src/assets/workshop-details/bg.avif');
     background-position: center;
     background-repeat: no-repeat;
     filter: brightness(50%);
     mask-image: radial-gradient(circle, rgb(255, 255, 255) 50%, rgba(255, 255, 255, 0) 100%);
+}
+
+.overlay {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    overflow: hidden;
+    background-position: center;
+    background-size: cover;
+    background-repeat: no-repeat;
+    opacity: 50%;
+    background: linear-gradient(to bottom, rgba(10, 0, 50, 0.4) 0%, rgba(50, 0, 0, 0.2) 50%, rgba(0, 0, 0, 0) 80%);
+    z-index: -1;
 }
 
 .wrapper {
