@@ -95,7 +95,7 @@ const resetImage = () => {
     min-height: 40rem;
     z-index: -1;
     margin-block: 2.5rem;
-    background-image: url('src/assets/item-details/bg.jpeg');
+    background-image: url('src/assets/item-details/bg.avif');
     background-position: center;
     background-repeat: no-repeat;
     filter: brightness(50%);

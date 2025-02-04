@@ -99,7 +99,7 @@ const isAuthorized = ref(false);
 
 <style scoped>
 .bg {
-    background-image: url('src/assets/merchant/bg.jpeg');
+    background-image: url('src/assets/merchant/bg.avif');
     position: absolute;
     top: 0;
     left: 0;

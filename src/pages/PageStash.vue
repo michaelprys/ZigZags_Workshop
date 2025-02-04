@@ -152,7 +152,7 @@ const quantity = ref(1);
                                 height: 90px;
                                 filter: contrast(96%) brightness(89%);
                             "
-                            src="~assets/stash/goblin.jpeg"
+                            src="~assets/stash/goblin.avif"
                         />
 
                         <h1 class="block text-h4">Your stash</h1>

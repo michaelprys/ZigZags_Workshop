@@ -65,7 +65,7 @@ console.log(isAuthorized.value);
 }
 
 .bg {
-    background-image: url('src/assets/market-access/27.jpeg');
+    background-image: url('src/assets/market-access/bg.avif');
     position: absolute;
     top: 0;
     left: 0;

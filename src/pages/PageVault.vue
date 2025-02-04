@@ -56,7 +56,7 @@ const alert = () => {
                                 </q-tooltip>
                                 <q-img
                                     class="storage__cell-frame"
-                                    src="~assets/vault/cell.png"
+                                    src="~assets/vault/cell-frame.avif"
                                     width="189px"
                                     height="173px"
                                     style="max-width: 110px; height: 100%"
@@ -88,15 +88,15 @@ const alert = () => {
                                 <q-btn icon="add" color="grey" flat dense></q-btn>
                                 <div class="flex items-center q-gutter-x-sm">
                                     <span>0</span>
-                                    <q-img src="~assets/vault/gold.png" width="18px" height="18px" />
+                                    <q-img src="~assets/vault/gold.avif" width="18px" height="18px" />
                                 </div>
                                 <div class="flex items-center q-gutter-x-sm">
                                     <span>0</span>
-                                    <q-img src="~assets/vault/ruby.png" width="18px" height="18px" />
+                                    <q-img src="~assets/vault/ruby.avif" width="18px" height="18px" />
                                 </div>
                                 <div class="flex items-center q-gutter-x-sm">
                                     <span>0</span>
-                                    <q-img src="~assets/vault/mystic-trinket-box.png" width="21px" height="21px" />
+                                    <q-img src="~assets/vault/mystic-trinket-box.avif" width="22px" height="22px" />
                                 </div>
                             </div>
                         </div>
@@ -196,7 +196,7 @@ const alert = () => {
     display: none;
 }
 :deep(.storage__nav .q-icon) {
-    background-image: url('src/assets/vault/nav-button.png');
+    background-image: url('src/assets/vault/nav-button.avif');
     width: 45px;
     height: 100%;
     z-index: 10;
