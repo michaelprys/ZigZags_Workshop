@@ -138,7 +138,7 @@ const quantity = ref(1);
             <section
                 v-if="stashItems.length > 0"
                 class="column flex-center relative-position"
-                style="padding-top: 2em; padding-bottom: 8.5em"
+                style="padding-top: 2em; padding-bottom: 7.5em"
             >
                 <div class="q-pa-md">
                     <div class="column items-center q-gutter-lg">
@@ -153,8 +153,7 @@ const quantity = ref(1);
                                 filter: contrast(96%) brightness(89%);
                             "
                             src="~assets/stash/goblin.jpeg"
-                        >
-                        </q-img>
+                        />
 
                         <h1 class="block text-h4">Your stash</h1>
                     </div>

@@ -1,4 +1,6 @@
-<script setup lang="ts"></script>
+<script setup lang="ts">
+const model = [];
+</script>
 
 <template>
     <section id="intro" style="padding-top: 6.5em; padding-bottom: 8.5em">

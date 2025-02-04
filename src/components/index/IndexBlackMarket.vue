@@ -1,7 +1,7 @@
 <script setup lang="ts"></script>
 
 <template>
-    <section id="black-market" style="position: relative; padding-top: 9.8125em; padding-bottom: 7.5em">
+    <section id="black-market" style="position: relative; padding-top: 9.8125em; padding-bottom: 8.5em">
         <h1 class="sr-only">Goblin Black Market</h1>
 
         <div class="flex flex-center q-px-md">

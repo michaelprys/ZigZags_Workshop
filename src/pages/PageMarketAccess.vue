@@ -1,4 +1,11 @@
-<script setup lang="ts"></script>
+<script setup lang="ts">
+import { ref } from 'vue';
+
+const isAuthorized = ref(true);
+const hasRune = ref(true);
+
+console.log(isAuthorized.value);
+</script>
 
 <template>
     <q-page>
@@ -10,51 +17,53 @@
                 class="flex flex-center relative-position"
                 style="padding-bottom: 8.5em; min-height: 100svh"
             >
-                <div class="q-px-md" style="max-width: 644px; width: 100%">
-                    <q-form
-                        class="q-gutter-y-md q-pa-lg shadow-10"
-                        style="
-                            background-color: var(--q-bg-modal);
+                <div class="q-px-md" style="max-width: 40.25rem; width: 100%">
+                    <div class="bg-dark message q-pa-lg shadow-10 text-center">
+                        <template v-if="!isAuthorized">
+                            <h2 class="text-h5 text-negative">Got the rune? Show it... or turn back.</h2>
 
-                            width: 100%;
-                            max-width: 40rem;
-                            margin-inline: auto;
-                        "
-                    >
-                        <h2 class="q-mt-none text-h5">You're at the entrance</h2>
-                        <q-input
-                            v-model="name"
-                            filled
-                            label="Tell the word *"
-                            dark
-                            lazy-rules
-                            :rules="[
-                                (val) =>
-                                    (val && val.length > 0) ||
-                                    'GRRRAAAHHH! Stop messing around — tell me the word, quickly!',
-                            ]"
-                        />
+                            <div class="flex flex-center q-mt-lg">
+                                <RouterLink :to="{ name: 'vault' }"
+                                    ><q-btn class="q-mt-none" outline label="Look in my vault"
+                                /></RouterLink>
+                            </div>
+                        </template>
 
-                        <div class="flex items-center justify-between">
-                            <q-btn
-                                class="q-mt-none"
-                                label="Attempt"
-                                type="submit"
-                                color="secondary"
-                                text-color="dark"
-                            />
+                        <template v-if="isAuthorized && !hasRune">
+                            <h2 class="text-h4 text-negative">No rune, no passage.</h2>
+                            <h3 class="q-mt-sm text-caption text-info">
+                                Find the merchant. Get the rune. Or wander forever...
+                            </h3>
 
-                            <RouterLink :to="{ name: 'request-access' }"
-                                ><q-btn class="q-mt-none" flat label="Gain access" text-color="primary"
-                            /></RouterLink>
-                        </div>
-                    </q-form>
+                            <div class="flex flex-center q-mt-lg">
+                                <RouterLink :to="{ name: 'merchant' }"
+                                    ><q-btn class="q-mt-none" outline label="Go to merchant"
+                                /></RouterLink>
+                            </div>
+                        </template>
+
+                        <template v-if="isAuthorized && hasRune">
+                            <h2 class="text-h4 text-negative">Got the rune?</h2>
+                            <h3 class="q-mt-sm text-caption text-info">Show it, and step forward.</h3>
+
+                            <div class="flex flex-center q-mt-lg">
+                                <RouterLink :to="{ name: 'black-market' }"
+                                    ><q-btn class="q-mt-none" outline label="Attempt"
+                                /></RouterLink>
+                            </div>
+                        </template>
+                    </div>
                 </div>
             </section></div
     ></q-page>
 </template>
 
 <style scoped>
+.message {
+    border: 1px solid color-mix(in srgb, var(--q-primary) 20%, black 90%);
+    border-radius: var(--rounded);
+}
+
 .bg {
     background-image: url('src/assets/market-access/27.jpeg');
     position: absolute;

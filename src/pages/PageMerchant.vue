@@ -1,10 +1,7 @@
 <script setup lang="ts">
 import { ref } from 'vue';
-const name = ref('');
 
-const territory = ref(null);
-
-const territories = ['Horde', 'Alliance', 'Argent Dawn', 'Scarlet Crusade', 'Kirin Tor'];
+const isAuthorized = ref(false);
 </script>
 
 <template>
@@ -17,8 +14,28 @@ const territories = ['Horde', 'Alliance', 'Argent Dawn', 'Scarlet Crusade', 'Kir
                 class="flex flex-center relative-position"
                 style="padding-bottom: 8.5em; min-height: 100svh"
             >
-                <div class="q-px-md" style="max-width: 644px; width: 100%">
+                <div class="q-px-md" style="max-width: 40.25rem; width: 100%">
                     <q-form
+                        v-if="!isAuthorized"
+                        class="column flex-center q-gutter-y-md q-pa-lg shadow-10"
+                        style="
+                            background-color: var(--q-bg-modal);
+
+                            width: 100%;
+                            max-width: 40rem;
+                            margin-inline: auto;
+                        "
+                    >
+                        <h2 class="q-mt-none text-h5 text-secondary">Looks like you're short on gold.</h2>
+                        <span>Check your Vault balance before making a deal.</span>
+
+                        <RouterLink :to="{ name: 'market-access' }"
+                            ><q-btn color="secondary" label="Go to vault" text-color="dark"
+                        /></RouterLink>
+                    </q-form>
+
+                    <q-form
+                        v-else
                         class="q-gutter-y-md q-pa-lg shadow-10"
                         style="
                             background-color: var(--q-bg-modal);
@@ -29,9 +46,9 @@ const territories = ['Horde', 'Alliance', 'Argent Dawn', 'Scarlet Crusade', 'Kir
                         "
                     >
                         <div class="column q-mt-none">
-                            <span class="text-h5 text-secondary"
-                                >Get a whispering rune<span class="text-subtitle1">&nbsp;&nbsp;(1000 gold)</span></span
-                            >
+                            <h2 class="q-mt-none text-h5 text-secondary">
+                                Get a whispering rune<span class="text-subtitle1">&nbsp;&nbsp;(1000 gold)</span>
+                            </h2>
                             <span class="q-mt-sm">Who am I dealing with?</span>
                         </div>
                         <div class="flex q-mt-md" style="width: 100%; gap: 1rem">
@@ -82,7 +99,7 @@ const territories = ['Horde', 'Alliance', 'Argent Dawn', 'Scarlet Crusade', 'Kir
 
 <style scoped>
 .bg {
-    background-image: url('src/assets/request-access/bg.jpeg');
+    background-image: url('src/assets/merchant/bg.jpeg');
     position: absolute;
     top: 0;
     left: 0;

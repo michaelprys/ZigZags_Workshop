@@ -4,7 +4,7 @@
     <Transition name="fade" mode="out-in">
         <q-page>
             <section id="guide" style="padding-bottom: 4rem">
-                <y class="sr-only">Guide</y>
+                <h1 class="sr-only">Guide</h1>
 
                 <q-parallax
                     src="~assets/guide/header.avif"

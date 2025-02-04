@@ -2,15 +2,14 @@
     --q-primary: #e5e0c8;
     --q-secondary: #bd9b4e;
     --q-secondary-dimmed: #927636;
+    --q-gold-frame: #2a241c;
 
-    /* --q-primary: #e5e0c8;
-    --q-secondary: #8d0e04; */
     --q-bg-modal: #1f1d1a;
     --q-text-extra: #6b8537;
-    --q-text-book: #311b0e;
 
     --q-accent: #ffffff;
     --q-dark: #140f0e;
+    --q-medium: #16161b;
     --q-dark-page: #100d0c;
     --q-positive: #79a227;
     --q-negative: #8d0e04;

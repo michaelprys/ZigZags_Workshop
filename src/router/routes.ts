@@ -15,14 +15,24 @@ const routes: RouteRecordRaw[] = [
                 component: () => import('src/layouts/LayoutVault.vue'),
                 children: [
                     {
-                        path: 'vault',
-                        name: 'vault',
-                        component: () => import('pages/PageVault.vue'),
+                        path: 'access-vault',
+                        name: 'access-vault',
+                        component: () => import('pages/PageAccessVault.vue'),
+                        // beforeEnter(to, from, next) {
+                        //     console.log('vault beforeEnter');
+                        //     console.log('to: ', to, 'from: ', from);
+                        //     next();
+                        // },
                     },
                     {
                         path: 'setup-vault',
                         name: 'setup-vault',
                         component: () => import('pages/PageSetUpVault.vue'),
+                    },
+                    {
+                        path: 'vault',
+                        name: 'vault',
+                        component: () => import('pages/PageVault.vue'),
                     },
                 ],
             },
@@ -53,9 +63,19 @@ const routes: RouteRecordRaw[] = [
                 component: () => import('pages/PageMarketAccess.vue'),
             },
             {
-                path: 'request-access',
-                name: 'request-access',
-                component: () => import('pages/PageRequestAccess.vue'),
+                path: 'black-market',
+                name: 'black-market',
+                component: () => import('pages/PageBlackMarket.vue'),
+                beforeEnter: (to, from, next) => {
+                    // next({ name: 'market-access' });
+                    next();
+                },
+            },
+            {
+                path: 'merchant',
+                name: 'merchant',
+                meta: { requiresAuth: true },
+                component: () => import('pages/PageMerchant.vue'),
             },
         ],
     },

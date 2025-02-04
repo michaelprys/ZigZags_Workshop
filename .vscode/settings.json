@@ -26,7 +26,7 @@
         "**/.quasar": true,
         "**/.vscode": true,
         "**/node_modules": true,
-        "**/boot": true,
+        "**/boot": false,
         "**/tsconfig.json": true,
         "**/README.md": true
     },

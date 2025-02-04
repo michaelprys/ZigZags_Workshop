@@ -23,7 +23,7 @@ const resetImage = () => {
 
 <template>
     <q-page>
-        <section id="item-details" class="relative-position" style="padding-top: 5.3em; padding-bottom: 7.5em">
+        <section id="item-details" class="relative-position" style="padding-top: 5.3em; padding-bottom: 8.5em">
             <h1 class="sr-only">Item details</h1>
 
             <div class="bg"></div>
@@ -71,7 +71,7 @@ const resetImage = () => {
                                 dash of speed potion, and a pinch of… well, let's just say
                                 <i>"special ingredients"</i> that only goblins know about. Each boot is stitched
                                 together with the precision of a seasoned goblin artisan, ensuring that they don't just
-                                fit—they enhance every step! And once you slip them on, don't be surprised if you find
+                                fit — they enhance every step! And once you slip them on, don't be surprised if you find
                                 yourself running faster than a greased rat on market day. Perfect for evading traps,
                                 escaping rivals, or just getting away from a sticky situation...
                                 <i>these boots will have you running circles around anyone</i>!

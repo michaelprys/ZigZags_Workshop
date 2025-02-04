@@ -1,10 +1,8 @@
 <script setup lang="ts">
 import IconLoot from 'src/components/icons/IconLoot.vue';
 import ItemScrollTop from 'src/components/items/ItemScrollTop.vue';
-import { ref, onMounted } from 'vue';
+import { ref, onMounted, watch } from 'vue';
 import { useRoute } from 'vue-router';
-
-const route = useRoute();
 
 const footerImageRef = ref<HTMLImageElement | null>(null);
 const isVideoLoaded = ref(false);
@@ -25,6 +23,44 @@ onMounted(() => {
     img.onload = onLoaded;
     img.src = getSrc('avif');
 });
+
+const quotes = [
+    'Not everything that glitters is worth a coin — but Zigzag always has what you need',
+    'Some deals are too good for daylight.',
+    "If it's hard to find, it's probably here.",
+    "Why settle for what's available, when you can have what's exclusive?",
+    "A goblin's life is full of risks... and the rewards are always shiny.",
+    'Sparks fly, gears grind, and treasure waits for no one!',
+    "Better to steal a rat's cheese than beg for scraps.",
+    "A goblin's silence is worth more than gold... unless you're buying.",
+    'The shadows whisper, but only the brave dare to listen.',
+    'A vault is only as strong as its keeper.',
+    'Some locks are meant to be opened, some secrets are meant to be kept.',
+];
+
+const quote = ref<string>('');
+const lastQuoteIdx = ref(null);
+
+const randomizeQuote = () => {
+    let randIdx = Math.floor(Math.random() * quotes.length);
+
+    if (randIdx === lastQuoteIdx.value) {
+        randIdx = Math.floor(Math.random() * quotes.length);
+    }
+
+    lastQuoteIdx.value = randIdx;
+    return quotes[randIdx];
+};
+
+const route = useRoute();
+
+watch(
+    () => route.name,
+    () => {
+        quote.value = randomizeQuote();
+    },
+    { immediate: true },
+);
 </script>
 
 <template>
@@ -68,7 +104,7 @@ onMounted(() => {
                                 <q-route-tab
                                     exact
                                     class="custom-font font-extra q-px-lg text-secondary text-subtitle2"
-                                    :to="{ name: 'market-access' }"
+                                    :to="{ name: 'black-market' }"
                                     name="black-market"
                                     >Black Market</q-route-tab
                                 >
@@ -87,6 +123,7 @@ onMounted(() => {
                         "
                         src="https://i.redd.it/5k3vtg13qsj31.jpg"
                         :spinnerSize="'0'"
+
                     />
                     </q-avatar>
                 </q-btn> -->
@@ -135,29 +172,11 @@ onMounted(() => {
                     padding-bottom: 4.0625em;
                 "
             >
-                <q class="font-quote text-h6 text-info">
-                    <i v-if="route.name === 'home'"
-                        >Not everything that glitters is worth a coin&nbsp; — &nbsp;but Zigzag always has what you need
-                    </i>
-                    <i v-else-if="route.name === 'guide'">Some deals are too good for daylight.</i>
-                    <i v-else-if="route.name === 'workshop'">If it's hard to find, it's probably here.</i>
-                    <i v-else-if="route.name === 'black-market'"
-                        >Why settle for what's available, when you can have what's exclusive?
-                    </i>
-                    <i v-else-if="route.name === 'stash'"
-                        >A goblin's life is full of risks... and the rewards are always shiny.
-                    </i>
-                    <i v-else-if="route.name === 'item-details'"
-                        >Sparks fly, gears grind, and treasure waits for no one!
-                    </i>
-                    <i v-else-if="route.name === 'market-access'"
-                        >Better to steal a rat's cheese than beg for scraps.
-                    </i>
-                    <i v-else-if="route.name === 'request-access'"
-                        >A goblin's silence is worth more than gold... unless you're buying.
-                    </i>
-                    <i v-else-if="route.name === 'vault'">The shadows whisper, but only the brave dare to listen. </i>
-                </q>
+                <Transition name="fade" mode="out-in">
+                    <q :key="quote" class="font-quote text-h6 text-info">
+                        <i>{{ quote }}</i>
+                    </q>
+                </Transition>
             </div>
         </q-footer>
 
@@ -244,7 +263,7 @@ onMounted(() => {
     display: flex;
     align-items: center;
     justify-content: center;
-    padding-top: 7.5em;
+    padding-top: 8.5em;
     padding-bottom: 1.875em;
     user-select: none;
 }

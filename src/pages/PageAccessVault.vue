@@ -11,7 +11,7 @@ const territories = ['Horde', 'Alliance', 'Argent Dawn', 'Scarlet Crusade', 'Kir
 <template>
     <q-page>
         <section
-            id="setup-vault"
+            id="access-vault"
             class="flex flex-center relative-position"
             style="padding-bottom: 8.5em; min-height: 100svh"
         >
@@ -27,12 +27,13 @@ const territories = ['Horde', 'Alliance', 'Argent Dawn', 'Scarlet Crusade', 'Kir
                     "
                 >
                     <div class="column q-mt-none">
-                        <h2 class="text-h5 text-secondary">Set up vault</h2>
-                        <span class="q-mt-sm">Let's set up your vault for safe keeping.</span>
+                        <h2 class="text-h5 text-secondary">Access vault</h2>
+                        <span class="q-mt-sm">Greetings, traveller!</span>
                     </div>
-                    <div>
+                    <div style="width: 100%; gap: 1rem">
                         <q-input
                             v-model="name"
+                            style="flex: 1"
                             filled
                             bg-color="dark"
                             label-color="info"
@@ -43,6 +44,8 @@ const territories = ['Horde', 'Alliance', 'Argent Dawn', 'Scarlet Crusade', 'Kir
                         />
                         <q-input
                             v-model="passphrase"
+                            class="q-mt-sm"
+                            style="flex: 1"
                             filled
                             bg-color="dark"
                             label-color="info"
@@ -51,39 +54,21 @@ const territories = ['Horde', 'Alliance', 'Argent Dawn', 'Scarlet Crusade', 'Kir
                             lazy-rules="ondemand"
                             :rules="[(val) => (val && val.length > 0) || 'What\'s the magic word, friend?']"
                         />
-                        <q-select
-                            v-model="territory"
-                            :options="territories"
-                            filled
-                            dark
-                            bg-color="dark"
-                            label-color="info"
-                            input-class="text-primary"
-                            label="Your faction *"
-                            lazy-rules="ondemand"
-                            :rules="[(val) => (val && val.length > 0) || 'Who do you fight for?']"
-                        />
                     </div>
 
                     <div class="flex items-center justify-between">
-                        <q-btn class="q-mt-none" label="Set up" type="submit" color="secondary" text-color="dark" />
+                        <q-btn class="q-mt-none" label="Open" type="submit" color="secondary" text-color="dark" />
 
-                        <RouterLink :to="{ name: 'access-vault' }"
-                            ><q-btn class="q-mt-none" flat dense label="Access vault" text-color="primary"
-                        /></RouterLink>
+                        <span
+                            >No vault?
+                            <RouterLink class="q-ml-xs" :to="{ name: 'setup-vault' }">
+                                <q-btn class="q-mt-none" flat dense label="Set up" text-color="secondary"
+                            /></RouterLink>
+                        </span>
                     </div>
                 </q-form>
             </div></section
     ></q-page>
 </template>
 
-<style scoped>
-/* :deep(.q-field__bottom--animated) {
-    transform: translateY(0%);
-    position: static;
-    padding-bottom: 1rem;
-}
-:deep(.q-field--with-bottom) {
-    padding-bottom: 0;
-} */
-</style>
+<style scoped></style>

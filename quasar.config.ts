@@ -2,7 +2,7 @@ import { defineConfig } from '#q-app/wrappers';
 
 export default defineConfig(() => {
     return {
-        boot: [],
+        boot: ['quasar-defaults'],
 
         css: ['app.css', 'variables.css'],
 
@@ -45,7 +45,7 @@ export default defineConfig(() => {
         },
 
         framework: {
-            plugins: ['Notify'],
+            plugins: ['Notify', 'Dialog'],
         },
 
         animations: [],
