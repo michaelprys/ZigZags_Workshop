@@ -15,7 +15,7 @@
 
                 <div class="flex flex-center q-px-md" style="max-width: 90rem; margin-inline: auto; padding-top: 4em">
                     <div>
-                        <h2 class="text-h3">Origins</h2>
+                        <h2 class="text-h3">Backstory</h2>
                         <p class="q-mt-lg text-info text-subtitle1">
                             ZigZag never bothered with fixing wagons for a handful of copper. He pieced together his
                             workshop from scraps, and before long, his weird gadgets caught the eye of the wrong crowd.
@@ -81,7 +81,7 @@
                     <div class="flex flex-center q-mt-xl relative-position wrapper">
                         <div class="map-texture" />
 
-                        <div class="map q-mb-lg q-mt-none" />
+                        <div class="map q-mb-lg q-mt-none shadow-1" />
                     </div>
 
                     <div
@@ -152,12 +152,12 @@
                                     Attention! ZigZag here. So listen up, if you want to get into the Black Market,
                                     there's just one thing you need — <strong>An Invitation</strong>, and I can sell you
                                     one. Why waste time and energy getting the access when all you need is right here
-                                    with me? To get in, you'll need to find the old sewers under the Rat's Tail Tavern.
+                                    with me? To get in, you'll need to find the old sewers near the Rat's Tail Tavern.
                                     It's a bit of a maze down there, traps and all, plus you've got to deal with
                                     "Biggie" at the door. You wanna know how I get these invitations? Well, you better
-                                    don't. Once you're in, just find the hatch in the middle of the mess — but be
-                                    careful! After that, who knows what you'll find? By the way, Biggie is the giant
-                                    shredder, in case you're wondering.
+                                    don't. Anyways, once you're in, it's all yours to discover — but be careful! After
+                                    that, who knows what you'll find? By the way, Biggie is the giant shredder, in case
+                                    you're wondering.
                                 </p>
                             </div>
                         </div>
@@ -177,31 +177,28 @@
 .map {
     width: 32rem;
     height: 26rem;
-    background-image: url('src/assets/guide/9.jpeg');
+    background-image: url('src/assets/guide/map.avif');
     background-size: cover;
     background-position: center;
     background-repeat: no-repeat;
-    filter: drop-shadow(4px 4px 10px rgba(0, 0, 0, 0.8)) hue-rotate(5deg) grayscale(28%) brightness(85%);
+    filter: drop-shadow(4px 4px 10px rgba(0, 0, 0, 0.5)) grayscale(30%) brightness(77%);
     border-radius: 0.0625rem;
     margin-bottom: 0;
+    z-index: 1;
 }
 
 .map-texture {
     position: absolute;
-    background-image: url('src/assets/guide/7.jpeg');
+    background-image: url('src/assets/guide/bg.avif');
     width: 100%;
     height: 100%;
     top: 0;
     left: 0;
-    /* top: 30px; */
-    /* mix-blend-mode: difference; */
     background-size: cover;
     background-position: center;
     background-repeat: no-repeat;
     opacity: 60%;
-    /* filter: sepia(100%) hue-rotate(-30deg); */
+    filter: grayscale(30%);
     mask-image: radial-gradient(circle, rgb(255, 255, 255) 60%, rgba(255, 255, 255, 0) 100%);
-
-    /* mask-image: linear-gradient(to top, black 80%, transparent 100%); */
 }
 </style>

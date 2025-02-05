@@ -97,7 +97,7 @@ const resetImage = () => {
     min-height: 640px;
     z-index: -1;
     margin-block: 40px;
-    background-image: url('src/assets/black-market-details/bg.jpeg');
+    background-image: url('src/assets/black-market-details/bg.avif');
     background-position: center;
     background-repeat: no-repeat;
     filter: brightness(50%);

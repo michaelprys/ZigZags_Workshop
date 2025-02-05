@@ -89,7 +89,7 @@ const enter = () => {
 }
 
 .bg {
-    background-image: url('src/assets/black-market-access/2.jpeg');
+    background-image: url('src/assets/black-market-access/bg.avif');
     position: absolute;
     top: 0;
     left: 0;

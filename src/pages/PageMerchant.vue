@@ -64,22 +64,17 @@ const isAuthorized = ref(true);
                                     color="secondary"
                                     text-color="dark"
                                 />
-
-                                <!-- <RouterLink :to="{ name: 'black-market-access' }"
-                                    ><q-btn class="q-mt-none" flat label="To entrance" text-color="primary"
-                                /></RouterLink> -->
                             </div>
                         </q-form>
                     </div>
                 </div>
-            </section>
-        </div></q-page
-    >
+            </section></div
+    ></q-page>
 </template>
 
 <style scoped>
 .bg {
-    background-image: url('src/assets/merchant/2.jpeg');
+    background-image: url('src/assets/merchant/bg.avif');
     position: absolute;
     top: 0;
     left: 0;

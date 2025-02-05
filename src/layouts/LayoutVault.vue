@@ -1,13 +1,9 @@
-<script setup lang="ts">
-import { ref } from 'vue';
-
-const isAuthorized = ref(false);
-</script>
+<script setup lang="ts"></script>
 
 <template>
     <div>
         <q-layout class="relative-position">
-            <div class="bg" :class="[isAuthorized ? 'img-access' : 'img-vault']"></div>
+            <div class="bg"></div>
 
             <q-page-container>
                 <RouterView #="{ Component }">
@@ -34,15 +30,6 @@ const isAuthorized = ref(false);
     filter: blur(4px) grayscale(40%) brightness(30%);
     mask-image: linear-gradient(to bottom, black 85%, transparent 100%);
     transition: opacity 0.3s linear;
-    opacity: 0;
-}
-
-.img-access {
     background-image: url('src/assets/access-vault/bg.avif');
-    opacity: 1;
-}
-.img-vault {
-    background-image: url('src/assets/vault/bg.avif');
-    opacity: 1;
 }
 </style>

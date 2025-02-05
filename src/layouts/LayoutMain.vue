@@ -3,27 +3,22 @@ import IconLoot from 'src/components/icons/IconLoot.vue';
 import ItemScrollTop from 'src/components/items/ItemScrollTop.vue';
 import { ref, onMounted, watch } from 'vue';
 import { useRoute } from 'vue-router';
-
 const footerImageRef = ref<HTMLImageElement | null>(null);
 const isVideoLoaded = ref(false);
-
 const onLoaded = () => {
     isVideoLoaded.value = true;
     setTimeout(() => {
         isVideoLoaded.value = true;
     }, 100);
 };
-
 const getSrc = (ext: string) => {
     return new URL(`/src/assets/footer/zigzag.${ext}`, import.meta.url).href;
 };
-
 onMounted(() => {
     const img = new Image();
     img.onload = onLoaded;
     img.src = getSrc('avif');
 });
-
 const quotes = [
     'Not everything that glitters is worth a coin — but Zigzag always has what you need',
     'Some deals are too good for daylight.',
@@ -37,23 +32,17 @@ const quotes = [
     'A vault is only as strong as its keeper.',
     'Some locks are meant to be opened, some secrets are meant to be kept.',
 ];
-
 const quote = ref<string>('');
 const lastQuoteIdx = ref(null);
-
 const randomizeQuote = () => {
     let randIdx = Math.floor(Math.random() * quotes.length);
-
     if (randIdx === lastQuoteIdx.value) {
         randIdx = Math.floor(Math.random() * quotes.length);
     }
-
     lastQuoteIdx.value = randIdx;
     return quotes[randIdx];
 };
-
 const route = useRoute();
-
 watch(
     () => route.name,
     () => {
@@ -62,7 +51,6 @@ watch(
     { immediate: true },
 );
 </script>
-
 <template>
     <q-layout view="lhh LpR lff">
         <q-header
@@ -71,7 +59,6 @@ watch(
         >
             <div class="flex justify-between q-px-md">
                 <div class="absolute-top fit header-texture"></div>
-
                 <RouterLink class="flex items-center q-gutter-lg q-pl-sm relative-position" to="/">
                     <q-img
                         style="
@@ -89,12 +76,10 @@ watch(
                         <span class="text-h4">Workshop</span>
                     </div>
                 </RouterLink>
-
                 <div class="flex q-gutter-lg">
                     <div class="flex items-center q-gutter-x-xl">
                         <q-tabs class="text-subtitle1">
                             <q-route-tab exact class="q-px-lg text-primary" :to="{ name: 'home' }">Base</q-route-tab>
-
                             <q-route-tab exact class="q-px-lg text-primary" to="/guide">Guide</q-route-tab>
                             <q-route-tab exact class="q-px-lg text-primary" :to="{ name: 'vault' }">Vault</q-route-tab>
                             <q-route-tab exact class="q-px-lg text-primary" :to="{ name: 'workshop' }"
@@ -108,7 +93,6 @@ watch(
                                     name="black-market"
                                     >Black Market</q-route-tab
                                 >
-
                                 <div class="button-animation"></div>
                             </div>
                             <q-route-tab exact :to="{ name: 'stash' }" class="text-subtitle1" unelevated square>
@@ -130,7 +114,6 @@ watch(
                 </div>
             </div>
         </q-header>
-
         <q-footer class="footer relative-position">
             <div class="zigzag">
                 <div class="zigzag__wrapper">
@@ -141,7 +124,6 @@ watch(
                         style="width: 9.375rem; height: 9.375rem"
                         alt="Zigzag"
                     />
-
                     <video
                         :style="{ opacity: isVideoLoaded ? 1 : 0 }"
                         class="zigzag__candle"
@@ -158,9 +140,7 @@ watch(
                     </video>
                 </div>
             </div>
-
             <div class="divider"></div>
-
             <div
                 class="q-px-md"
                 style="
@@ -179,44 +159,10 @@ watch(
                 </Transition>
             </div>
         </q-footer>
-
-        <!-- <q-drawer v-model="drawer" class="bg-primary sm" show-if-above :width="200" :breakpoint="500" overlay>
-            <q-scroll-area class="fit">
-                <q-list padding>
-                    <q-item v-ripple clickable>
-                        <q-item-section avatar>
-                            <q-icon name="inbox" />
-                        </q-item-section>
-
-                        <q-item-section> Inbox </q-item-section>
-                    </q-item>
-
-                    <q-item v-ripple clickable>
-                        <q-item-section avatar>
-                            <q-icon name="send" />
-                        </q-item-section>
-
-                        <q-item-section> Send </q-item-section>
-                    </q-item>
-
-                    <q-separator />
-
-                    <q-item v-ripple clickable>
-                        <q-item-section avatar>
-                            <q-icon name="drafts" />
-                        </q-item-section>
-
-                        <q-item-section> Drafts </q-item-section>
-                    </q-item>
-                </q-list>
-            </q-scroll-area>
-        </q-drawer> -->
-
         <q-page-container>
             <Teleport to="body">
                 <ItemScrollTop />
             </Teleport>
-
             <RouterView #="{ Component }">
                 <Transition name="fade" mode="out-in">
                     <component :is="Component" />
@@ -225,7 +171,6 @@ watch(
         </q-page-container>
     </q-layout>
 </template>
-
 <style scoped>
 .header-texture {
     background: linear-gradient(
@@ -244,17 +189,13 @@ watch(
     background-position: 0% 10%;
     background-blend-mode: color, normal, normal, normal, normal;
 }
-
 .footer {
     background-color: transparent;
 }
-
 .cart {
     color: var(--q-primary);
 }
-
 /* zigzag */
-
 .zigzag {
     display: flex;
     align-items: center;
@@ -263,7 +204,6 @@ watch(
     padding-bottom: 1.875em;
     user-select: none;
 }
-
 .zigzag::before {
     content: '';
     position: absolute;
@@ -281,15 +221,12 @@ watch(
     pointer-events: none;
     mask-image: radial-gradient(circle, rgb(255, 255, 255) 50%, rgba(255, 255, 255, 0) 100%);
 }
-
 .zigzag__wrapper {
     position: relative;
 }
-
 .zigzag__image {
     height: 9.375rem;
     width: 9.375rem;
-
     filter: brightness(70%) contrast(93%);
     transition: filter 0.2s linear;
     cursor: pointer;
@@ -308,12 +245,9 @@ watch(
     filter: brightness(110%) blur(0.0437rem);
     margin-top: 0.5rem;
 }
-
-/* button animation */
 .custom-tab {
     position: relative;
 }
-
 .button-animation {
     position: absolute;
     bottom: 0;
@@ -328,7 +262,6 @@ watch(
 .custom-tab:hover .button-animation {
     transform: scaleX(1);
 }
-
 .custom-font {
     transition:
         color 0.3s ease-in-out,
