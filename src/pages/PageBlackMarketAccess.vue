@@ -1,10 +1,20 @@
 <script setup lang="ts">
 import { ref } from 'vue';
+import { useRouter } from 'vue-router';
+
+const router = useRouter();
 
 const isAuthorized = ref(true);
-const hasRune = ref(true);
+const hasInvitation = ref(true);
+const loading = ref(false);
 
-console.log(isAuthorized.value);
+const enter = () => {
+    loading.value = true;
+    setTimeout(() => {
+        router.push({ name: 'black-market' });
+        loading.value = false;
+    }, 3000);
+};
 </script>
 
 <template>
@@ -17,45 +27,59 @@ console.log(isAuthorized.value);
                 class="flex flex-center relative-position"
                 style="padding-bottom: 8.5em; min-height: 100svh"
             >
-                <div class="q-px-md" style="max-width: 40.25rem; width: 100%">
-                    <div class="bg-dark message q-pa-lg shadow-10 text-center">
-                        <template v-if="!isAuthorized">
-                            <h2 class="text-h5 text-negative">Got the rune? Show it... or turn back.</h2>
-
-                            <div class="flex flex-center q-mt-lg">
-                                <RouterLink :to="{ name: 'vault' }"
-                                    ><q-btn class="q-mt-none" outline label="Look in my vault"
-                                /></RouterLink>
-                            </div>
-                        </template>
-
-                        <template v-if="isAuthorized && !hasRune">
-                            <h2 class="text-h4 text-negative">No rune, no passage.</h2>
-                            <h3 class="q-mt-sm text-caption text-info">
-                                Find the merchant. Get the rune. Or wander forever...
-                            </h3>
+                <div class="flex flex-center q-px-md" style="width: 100%">
+                    <div
+                        class="bg-dark message q-px-xl q-py-lg shadow-10 text-center"
+                        style="max-width: 40rem; width: 100%"
+                    >
+                        <template v-if="!isAuthorized && !hasInvitation">
+                            <h2 class="text-h4 text-negative">INVITATION UNCONFIRMED</h2>
+                            <h3 class="q-mt-xs text-info text-subtitle1">ACCESS VAULT TO VERIFY INVITATION</h3>
 
                             <div class="flex flex-center q-mt-lg">
                                 <RouterLink :to="{ name: 'merchant' }"
-                                    ><q-btn class="q-mt-none" outline label="Go to merchant"
+                                    ><q-btn class="q-mt-none" outline label="Get invitation"
                                 /></RouterLink>
                             </div>
                         </template>
 
-                        <template v-if="isAuthorized && hasRune">
-                            <h2 class="text-h4 text-negative">Got the rune?</h2>
-                            <h3 class="q-mt-sm text-caption text-info">Show it, and step forward.</h3>
+                        <template v-if="isAuthorized && !hasInvitation">
+                            <h2 class="text-h4 text-negative">ACCESS DENIED</h2>
+                            <h3 class="q-mt-xs text-info text-subtitle1">NO INVITATION FOUND</h3>
 
                             <div class="flex flex-center q-mt-lg">
-                                <RouterLink :to="{ name: 'black-market' }"
-                                    ><q-btn class="q-mt-none" outline label="Attempt"
+                                <RouterLink :to="{ name: 'merchant' }"
+                                    ><q-btn class="q-mt-none" outline label="Get invitation"
                                 /></RouterLink>
+                            </div>
+                        </template>
+
+                        <template v-if="isAuthorized && hasInvitation">
+                            <h2 class="text-h4 text-positive">INVITATION DETECTED</h2>
+                            <h3 class="q-mt-xs text-info text-subtitle1">INITIATING PROTOCOL... PROCEED</h3>
+
+                            <div class="flex flex-center q-mt-lg">
+                                <q-btn
+                                    :loading="loading"
+                                    style="width: 160px"
+                                    :color="loading ? 'positive' : 'primary'"
+                                    class="q-mt-none"
+                                    outline
+                                    label="Enter"
+                                    @click="enter"
+                                >
+                                    <template v-slot:loading>
+                                        <q-spinner-hourglass class="on-left" />
+                                        Entering...
+                                    </template>
+                                </q-btn>
                             </div>
                         </template>
                     </div>
                 </div>
-            </section></div
-    ></q-page>
+            </section>
+        </div></q-page
+    >
 </template>
 
 <style scoped>
@@ -65,7 +89,7 @@ console.log(isAuthorized.value);
 }
 
 .bg {
-    background-image: url('src/assets/black-market-access/bg.avif');
+    background-image: url('src/assets/black-market-access/2.jpeg');
     position: absolute;
     top: 0;
     left: 0;

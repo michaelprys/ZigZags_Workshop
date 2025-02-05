@@ -1,5 +1,8 @@
 <script setup lang="ts">
 import { ref } from 'vue';
+import IconCursed from 'src/components/icons/IconCursed.vue';
+import IconEnchantable from 'src/components/icons/IconEnchantable.vue';
+import ItemTooltipEffect from 'src/components/items/ItemTooltipEffect.vue';
 
 const current = ref(5);
 </script>
@@ -16,9 +19,9 @@ const current = ref(5);
                     <li>
                         <q-checkbox label="All" size="lg"></q-checkbox>
                     </li>
-                    <li><q-checkbox label="Gadgets" size="lg"></q-checkbox></li>
+                    <li><q-checkbox label="Consumables" size="lg"></q-checkbox></li>
+                    <li><q-checkbox label="Scrolls" size="lg"></q-checkbox></li>
                     <li><q-checkbox label="Trinkets" size="lg"></q-checkbox></li>
-                    <li><q-checkbox label="Craft" size="lg"></q-checkbox></li>
                 </ul>
 
                 <ul class="flex flex-center q-gutter-lg q-mt-none q-pl-none" style="max-width: 84.5rem">
@@ -39,33 +42,40 @@ const current = ref(5);
                             </q-card-section>
 
                             <q-card-section class="q-pt-none">
-                                <div class="text-negative text-subtitle1">
-                                    <span class="q-mr-sm">Price: 500 gold</span>
-                                    <q-icon name="science"
-                                        ><q-tooltip
-                                            anchor="center right"
-                                            self="top start"
-                                            class="column text-center text-dark"
-                                            style="
-                                                background-color: var(--q-dark);
-                                                border: 1px solid color-mix(in srgb, var(--q-primary) 50%, black 90%);
-                                                border-radius: var(--rounded);
-                                                box-shadow: rgb(38, 57, 77) 0px 20px 30px -10px;
-                                            "
-                                        >
-                                            <span class="text-caption text-negative">Dangerous</span>
-                                        </q-tooltip></q-icon
-                                    >
+                                <div class="flex items-center text-subtitle1">
+                                    <span class="q-mr-sm text-negative">Price: 500 gold</span>
+                                    <div class="flex items-center q-gutter-x-xs text-negative">
+                                        <IconCursed>
+                                            <q-tooltip
+                                                anchor="center right"
+                                                self="top start"
+                                                class="column text-center text-dark"
+                                                style="
+                                                    background-color: var(--q-dark);
+                                                    border: 1px solid
+                                                        color-mix(in srgb, var(--q-primary) 50%, #8a2be2 90%);
+                                                    border-radius: var(--rounded);
+                                                    box-shadow:
+                                                        0px 3px 8px rgba(0, 0, 0, 0.4),
+                                                        2px 5px 12px #8a2be2;
+                                                "
+                                            >
+                                                <span class="text-caption" style="color: #8a2be2">Cursed</span>
+                                            </q-tooltip>
+                                        </IconCursed>
+
+                                        <IconEnchantable>
+                                            <ItemTooltipEffect />
+                                        </IconEnchantable>
+                                    </div>
                                 </div>
-                                <div class="text-caption text-grey">
+                                <span class="inline-block text-caption text-grey">
                                     Speedy boots for fast getaways. Run like a goblin on fire!
-                                </div>
+                                </span>
                             </q-card-section>
 
-                            <q-separator />
-
-                            <q-card-actions class="flex justify-between">
-                                <q-btn flat color="primary">💰 &nbsp Add to stash </q-btn>
+                            <q-card-actions class="flex justify-between q-pt-none">
+                                <q-btn flat color="primary">💰 &nbsp; Add to stash </q-btn>
                                 <q-btn flat color="info">
                                     <RouterLink :to="{ name: 'black-market-details', params: { id: 1 } }">
                                         Details
@@ -104,44 +114,15 @@ const current = ref(5);
     background-size: cover;
     background-repeat: no-repeat;
     opacity: 50%;
-    /* background: linear-gradient(to bottom, rgba(10, 0, 50, 0.4) 0%, rgba(50, 0, 0, 0.2) 50%, rgba(0, 0, 0, 0) 80%); */
 }
 
 .overlay::before {
     content: '';
-    /* position: fixed; */
     position: absolute;
     top: 13%;
     left: 50%;
     width: 120%;
     min-height: 100svh;
-    /* background: radial-gradient(
-        ellipse at center,
-        rgba(255, 150, 0, 0.5) 0%,
-        rgba(200, 30, 0, 0.3) 40%,
-        rgba(0, 0, 0, 0) 80%
-    ); */
-
-    /* background: radial-gradient(
-        ellipse at center,
-        rgba(10, 10, 60, 0.6) 0%,
-        rgba(20, 10, 50, 0.5) 30%,
-        rgba(0, 0, 0, 0) 80%
-    ); */
-
-    /* background: radial-gradient(
-        ellipse at center,
-        rgba(80, 0, 0, 0.6) 0%,
-        rgba(100, 0, 0, 0.4) 40%,
-        rgba(0, 0, 0, 0) 80%
-    ); */
-
-    /* background: radial-gradient(
-        ellipse at center,
-        rgba(255, 150, 0, 0.5) 0%,
-        rgba(200, 30, 0, 0.3) 10%,
-        rgba(0, 0, 0, 0) 80%
-    ); */
 
     background: radial-gradient(
         ellipse at center,
@@ -155,8 +136,7 @@ const current = ref(5);
     z-index: -1;
 }
 
-:deep(.q-checkbox__svg),
-:deep(.q-checkbox__overlay) {
+:deep(.q-checkbox__bg) {
     background: var(--q-negative-dimmed);
     outline: var(--q-negative);
     border-color: var(--q-negative-dimmed);
@@ -174,7 +154,7 @@ const current = ref(5);
         inset 0 0 15px rgba(0, 0, 0, 0.8),
         0 0 25px rgba(255, 0, 0, 0.5);
     overflow: hidden;
-    padding: 15px;
+    padding: 0.9375rem;
     border: 2px solid transparent;
     background-clip: border-box;
     position: relative;

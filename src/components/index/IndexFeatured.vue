@@ -46,11 +46,11 @@ const slides = [
                         transition-next="slide-left"
                         swipeable
                         animated
-                        autoplay
                         control-color="secondary"
                         padding
                         navigation
                         infinite
+                        autoplay
                         arrows
                         height="24rem"
                     >
@@ -66,8 +66,13 @@ const slides = [
                                     :key="content.name"
                                     class="full-height q-mr-md"
                                     :class="content.col"
+                                    style="border-radius: var(--rounded)"
                                 >
-                                    <q-img class="full-height inner rounded shadow-1" :src="content.src" />
+                                    <q-img
+                                        class="full-height inner shadow-1"
+                                        :src="content.src"
+                                        style="border-radius: var(--rounded)"
+                                    />
                                 </div>
                             </div>
                         </q-carousel-slide>

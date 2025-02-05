@@ -39,12 +39,12 @@ const alert = () => {
                 <div class="q-pa-lg storage">
                     <div class="storage__inner">
                         <div class="flex items-center justify-between storage__header">
-                            <h2 class="text-grey text-h5">Item slots</h2>
+                            <h2 class="text-h5">Item slots</h2>
                             <q-btn icon="close" color="grey" flat dense @click="alert"></q-btn>
                         </div>
 
                         <div class="q-mt-lg storage__cells">
-                            <div v-for="i in 24" :key="i" class="storage__cell">
+                            <div v-for="i in 28" :key="i" class="storage__cell">
                                 <q-tooltip
                                     anchor="bottom right"
                                     self="center start"
@@ -54,20 +54,14 @@ const alert = () => {
                                     <span class="text-caption text-negative">Boots of swiftness</span>
                                     <span> Speedy boots for fast getaways. Run like a goblin on fire! </span>
                                 </q-tooltip>
-                                <q-img
-                                    class="storage__cell-frame"
-                                    src="~assets/vault/cell-frame.avif"
-                                    width="189px"
-                                    height="173px"
-                                    style="max-width: 110px; height: 100%"
-                                />
+
                                 <div class="storage__cell-placeholder"></div>
                                 <q-img
                                     class="storage__cell-image"
-                                    src="~assets/index/featured/image-2.avif"
+                                    src="~assets/index/featured/image-5.avif"
                                     width="1024px"
                                     height="1024px"
-                                    style="max-width: 77px; height: 77px"
+                                    style="width: 4.8125rem; height: 4.8125rem"
                                 />
                             </div>
                         </div>
@@ -81,22 +75,42 @@ const alert = () => {
                                 flat
                                 input
                                 input-class="text-primary"
-                                color="transparent"
                             />
 
                             <div class="flex q-mt-lg storage__gold-panel" style="gap: 0.75rem">
-                                <q-btn icon="add" color="grey" flat dense></q-btn>
+                                <q-btn icon="add" flat dense></q-btn>
                                 <div class="flex items-center q-gutter-x-sm">
                                     <span>0</span>
                                     <q-img src="~assets/vault/gold.avif" width="18px" height="18px" />
+                                    <q-tooltip
+                                        anchor="bottom right"
+                                        self="center start"
+                                        class="bg-primary column text-center"
+                                    >
+                                        <span class="text-caption text-negative">Gold</span>
+                                    </q-tooltip>
                                 </div>
                                 <div class="flex items-center q-gutter-x-sm">
                                     <span>0</span>
                                     <q-img src="~assets/vault/ruby.avif" width="18px" height="18px" />
+                                    <q-tooltip
+                                        anchor="bottom right"
+                                        self="center start"
+                                        class="bg-primary column text-center text-dark"
+                                    >
+                                        <span class="text-caption text-negative">Crimson gems</span>
+                                    </q-tooltip>
                                 </div>
                                 <div class="flex items-center q-gutter-x-sm">
                                     <span>0</span>
-                                    <q-img src="~assets/vault/mystic-trinket-box.avif" width="22px" height="22px" />
+                                    <q-img src="~assets/vault/gamblers-lootbox.avif" width="22px" height="22px" />
+                                    <q-tooltip
+                                        anchor="bottom right"
+                                        self="center start"
+                                        class="bg-primary column text-center text-dark"
+                                    >
+                                        <span class="text-caption text-negative">Gambler's lootbox</span>
+                                    </q-tooltip>
                                 </div>
                             </div>
                         </div>
@@ -115,9 +129,6 @@ const alert = () => {
     user-select: none;
 }
 
-.storage__inner {
-}
-
 .storage__header {
     display: grid;
     place-items: center;
@@ -134,10 +145,9 @@ const alert = () => {
 }
 
 .storage__cells {
-    max-width: 49.375rem;
     width: 100%;
     display: grid;
-    grid-template-columns: 1fr 1fr 1fr 1fr 1fr;
+    grid-template-columns: 1fr 1fr 1fr 1fr 1fr 1fr 1fr;
     grid-template-rows: 1fr 1fr 1fr 1fr;
     gap: 1rem;
     grid-template-areas:
@@ -145,26 +155,23 @@ const alert = () => {
         '. . . . . .'
         '. . . . . .'
         '. . . . . .';
-    background-color: var(--q-dark-page);
-    border: 1px solid var(--q-gold-frame);
-    border-radius: var(--rounded);
-    /* padding: 0.5rem; */
 }
 
 .storage__cell {
     position: relative;
     cursor: pointer;
-}
-
-.storage__cell-frame {
-    z-index: 10;
-}
-
-.storage__cell-image {
-    position: absolute;
-    top: 50%;
-    left: 50%;
-    transform: translateX(-50%) translateY(-50%);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: 0.25em;
+    width: 5.25rem;
+    height: 5.25rem;
+    border-radius: 0.625rem;
+    background: linear-gradient(145deg, rgba(255, 255, 255, 0.1), rgba(0, 0, 0, 0.2));
+    box-shadow:
+        0 4px 12px rgba(0, 0, 0, 0.2),
+        inset 0 0 5px rgba(255, 255, 255, 0.5);
+    overflow: hidden;
 }
 
 .storage__cell-placeholder {
@@ -174,8 +181,10 @@ const alert = () => {
     transform: translateX(-50%) translateY(-50%);
     width: 100%;
     height: 100%;
-    background: #2e2e2e;
-    background: linear-gradient(135deg, #2e2e2e, #000000);
+    background: linear-gradient(135deg, #2a2a2a, #1f1f1f, #0a0a0a);
+    box-shadow:
+        0 0 15px rgba(255, 255, 255, 0.1),
+        inset 0 0 10px rgba(255, 255, 255, 0.3);
 }
 
 .storage__footer {
@@ -195,19 +204,6 @@ const alert = () => {
 :deep(.storage__nav button:first-child) {
     display: none;
 }
-:deep(.storage__nav .q-icon) {
-    background-image: url('src/assets/vault/nav-button.avif');
-    width: 45px;
-    height: 100%;
-    z-index: 10;
-    background-position: center;
-    background-size: contain;
-    background-repeat: no-repeat;
-}
-:deep(.storage__nav .q-btn:nth-child(2)) {
-    transform: rotate(180deg) scaleY(-1);
-}
-
 :deep(.storage__nav .q-btn[disabled]) {
     cursor: default !important;
     pointer-events: none !important;

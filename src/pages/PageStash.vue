@@ -31,8 +31,8 @@ const paymentType = ref(null);
 
 const paymentTypes = [
     { label: 'Gold', value: 'gold', conversionRate: 1 },
-    { label: 'Magic gems', value: 'magic-gems', conversionRate: 250 },
-    { label: 'Mystic Trinket Box', value: 'mystic-trinket-box', conversionRate: 100 },
+    { label: 'Crimson gems', value: 'crimson-gems', conversionRate: 250 },
+    { label: "Gambler's lootbox", value: 'gamblers-lootbox', conversionRate: 100 },
 ];
 
 const $q = useQuasar();
@@ -168,7 +168,7 @@ const quantity = ref(1);
                                         <div>
                                             <div class="column">
                                                 <span class="text-bold">Sneaky Boots of Swift Exit</span>
-                                                <span class="text-bold">Enchantments: None</span>
+                                                <span class="text-bold">Enchantment: None</span>
                                                 <span class="q-mt-lg text-bold"
                                                     ><span class="text-secondary">Price</span>: 250 Gold</span
                                                 >

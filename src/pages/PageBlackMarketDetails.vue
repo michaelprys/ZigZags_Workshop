@@ -1,4 +1,5 @@
 <script setup lang="ts">
+import IconCursed from 'src/components/icons/IconCursed.vue';
 import { ref } from 'vue';
 
 const image = ref<HTMLImageElement | null>(null);
@@ -47,7 +48,7 @@ const resetImage = () => {
 
                             <h2 class="q-mt-md text-bold text-h6 text-secondary">Category: Gadgets</h2>
 
-                            <p class="q-mt-md text-body2" style="text-align: justify">
+                            <p class="q-mt-sm text-body2" style="text-align: justify">
                                 "Boots of Swiftness" are a coveted item in the goblin workshop, designed to enhance
                                 speed and agility. Crafted with precision and a dash of goblin ingenuity, these boots
                                 allow the wearer to move faster than ever before. Whether you're escaping a sticky
@@ -114,28 +115,8 @@ const resetImage = () => {
     background-size: cover;
     background-repeat: no-repeat;
     opacity: 50%;
-    /* background: linear-gradient(to bottom, rgba(30, 0, 0, 0.3) 0%, rgba(60, 0, 0, 0.15) 50%, rgba(0, 0, 0, 0) 80%); */
+    background: linear-gradient(to bottom, rgba(30, 0, 0, 0.3) 0%, rgba(60, 0, 0, 0.15) 50%, rgba(0, 0, 0, 0) 80%);
     z-index: -1;
-}
-
-.overlay::before {
-    content: '';
-    position: absolute;
-    top: 13%;
-    left: 50%;
-    width: 120%;
-    min-height: 100svh;
-
-    background: radial-gradient(
-        ellipse at center,
-        rgba(40, 0, 0, 0.8) 0%,
-        rgba(20, 0, 0, 0.6) 40%,
-        rgba(0, 0, 0, 0.85) 50%
-    );
-    /* mask-image: linear-gradient(to bottom, rgba(0, 0, 0, 1) 30%, rgba(0, 0, 0, 0.6) 55%, rgba(0, 0, 0, 0) 75%); */
-    transform: translateX(-50%) scaleY(1.2);
-    filter: blur(50px);
-    /* z-index: -1; */
 }
 
 .wrapper {

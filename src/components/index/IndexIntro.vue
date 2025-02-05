@@ -40,7 +40,7 @@ const model = [];
                         </div>
                     </div>
                 </div>
-                <div class="absolute-top fit rounded">
+                <div class="absolute-top fit" style="border-radius: var(--rounded)">
                     <q-parallax class="fit">
                         <template v-slot:media>
                             <video

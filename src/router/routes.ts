@@ -53,8 +53,8 @@ const routes: RouteRecordRaw[] = [
                 component: () => import('pages/PageStash.vue'),
             },
             {
-                path: 'black-black-market-access',
-                name: 'black-black-market-access',
+                path: 'black-market-access',
+                name: 'black-market-access',
                 component: () => import('src/pages/PageBlackMarketAccess.vue'),
             },
             {

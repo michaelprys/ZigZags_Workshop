@@ -241,9 +241,6 @@ watch(
     width: 100%;
     height: 100%;
     filter: brightness(125%);
-
-    /* filter: hue-rotate(370deg) saturate(70%) brightness(100%) contrast(101%); */
-
     background-position: 0% 10%;
     background-blend-mode: color, normal, normal, normal, normal;
 }

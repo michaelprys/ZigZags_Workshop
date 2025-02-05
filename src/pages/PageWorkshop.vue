@@ -1,5 +1,7 @@
 <script setup lang="ts">
 import { ref } from 'vue';
+import IconEnchantable from 'src/components/icons/IconEnchantable.vue';
+import ItemTooltipEffect from 'src/components/items/ItemTooltipEffect.vue';
 
 const current = ref(5);
 </script>
@@ -37,10 +39,15 @@ const current = ref(5);
                             </q-card-section>
 
                             <q-card-section class="q-pt-none">
-                                <div class="text-secondary text-subtitle1">Price: 500 gold</div>
-                                <div class="text-caption text-grey">
-                                    Speedy boots for fast getaways. Run like a goblin on fire!
+                                <div class="flex items-center q-gutter-x-xs text-negative">
+                                    <span class="inline-block text-secondary text-subtitle1">Price: 500 gold</span>
+                                    <IconEnchantable style="color: #00bcd4; width: 1.5em; height: 1.5em">
+                                        <ItemTooltipEffect />
+                                    </IconEnchantable>
                                 </div>
+                                <span class="inline-block text-caption text-grey">
+                                    Speedy boots for fast getaways. Run like a goblin on fire!
+                                </span>
                             </q-card-section>
 
                             <q-separator />

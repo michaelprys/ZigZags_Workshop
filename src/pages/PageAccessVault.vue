@@ -2,10 +2,6 @@
 import { ref } from 'vue';
 const name = ref('');
 const passphrase = ref('');
-
-const territory = ref(null);
-
-const territories = ['Horde', 'Alliance', 'Argent Dawn', 'Scarlet Crusade', 'Kirin Tor'];
 </script>
 
 <template>
@@ -52,7 +48,7 @@ const territories = ['Horde', 'Alliance', 'Argent Dawn', 'Scarlet Crusade', 'Kir
                             input-class="text-primary"
                             label="Passphrase *"
                             lazy-rules="ondemand"
-                            :rules="[(val) => (val && val.length > 0) || 'What\'s the magic word, friend?']"
+                            :rules="[(val) => (val && val.length > 0) || 'What\'s the secret word, friend?']"
                         />
                     </div>
 
@@ -60,7 +56,7 @@ const territories = ['Horde', 'Alliance', 'Argent Dawn', 'Scarlet Crusade', 'Kir
                         <q-btn class="q-mt-none" label="Open" type="submit" color="secondary" text-color="dark" />
 
                         <span
-                            >No vault?
+                            >Need vault?
                             <RouterLink class="q-ml-xs" :to="{ name: 'setup-vault' }">
                                 <q-btn class="q-mt-none" flat dense label="Set up" text-color="secondary"
                             /></RouterLink>

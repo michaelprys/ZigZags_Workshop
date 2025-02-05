@@ -1,13 +1,13 @@
 <script setup lang="ts">
 import { ref } from 'vue';
 
-// const isAuthorized = ref(false);
+const isAuthorized = ref(false);
 </script>
 
 <template>
     <div>
         <q-layout class="relative-position">
-            <!-- <div class="bg" :class="[isAuthorized ? 'img-access' : 'img-vault']"></div> -->
+            <div class="bg" :class="[isAuthorized ? 'img-access' : 'img-vault']"></div>
 
             <q-page-container>
                 <RouterView #="{ Component }">
