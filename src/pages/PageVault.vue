@@ -1,7 +1,30 @@
 <script setup lang="ts">
-import { ref } from 'vue';
+import { ref, computed, onMounted } from 'vue';
 import { useRouter } from 'vue-router';
 import { useQuasar } from 'quasar';
+import { supabase } from 'src/clients/supabase';
+
+const vault = ref(null);
+
+const getCurrentOwner = async () => {
+    const { data, error } = await supabase.auth.getSession();
+
+    if (error) {
+        console.error('Error getting current user', error);
+    } else {
+        vault.value = data.session;
+    }
+};
+
+const leaveVault = async () => {
+    const { error } = await supabase.auth.signOut();
+
+    if (error) {
+        console.error(error);
+    } else {
+        console.log('You have successfully left the vault');
+    }
+};
 
 const router = useRouter();
 
@@ -21,25 +44,66 @@ const alert = () => {
         },
     })
         .onOk(() => {
-            router
-                .push({ name: 'access-vault' })
-                .then(() => {})
-                .catch(() => {});
+            leaveVault()
+                .then(() => {
+                    return router.push({ name: 'access-vault' });
+                })
+                .catch((err) => {
+                    console.error('Error leaving vault: ', err);
+                });
         })
         .onCancel(() => {})
         .onDismiss(() => {});
 };
+
+const determineFaction = computed(() => {
+    const faction = vault.value?.user.user_metadata.faction;
+
+    if (faction === 'Horde') {
+        return 'horde';
+    } else if (faction === 'Alliance') {
+        return 'alliance';
+    } else {
+        return 'outsiders';
+    }
+});
+
+const imgSrc = (ext) => {
+    return new URL(`/src/assets/vault/${determineFaction.value}.${ext}`, import.meta.url).href;
+};
+
+onMounted(async () => {
+    await getCurrentOwner();
+});
 </script>
 
 <template>
     <q-page>
-        <section id="vault" class="flex flex-center" style="padding-bottom: 8.5em; min-height: 100svh">
+        <section
+            id="vault"
+            class="flex flex-center"
+            style="padding-top: 4.625em; padding-bottom: 8.5em; min-height: calc(100svh - 4.625em)"
+        >
             <h1 class="sr-only">Vault</h1>
+
             <div class="q-px-md">
                 <div class="q-pa-lg storage">
                     <div class="storage__inner">
                         <div class="flex items-center justify-between storage__header">
-                            <h2 class="text-h5">Item slots</h2>
+                            <div style="cursor: pointer">
+                                <q-img
+                                    :src="`${imgSrc('png')}`"
+                                    width="819px"
+                                    height="819px"
+                                    style="justify-self: left; width: 2.2rem; height: 2.5rem"
+                                />
+                                <q-tooltip class="bg-primary text-center" anchor="center end" self="bottom start">
+                                    <span class="text-caption text-negative">{{ determineFaction }}</span>
+                                </q-tooltip>
+                            </div>
+
+                            <h2 class="text-h6">{{ vault?.user.user_metadata.first_name }}'s Inventory</h2>
+
                             <q-btn icon="close" color="grey" flat dense @click="alert"></q-btn>
                         </div>
 
@@ -56,13 +120,13 @@ const alert = () => {
                                 </q-tooltip>
 
                                 <div class="storage__cell-placeholder"></div>
-                                <q-img
+                                <!-- <q-img
                                     class="storage__cell-image"
-                                    src="~assets/index/featured/image-5.avif"
+                                    src="~assets/index/featured/image-1.avif"
                                     width="1024px"
                                     height="1024px"
                                     style="width: 4.8125rem; height: 4.8125rem"
-                                />
+                                /> -->
                             </div>
                         </div>
 
@@ -82,11 +146,7 @@ const alert = () => {
                                 <div class="flex items-center q-gutter-x-sm">
                                     <span>0</span>
                                     <q-img src="~assets/vault/gold.avif" width="18px" height="18px" />
-                                    <q-tooltip
-                                        anchor="bottom right"
-                                        self="center start"
-                                        class="bg-primary column text-center"
-                                    >
+                                    <q-tooltip anchor="bottom right" self="center start" class="bg-primary text-center">
                                         <span class="text-caption text-negative">Gold</span>
                                     </q-tooltip>
                                 </div>
@@ -96,7 +156,7 @@ const alert = () => {
                                     <q-tooltip
                                         anchor="bottom right"
                                         self="center start"
-                                        class="bg-primary column text-center text-dark"
+                                        class="bg-primary text-center text-dark"
                                     >
                                         <span class="text-caption text-negative">Crimson gems</span>
                                     </q-tooltip>
@@ -107,7 +167,7 @@ const alert = () => {
                                     <q-tooltip
                                         anchor="bottom right"
                                         self="center start"
-                                        class="bg-primary column text-center text-dark"
+                                        class="bg-primary text-center text-dark"
                                     >
                                         <span class="text-caption text-negative">Gambler's lootbox</span>
                                     </q-tooltip>
@@ -126,14 +186,9 @@ const alert = () => {
     background-color: var(--q-dark-page);
     border: 1px solid var(--q-gold-frame);
     border-radius: var(--rounded);
-    user-select: none;
 }
 
 .storage__header {
-    display: grid;
-    place-items: center;
-    grid-template-columns: 1fr 1fr 1fr;
-    gap: 0px 0px;
     width: 100%;
 }
 .storage__header h2 {
@@ -185,6 +240,10 @@ const alert = () => {
     box-shadow:
         0 0 15px rgba(255, 255, 255, 0.1),
         inset 0 0 10px rgba(255, 255, 255, 0.3);
+}
+
+.storage__cell-image {
+    user-select: none;
 }
 
 .storage__footer {

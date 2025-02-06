@@ -1,11 +1,51 @@
 <script setup lang="ts">
 import { ref } from 'vue';
+import { useRouter } from 'vue-router';
+
+import { supabase } from 'src/clients/supabase';
+
+const router = useRouter();
+
+const setupVaultForm = ref(null);
 const name = ref('');
-const passphrase = ref('');
+const mailbox = ref('');
+const vaultKey = ref('');
+const faction = ref(null);
 
-const territory = ref(null);
+const isPwd = ref(true);
 
-const territories = ['Horde', 'Alliance', 'Argent Dawn', 'Scarlet Crusade', 'Kirin Tor'];
+const factions = ['Horde', 'Alliance', 'No faction (Outsiders)'];
+
+const setupVault = async () => {
+    try {
+        const valid = await setupVaultForm.value.validate();
+
+        if (valid) {
+            const { data, error } = await supabase.auth.signUp({
+                email: mailbox.value,
+                password: vaultKey.value,
+
+                options: {
+                    data: {
+                        first_name: name.value,
+                        faction: faction.value,
+                    },
+                },
+            });
+
+            if (error) {
+                console.error(error);
+            } else {
+                await router.push({ name: 'access-vault' });
+                console.log(data);
+            }
+        } else {
+            console.error('Validation Error');
+        }
+    } catch (err) {
+        console.error('Error opening vault: ', err);
+    }
+};
 </script>
 
 <template>
@@ -13,10 +53,11 @@ const territories = ['Horde', 'Alliance', 'Argent Dawn', 'Scarlet Crusade', 'Kir
         <section
             id="setup-vault"
             class="flex flex-center relative-position"
-            style="padding-bottom: 8.5em; min-height: 100svh"
+            style="padding-top: 4.625em; padding-bottom: 8.5em; min-height: calc(100svh - 4.625em)"
         >
-            <div class="q-px-md" style="max-width: 644px; width: 100%">
+            <div class="q-px-md" style="max-width: 40.25rem; width: 100%">
                 <q-form
+                    ref="setupVaultForm"
                     class="q-gutter-y-md q-pa-lg shadow-10"
                     style="
                         background-color: var(--q-bg-modal);
@@ -30,6 +71,7 @@ const territories = ['Horde', 'Alliance', 'Argent Dawn', 'Scarlet Crusade', 'Kir
                         <h2 class="text-h5 text-secondary">Set up vault</h2>
                         <span class="q-mt-sm">Let's set up your vault for safe keeping.</span>
                     </div>
+
                     <div>
                         <q-input
                             v-model="name"
@@ -42,18 +84,41 @@ const territories = ['Horde', 'Alliance', 'Argent Dawn', 'Scarlet Crusade', 'Kir
                             :rules="[(val) => val.length > 0 || 'No name? How do we call ya then?']"
                         />
                         <q-input
-                            v-model="passphrase"
+                            v-model="mailbox"
                             filled
                             bg-color="dark"
                             label-color="info"
                             input-class="text-primary"
-                            label="Passphrase *"
+                            label="Mailbox *"
                             lazy-rules="ondemand"
-                            :rules="[(val) => (val && val.length > 0) || 'What\'s the magic word, friend?']"
+                            :rules="[(val) => val.length > 0 || 'A place where we send you stuff.']"
                         />
+                        <q-input
+                            v-model="vaultKey"
+                            :type="isPwd ? 'password' : 'text'"
+                            filled
+                            bg-color="dark"
+                            label-color="info"
+                            input-class="text-primary"
+                            label="Vault key *"
+                            lazy-rules="ondemand"
+                            :rules="[
+                                (val) => (val && val.length > 0) || 'That key\'s too easy. Should be least 6 chars.',
+                            ]"
+                        >
+                            <template v-slot:append>
+                                <q-icon
+                                    :name="isPwd ? 'visibility_off' : 'visibility'"
+                                    color="info"
+                                    class="cursor-pointer"
+                                    @click="isPwd = !isPwd"
+                                />
+                            </template>
+                        </q-input>
+
                         <q-select
-                            v-model="territory"
-                            :options="territories"
+                            v-model="faction"
+                            :options="factions"
                             filled
                             dark
                             bg-color="dark"
@@ -66,7 +131,13 @@ const territories = ['Horde', 'Alliance', 'Argent Dawn', 'Scarlet Crusade', 'Kir
                     </div>
 
                     <div class="flex items-center justify-between">
-                        <q-btn class="q-mt-none" label="Set up" type="submit" color="secondary" text-color="dark" />
+                        <q-btn
+                            class="q-mt-none"
+                            label="Set up"
+                            color="secondary"
+                            text-color="dark"
+                            @click.prevent="setupVault"
+                        />
 
                         <RouterLink :to="{ name: 'access-vault' }"
                             ><q-btn class="q-mt-none" flat dense label="Access vault" text-color="primary"
@@ -77,13 +148,4 @@ const territories = ['Horde', 'Alliance', 'Argent Dawn', 'Scarlet Crusade', 'Kir
     ></q-page>
 </template>
 
-<style scoped>
-/* :deep(.q-field__bottom--animated) {
-    transform: translateY(0%);
-    position: static;
-    padding-bottom: 1rem;
-}
-:deep(.q-field--with-bottom) {
-    padding-bottom: 0;
-} */
-</style>
+<style scoped></style>

@@ -7,7 +7,7 @@ const routes: RouteRecordRaw[] = [
         children: [
             {
                 path: '',
-                name: 'home',
+                name: 'base',
                 component: () => import('pages/PageIndex.vue'),
             },
             {
@@ -27,6 +27,7 @@ const routes: RouteRecordRaw[] = [
                     {
                         path: 'vault',
                         name: 'vault',
+                        meta: { requiresAuth: true },
                         component: () => import('pages/PageVault.vue'),
                     },
                 ],

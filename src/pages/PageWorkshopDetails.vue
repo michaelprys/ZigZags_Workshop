@@ -23,7 +23,11 @@ const resetImage = () => {
 
 <template>
     <q-page>
-        <section id="workshop-details" class="relative-position" style="padding-top: 5.3em; padding-bottom: 8.5em">
+        <section
+            id="workshop-details"
+            class="relative-position"
+            style="padding-top: 5.3em; padding-bottom: 8.5em; min-height: calc(100svh - 5.3em)"
+        >
             <h1 class="sr-only">Item details</h1>
 
             <div class="bg"></div>

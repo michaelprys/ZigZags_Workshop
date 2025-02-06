@@ -44,6 +44,15 @@ a {
     text-decoration: inherit;
 }
 
+.q-field__bottom--animated {
+    transform: translateY(0%);
+    position: static;
+    padding-bottom: 1rem;
+}
+.q-field--with-bottom {
+    padding-bottom: 0;
+}
+
 body {
     font-family: 'oblivionregular';
     background: linear-gradient(

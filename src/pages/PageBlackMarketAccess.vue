@@ -25,7 +25,7 @@ const enter = () => {
             <section
                 id="black-market-access"
                 class="flex flex-center relative-position"
-                style="padding-bottom: 8.5em; min-height: 100svh"
+                style="padding-top: 4.625em; padding-bottom: 8.5em; min-height: calc(100svh - 4.625em)"
             >
                 <div class="flex flex-center q-px-md" style="width: 100%">
                     <div

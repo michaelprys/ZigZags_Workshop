@@ -79,7 +79,7 @@ watch(
                 <div class="flex q-gutter-lg">
                     <div class="flex items-center q-gutter-x-xl">
                         <q-tabs class="text-subtitle1">
-                            <q-route-tab exact class="q-px-lg text-primary" :to="{ name: 'home' }">Base</q-route-tab>
+                            <q-route-tab exact class="q-px-lg text-primary" :to="{ name: 'base' }">Base</q-route-tab>
                             <q-route-tab exact class="q-px-lg text-primary" to="/guide">Guide</q-route-tab>
                             <q-route-tab exact class="q-px-lg text-primary" :to="{ name: 'vault' }">Vault</q-route-tab>
                             <q-route-tab exact class="q-px-lg text-primary" :to="{ name: 'workshop' }"
@@ -191,6 +191,7 @@ watch(
 }
 .footer {
     background-color: transparent;
+    z-index: 0;
 }
 .cart {
     color: var(--q-primary);

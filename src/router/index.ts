@@ -1,6 +1,7 @@
 import { defineRouter } from '#q-app/wrappers';
 import { createMemoryHistory, createRouter, createWebHashHistory, createWebHistory } from 'vue-router';
 import routes from './routes';
+import { supabase } from 'src/clients/supabase';
 
 /*
  * If not building with SSR mode, you can
@@ -10,6 +11,8 @@ import routes from './routes';
  * async/await or return a Promise which resolves
  * with the Router instance.
  */
+
+let localOwner;
 
 export default defineRouter(function (/* { store, ssrContext } */) {
     const createHistory = process.env.SERVER
@@ -39,8 +42,24 @@ export default defineRouter(function (/* { store, ssrContext } */) {
         // quasar.conf.js -> build -> vueRouterMode
         // quasar.conf.js -> build -> publicPath
         history: createHistory(process.env.VUE_ROUTER_BASE),
+    });
 
+    const getUser = async (next) => {
+        localOwner = await supabase.auth.getSession();
 
+        if (localOwner.data.session === null) {
+            next({ name: 'access-vault' });
+        } else {
+            next();
+        }
+    };
+
+    Router.beforeEach(async (to, from, next) => {
+        if (to.meta.requiresAuth) {
+            await getUser(next);
+        } else {
+            next();
+        }
     });
 
     return Router;

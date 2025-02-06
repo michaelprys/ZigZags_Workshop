@@ -1,7 +1,39 @@
 <script setup lang="ts">
 import { ref } from 'vue';
-const name = ref('');
-const passphrase = ref('');
+import { supabase } from 'src/clients/supabase';
+import { useRouter } from 'vue-router';
+
+const router = useRouter();
+
+const mailbox = ref('');
+const vaultKey = ref('');
+
+const isPwd = ref(true);
+
+const accessVaultForm = ref(null);
+
+const accessVault = async () => {
+    try {
+        const valid = await accessVaultForm.value.validate();
+
+        if (valid) {
+            const { error } = await supabase.auth.signInWithPassword({
+                email: mailbox.value,
+                password: vaultKey.value,
+            });
+
+            if (error) {
+                console.error(error);
+            } else {
+                await router.push({ name: 'vault' });
+            }
+        } else {
+            console.error('Validation Error');
+        }
+    } catch (err) {
+        console.error('Error opening vault: ', err);
+    }
+};
 </script>
 
 <template>
@@ -9,51 +41,53 @@ const passphrase = ref('');
         <section
             id="access-vault"
             class="flex flex-center relative-position"
-            style="padding-bottom: 8.5em; min-height: 100svh"
+            style="padding-top: 4.625em; padding-bottom: 8.5em; min-height: calc(100svh - 4.625em)"
         >
             <div class="q-px-md" style="max-width: 644px; width: 100%">
                 <q-form
+                    ref="accessVaultForm"
                     class="q-gutter-y-md q-pa-lg shadow-10"
-                    style="
-                        background-color: var(--q-bg-modal);
-
-                        width: 100%;
-                        max-width: 40rem;
-                        margin-inline: auto;
-                    "
+                    style="background-color: var(--q-bg-modal); width: 100%; max-width: 40rem; margin-inline: auto"
                 >
                     <div class="column q-mt-none">
                         <h2 class="text-h5 text-secondary">Access vault</h2>
-                        <span class="q-mt-sm">Greetings, traveller!</span>
+                        <span class="q-mt-sm">Hey there, stranger!</span>
                     </div>
                     <div style="width: 100%; gap: 1rem">
                         <q-input
-                            v-model="name"
-                            style="flex: 1"
+                            v-model="mailbox"
                             filled
                             bg-color="dark"
                             label-color="info"
                             input-class="text-primary"
-                            label="True name *"
+                            label="Mailbox *"
                             lazy-rules="ondemand"
-                            :rules="[(val) => val.length > 0 || 'No name? How do we call ya then?']"
+                            :rules="[(val) => val.length > 0 || 'Got to have a mailbox to access the vault.']"
                         />
                         <q-input
-                            v-model="passphrase"
-                            class="q-mt-sm"
-                            style="flex: 1"
+                            v-model="vaultKey"
+                            :type="isPwd ? 'password' : 'text'"
                             filled
                             bg-color="dark"
                             label-color="info"
                             input-class="text-primary"
-                            label="Passphrase *"
+                            label="Vault key *"
                             lazy-rules="ondemand"
-                            :rules="[(val) => (val && val.length > 0) || 'What\'s the secret word, friend?']"
-                        />
+                            :rules="[(val) => (val && val.length >= 6) || 'The key is a must.']"
+                        >
+                            <template v-slot:append>
+                                <q-icon
+                                    :name="isPwd ? 'visibility_off' : 'visibility'"
+                                    color="info"
+                                    class="cursor-pointer"
+                                    @click="isPwd = !isPwd"
+                                />
+                            </template>
+                        </q-input>
                     </div>
 
                     <div class="flex items-center justify-between">
-                        <q-btn class="q-mt-none" label="Open" type="submit" color="secondary" text-color="dark" />
+                        <q-btn label="Open" color="secondary" text-color="dark" @click="accessVault" />
 
                         <span
                             >Need vault?
