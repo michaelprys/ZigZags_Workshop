@@ -92,7 +92,7 @@ onMounted(async () => {
                         <div class="flex items-center justify-between storage__header">
                             <div style="cursor: pointer">
                                 <q-img
-                                    :src="`${imgSrc('png')}`"
+                                    :src="`${imgSrc('avif')}`"
                                     width="819px"
                                     height="819px"
                                     style="justify-self: left; width: 2.2rem; height: 2.5rem"
