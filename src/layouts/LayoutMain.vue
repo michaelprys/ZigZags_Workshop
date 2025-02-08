@@ -51,6 +51,7 @@ watch(
     { immediate: true },
 );
 </script>
+
 <template>
     <q-layout view="lhh LpR lff">
         <q-header
@@ -100,20 +101,10 @@ watch(
                             </q-route-tab>
                         </q-tabs>
                     </div>
-                    <!-- <q-btn padding="none">
-                    <q-avatar rounded>
-                          <q-img
-                        style=" object-fit: cover; filter: grayscale(40%)
-                        "
-                        src="https://i.redd.it/5k3vtg13qsj31.jpg"
-                        :spinnerSize="'0'"
-
-                    />
-                    </q-avatar>
-                </q-btn> -->
                 </div>
             </div>
         </q-header>
+
         <q-footer class="footer relative-position">
             <div class="zigzag">
                 <div class="zigzag__wrapper">
@@ -159,10 +150,12 @@ watch(
                 </Transition>
             </div>
         </q-footer>
+
         <q-page-container>
             <Teleport to="body">
                 <ItemScrollTop />
             </Teleport>
+
             <RouterView #="{ Component }">
                 <Transition name="fade" mode="out-in">
                     <component :is="Component" />
@@ -171,6 +164,7 @@ watch(
         </q-page-container>
     </q-layout>
 </template>
+
 <style scoped>
 .header-texture {
     background: linear-gradient(

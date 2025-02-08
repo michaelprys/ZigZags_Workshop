@@ -1,5 +1,6 @@
 <template>
     <q-tooltip
+        :delay="500"
         anchor="center right"
         self="top start"
         class="column text-center text-dark"

@@ -30,6 +30,6 @@
     filter: blur(4px) grayscale(40%) brightness(30%);
     mask-image: linear-gradient(to bottom, black 85%, transparent 100%);
     transition: opacity 0.3s linear;
-    background-image: url('src/assets/access-vault/bg.avif');
+    background-image: url('src/assets/layout-vault/5.jpeg');
 }
 </style>

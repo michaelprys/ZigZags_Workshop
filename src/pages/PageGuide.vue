@@ -185,6 +185,7 @@
     border-radius: 0.0625rem;
     margin-bottom: 0;
     z-index: 1;
+    filter: grayscale(30%) brightness(60%);
 }
 
 .map-texture {
@@ -198,7 +199,7 @@
     background-position: center;
     background-repeat: no-repeat;
     opacity: 60%;
-    filter: grayscale(30%);
+    filter: grayscale(30%) brightness(70%);
     mask-image: radial-gradient(circle, rgb(255, 255, 255) 60%, rgba(255, 255, 255, 0) 100%);
 }
 </style>

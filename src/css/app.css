@@ -53,6 +53,15 @@ a {
     padding-bottom: 0;
 }
 
+input::-webkit-outer-spin-button,
+input::-webkit-inner-spin-button {
+    -webkit-appearance: none;
+    margin: 0;
+}
+input[type='number'] {
+    -moz-appearance: textfield;
+}
+
 body {
     font-family: 'oblivionregular';
     background: linear-gradient(
@@ -61,6 +70,7 @@ body {
         ),
         url('/src/assets/common/bg.avif');
     color: var(--q-primary);
+    background-color: #040405;
 }
 
 .font-secondary {
@@ -77,18 +87,6 @@ body {
 
 .text-glow-dark {
     text-shadow: 0.1875rem 0.3125rem 0.3125rem rgba(21, 21, 21, 0.5);
-}
-
-.divider-single {
-    margin-inline: auto;
-    content: '';
-    width: 100%;
-    height: 1px;
-    top: 0;
-    background-color: #1e1e1e;
-    position: relative;
-    display: block;
-    z-index: 100;
 }
 
 .divider {
@@ -135,15 +133,5 @@ body {
 
 .fade-enter-from,
 .fade-leave-to {
-    opacity: 0;
-}
-
-.fade-slow-enter-active,
-.fade-slow-leave-active {
-    transition: opacity 300ms ease;
-}
-
-.fade-slow-enter-from,
-.fade-slow-leave-to {
     opacity: 0;
 }

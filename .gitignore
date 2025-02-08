@@ -29,5 +29,14 @@ yarn-error.log*
 *.njsproj
 *.sln
 
-# local .env files
+# .env files
 .env.local*
+.env
+.env.local
+.env.production
+.env.development
+
+# Supabase temporary files
+supabase/.temp/
+supabase/.cache/
+supabase/migrations/

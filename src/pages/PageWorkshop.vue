@@ -2,6 +2,9 @@
 import { ref } from 'vue';
 import IconEnchantable from 'src/components/icons/IconEnchantable.vue';
 import ItemTooltipEffect from 'src/components/items/ItemTooltipEffect.vue';
+import { useAddToStash } from 'src/use/useAddToStash';
+
+const { addToStash } = useAddToStash('positive', 'dark');
 
 const current = ref(5);
 </script>
@@ -34,7 +37,7 @@ const current = ref(5);
 
                             <q-card-section>
                                 <div class="items-center no-wrap row">
-                                    <div class="col ellipsis text-h6">Boots of swiftness</div>
+                                    <div class="col ellipsis text-h6 text-primary">Boots of swiftness</div>
                                 </div>
                             </q-card-section>
 
@@ -53,7 +56,7 @@ const current = ref(5);
                             <q-separator />
 
                             <q-card-actions class="flex justify-between">
-                                <q-btn flat color="primary"> 💰 &nbsp Add to stash </q-btn>
+                                <q-btn flat color="primary" @click="addToStash"> 💰 &nbsp; Add to stash </q-btn>
                                 <q-btn flat color="info">
                                     <RouterLink :to="{ name: 'workshop-details', params: { id: 1 } }">
                                         Details

@@ -46,12 +46,13 @@ const accessVault = async () => {
             <div class="q-px-md" style="max-width: 644px; width: 100%">
                 <q-form
                     ref="accessVaultForm"
-                    class="q-gutter-y-md q-pa-lg shadow-10"
+                    class="form q-gutter-y-md q-pa-lg shadow-10"
                     style="background-color: var(--q-bg-modal); width: 100%; max-width: 40rem; margin-inline: auto"
+                    @keydown.enter="accessVault"
                 >
                     <div class="column q-mt-none">
-                        <h2 class="text-h5 text-secondary">Access vault</h2>
-                        <span class="q-mt-sm">Hey there, stranger!</span>
+                        <h2 class="text-h5 text-secondary" style="z-index: 0">Access vault</h2>
+                        <span class="q-mt-sm" style="z-index: 0">Hey there, stranger!</span>
                     </div>
                     <div style="width: 100%; gap: 1rem">
                         <q-input
@@ -89,10 +90,10 @@ const accessVault = async () => {
                     <div class="flex items-center justify-between">
                         <q-btn label="Open" color="secondary" text-color="dark" @click="accessVault" />
 
-                        <span
+                        <span style="z-index: 0"
                             >Need vault?
-                            <RouterLink class="q-ml-xs" :to="{ name: 'setup-vault' }">
-                                <q-btn class="q-mt-none" flat dense label="Set up" text-color="secondary"
+                            <RouterLink class="q-ml-sm" :to="{ name: 'setup-vault' }">
+                                <q-btn class="q-mt-none" flat label="Set up" text-color="secondary"
                             /></RouterLink>
                         </span>
                     </div>
@@ -101,4 +102,25 @@ const accessVault = async () => {
     ></q-page>
 </template>
 
-<style scoped></style>
+<style scoped>
+.form {
+    border-radius: 0.75rem;
+}
+.form::before {
+    position: absolute;
+    top: 0;
+    left: 0;
+    content: '';
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(
+        135deg,
+        rgba(80, 80, 80, 0.2) 0%,
+        rgba(200, 200, 200, 0.3) 50%,
+        rgba(80, 80, 80, 0.2) 100%
+    );
+    box-shadow: rgba(0, 0, 0, 0.1) 0px 4px 12px;
+    border-radius: 0.75rem;
+    border: 1px solid rgba(255, 255, 255, 0.125);
+}
+</style>

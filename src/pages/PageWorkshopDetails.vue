@@ -1,24 +1,16 @@
 <script setup lang="ts">
 import { ref } from 'vue';
+import { useRouter } from 'vue-router';
+import { useAddToStash } from 'src/use/useAddToStash';
 
-const image = ref<HTMLImageElement | null>(null);
+const { addToStash } = useAddToStash('positive', 'dark');
 
-const moveImage = (e: MouseEvent) => {
-    if (!image.value) return;
+const router = useRouter();
 
-    const { left, top, width, height } = image.value.getBoundingClientRect();
+import { useMoveImage } from 'src/use/useMoveImage';
 
-    const x = ((e.clientX - left) / width) * 100;
-    const y = ((e.clientY - top) / height) * 100;
-
-    image.value.style.transformOrigin = `${x}% ${y}%`;
-};
-
-const resetImage = () => {
-    if (!image.value) return;
-
-    image.value.style.transformOrigin = 'center center';
-};
+const imgRef = ref<HTMLImageElement | null>(null);
+const { moveImage, resetImage } = useMoveImage(imgRef);
 </script>
 
 <template>
@@ -37,7 +29,7 @@ const resetImage = () => {
                 <div class="wrapper">
                     <div class="image-wrapper">
                         <img
-                            ref="image"
+                            ref="imgRef"
                             class="image"
                             src="~assets/index/featured/image-2.avif"
                             @mousemove="moveImage"
@@ -47,9 +39,21 @@ const resetImage = () => {
 
                     <div class="content-wrapper q-pa-lg">
                         <div class="column">
-                            <h2 class="text-bold text-h4">Boots of swiftness</h2>
+                            <div class="flex items-center justify-between">
+                                <h2 class="text-bold text-h4">Boots of swiftness</h2>
 
-                            <h2 class="q-mt-md text-bold text-h6 text-secondary">Category: Gadgets</h2>
+                                <q-btn
+                                    class="q-px-md"
+                                    dense
+                                    style="background-color: #0d172d"
+                                    text-color="primary"
+                                    filled
+                                    @click="router.back()"
+                                    >Back</q-btn
+                                >
+                            </div>
+
+                            <h3 class="q-mt-md text-bold text-h6 text-secondary">Category: Gadgets</h3>
 
                             <p class="q-mt-md text-body2" style="text-align: justify">
                                 "Boots of Swiftness" are a coveted item in the goblin workshop, designed to enhance
@@ -60,7 +64,12 @@ const resetImage = () => {
 
                             <span class="q-mt-lg text-subtitle1">Price: 500 gold</span>
 
-                            <q-btn class="button q-mt-lg" outline color="primary" style="max-width: 6rem"
+                            <q-btn
+                                class="button q-mt-lg"
+                                outline
+                                color="primary"
+                                style="max-width: 6rem"
+                                @click="addToStash"
                                 >Purchase</q-btn
                             >
                         </div>

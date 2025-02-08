@@ -64,10 +64,11 @@ const onSubmit = async () => {
 
             stashItems.value = [];
 
-            router.push('/');
+            router.push({ name: 'workshop' });
 
             $q.notify({
                 type: 'positive',
+                textColor: 'dark',
                 message: "Pleasure doin' business!",
                 position: 'bottom-right',
                 classes: 'toast',
@@ -206,10 +207,7 @@ const quantity = ref(1);
                             </q-scroll-area>
                         </div>
 
-                        <div
-                            class="column price q-pa-lg"
-                            style="background-color: var(--q-dark-page); border-radius: var(--rounded); height: 100%"
-                        >
+                        <div class="column price q-pa-lg">
                             <span class="text-subtitle1"
                                 ><span class="text-secondary">💰 Base price:</span> 250 Gold</span
                             >
@@ -239,10 +237,61 @@ const quantity = ref(1);
 </template>
 
 <style scoped>
+.divider-single {
+    margin-inline: auto;
+    content: '';
+    width: 100%;
+    height: 1px;
+    top: 0;
+    background-color: rgba(255, 255, 255, 0.125);
+    position: relative;
+    display: block;
+    z-index: 100;
+}
+
 .panel {
     background-color: var(--q-dark-page);
-    border: 1px solid color-mix(in srgb, var(--q-primary) 20%, black 90%);
     border-radius: var(--rounded);
+}
+
+.panel::before {
+    position: absolute;
+    top: 0;
+    left: 0;
+    content: '';
+    width: 100%;
+    height: 100%;
+    border-radius: var(--rounded);
+    overflow: hidden;
+    box-shadow: rgba(0, 0, 0, 0.1) 0px 4px 12px;
+    border-radius: 0.75rem;
+    border: 1px solid rgba(255, 255, 255, 0.125);
+    background: radial-gradient(circle at top, rgba(60, 30, 15, 0.35), transparent);
+}
+
+.price {
+    position: relative;
+    background-color: var(--q-dark-page);
+    border-radius: var(--rounded);
+    height: 100%;
+}
+
+.price > * {
+    z-index: 1;
+}
+
+.price::before {
+    position: absolute;
+    top: 0;
+    left: 0;
+    content: '';
+    width: 100%;
+    height: 100%;
+    overflow: hidden;
+    box-shadow: rgba(0, 0, 0, 0.1) 0px 4px 12px;
+    border-radius: 0.75rem;
+    border: 1px solid rgba(255, 255, 255, 0.125);
+    background: radial-gradient(circle at top, rgba(60, 30, 15, 0.35), transparent);
 }
 
 .toast {
@@ -271,10 +320,9 @@ const quantity = ref(1);
 .card {
     display: flex;
     justify-content: space-between;
-    border: 1px solid color-mix(in srgb, var(--q-primary) 20%, black 90%);
+    border: 1px solid rgba(255, 255, 255, 0.125);
     border-radius: var(--rounded);
-    border-radius: var(--rounded);
-    background-color: var(--q-dark);
+    background-color: rgba(18, 9, 4, 0.5);
     margin-bottom: 1.25rem;
 }
 
@@ -288,11 +336,5 @@ const quantity = ref(1);
     width: 200px;
     height: 130px;
     background-size: cover;
-}
-
-.price {
-    border: 1px solid color-mix(in srgb, var(--q-primary) 20%, black 90%);
-    border-radius: var(--rounded);
-    border-radius: var(--rounded);
 }
 </style>

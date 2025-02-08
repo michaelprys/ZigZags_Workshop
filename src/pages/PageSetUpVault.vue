@@ -58,7 +58,7 @@ const setupVault = async () => {
             <div class="q-px-md" style="max-width: 40.25rem; width: 100%">
                 <q-form
                     ref="setupVaultForm"
-                    class="q-gutter-y-md q-pa-lg shadow-10"
+                    class="form q-gutter-y-md q-pa-lg shadow-10"
                     style="
                         background-color: var(--q-bg-modal);
 
@@ -66,10 +66,11 @@ const setupVault = async () => {
                         max-width: 40rem;
                         margin-inline: auto;
                     "
+                    @keydown.enter="setupVault"
                 >
                     <div class="column q-mt-none">
-                        <h2 class="text-h5 text-secondary">Set up vault</h2>
-                        <span class="q-mt-sm">Let's set up your vault for safe keeping.</span>
+                        <h2 class="text-h5 text-secondary" style="z-index: 0">Set up vault</h2>
+                        <span class="q-mt-sm" style="z-index: 0">Let's set up your vault for safe keeping.</span>
                     </div>
 
                     <div>
@@ -140,7 +141,7 @@ const setupVault = async () => {
                         />
 
                         <RouterLink :to="{ name: 'access-vault' }"
-                            ><q-btn class="q-mt-none" flat dense label="Access vault" text-color="primary"
+                            ><q-btn class="q-mt-none" flat label="Access vault" text-color="primary"
                         /></RouterLink>
                     </div>
                 </q-form>
@@ -148,4 +149,25 @@ const setupVault = async () => {
     ></q-page>
 </template>
 
-<style scoped></style>
+<style scoped>
+.form {
+    border-radius: 0.75rem;
+}
+.form::before {
+    position: absolute;
+    top: 0;
+    left: 0;
+    content: '';
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(
+        135deg,
+        rgba(80, 80, 80, 0.2) 0%,
+        rgba(200, 200, 200, 0.3) 50%,
+        rgba(80, 80, 80, 0.2) 100%
+    );
+    box-shadow: rgba(0, 0, 0, 0.1) 0px 4px 12px;
+    border-radius: 0.75rem;
+    border: 1px solid rgba(255, 255, 255, 0.125);
+}
+</style>

@@ -3,6 +3,7 @@ import { ref, computed, onMounted } from 'vue';
 import { useRouter } from 'vue-router';
 import { useQuasar } from 'quasar';
 import { supabase } from 'src/clients/supabase';
+import { loadStripe } from '@stripe/stripe-js';
 
 const vault = ref(null);
 
@@ -36,12 +37,18 @@ const alert = () => {
     $q.dialog({
         dark: true,
         title: 'Exit',
-        message: 'Are you sure you want to leave the vault?',
+        message: 'Are you sure you want to leave?',
         ok: {
             label: 'Yes',
             color: 'secondary',
             'text-color': 'dark',
         },
+        cancel: {
+            label: 'No',
+            flat: true,
+            'text-color': 'primary',
+        },
+        style: 'padding: 1rem',
     })
         .onOk(() => {
             leaveVault()
@@ -72,8 +79,72 @@ const imgSrc = (ext) => {
     return new URL(`/src/assets/vault/${determineFaction.value}.${ext}`, import.meta.url).href;
 };
 
+// top-up
+
+const balanceDialog = ref(false);
+
+const topUpAmount = ref(100);
+
+const paymentTypes = [
+    { value: 'gold', label: 'Gold' },
+    { value: 'crimson_gems', label: 'Crimson Gems' },
+    { value: 'gamblers_lootbox', label: 'Gamblers Lootbox' },
+];
+
+const minAmounts = {
+    gold: 100,
+    crimson_gems: 10,
+    gamblers_lootbox: 1,
+};
+
+const paymentType = ref(paymentTypes[0]);
+
+const resetAmount = () => {
+    topUpAmount.value = minAmounts[paymentType.value.value];
+};
+
+const increment = () => {
+    if (paymentType.value.value === 'gold') {
+        topUpAmount.value += 100;
+    } else if (paymentType.value.value === 'crimson_gems') {
+        topUpAmount.value += 5;
+    } else {
+        topUpAmount.value += 1;
+    }
+};
+
+const decrement = () => {
+    const step = minAmounts[paymentType.value.value];
+    topUpAmount.value = Math.max(topUpAmount.value - step, step);
+};
+
+const validateInput = (e) => {
+    if (!/[\d.]/.test(e.key)) {
+        event.preventDefault();
+    }
+};
+
+const goldToUsd: number = 0.01;
+
+const calculatedAmount = computed(() => {
+    let goldEquivalent: number = topUpAmount.value;
+
+    if (paymentType.value.value === 'crimson_gems') {
+        goldEquivalent = topUpAmount.value * 100;
+    } else if (paymentType.value.value === 'gamblers_lootbox') {
+        goldEquivalent = topUpAmount.value * 1000;
+    }
+
+    return (goldEquivalent * goldToUsd).toFixed(2);
+});
+
+// stripe
+
+// const stripe = ref(null);
+
 onMounted(async () => {
     await getCurrentOwner();
+    // stripe.value = await loadStripe(import.meta.env.VITE_PUBLISHABLEKEY);
 });
 </script>
 
@@ -86,30 +157,92 @@ onMounted(async () => {
         >
             <h1 class="sr-only">Vault</h1>
 
-            <div class="q-px-md">
-                <div class="q-pa-lg storage">
-                    <div class="storage__inner">
-                        <div class="flex items-center justify-between storage__header">
-                            <div style="cursor: pointer">
-                                <q-img
-                                    :src="`${imgSrc('avif')}`"
-                                    width="819px"
-                                    height="819px"
-                                    style="justify-self: left; width: 2.2rem; height: 2.5rem"
-                                />
-                                <q-tooltip class="bg-primary text-center" anchor="center end" self="bottom start">
-                                    <span class="text-caption text-negative">{{ determineFaction }}</span>
-                                </q-tooltip>
-                            </div>
+            <q-dialog v-model="balanceDialog">
+                <q-card dark class="q-pa-md" style="max-width: 22.25rem; width: 100%">
+                    <q-card-section class="q-pt-none">
+                        <div class="text-h6 text-primary">Add gold</div>
+                    </q-card-section>
 
-                            <h2 class="text-h6">{{ vault?.user.user_metadata.first_name }}'s Inventory</h2>
+                    <q-card-actions class="q-pb-none" align="center">
+                        <q-select
+                            v-model="paymentType"
+                            :options="paymentTypes"
+                            filled
+                            style="flex: 1"
+                            dark
+                            label-color="info"
+                            input-class="text-primary"
+                            label="Currency of choice *"
+                            lazy-rules="ondemand"
+                            :rules="[(val) => (val && val.length > 0) || 'Choose payment type']"
+                            @update:model-value="resetAmount"
+                        />
+                    </q-card-actions>
+
+                    <q-card-actions class="column q-gutter-x-sm" align="center">
+                        <span class="text-secondary">Price: ${{ calculatedAmount }}</span>
+                        <div class="flex q-mt-md">
+                            <q-btn icon="remove" color="primary" flat @click="decrement" />
+
+                            <q-input
+                                v-model.number="topUpAmount"
+                                type="number"
+                                input-class="text-primary text-h6 text-center"
+                                dense
+                                dark
+                                style="max-width: 6.25rem"
+                                @keypress="validateInput"
+                            />
+                            <q-btn icon="add" color="primary" flat @click="increment" />
+                        </div>
+                    </q-card-actions>
+
+                    <q-card-actions class="q-mt-lg" align="center">
+                        <q-btn
+                            v-close-popup
+                            label="Accept"
+                            outline
+                            color="secondary"
+                            text-color="primary"
+                            style="width: 100%"
+                        />
+                    </q-card-actions>
+                </q-card>
+            </q-dialog>
+
+            <div class="q-px-md">
+                <div class="q-pa-lg vault">
+                    <div class="vault__inner">
+                        <div class="vault__header">
+                            <div class="vault__title-wrapper">
+                                <div class="q-ma-none" style="cursor: pointer">
+                                    <q-img
+                                        :src="`${imgSrc('avif')}`"
+                                        width="819px"
+                                        height="819px"
+                                        style="width: 2.2rem; height: 2.5rem"
+                                    />
+                                    <q-tooltip
+                                        :delay="500"
+                                        class="bg-primary text-center"
+                                        anchor="center start"
+                                        self="bottom end"
+                                    >
+                                        <span class="text-caption text-negative">{{ determineFaction }}</span>
+                                    </q-tooltip>
+                                </div>
+                                <h2 class="text-center text-h6">
+                                    {{ vault?.user.user_metadata.first_name }}'s Inventory
+                                </h2>
+                            </div>
 
                             <q-btn icon="close" color="grey" flat dense @click="alert"></q-btn>
                         </div>
 
-                        <div class="q-mt-lg storage__cells">
-                            <div v-for="i in 28" :key="i" class="storage__cell">
+                        <div class="q-mt-lg vault__cells">
+                            <div v-for="i in 36" :key="i" class="vault__cell">
                                 <q-tooltip
+                                    :delay="500"
                                     anchor="bottom right"
                                     self="center start"
                                     class="bg-primary column text-center text-dark"
@@ -119,21 +252,21 @@ onMounted(async () => {
                                     <span> Speedy boots for fast getaways. Run like a goblin on fire! </span>
                                 </q-tooltip>
 
-                                <div class="storage__cell-placeholder"></div>
-                                <!-- <q-img
-                                    class="storage__cell-image"
-                                    src="~assets/index/featured/image-1.avif"
+                                <div class="vault__cell-placeholder"></div>
+                                <q-img
+                                    class="vault__cell-image"
+                                    src="~assets/index/featured/image-2.avif"
                                     width="1024px"
                                     height="1024px"
                                     style="width: 4.8125rem; height: 4.8125rem"
-                                /> -->
+                                />
                             </div>
                         </div>
 
-                        <div class="storage__footer">
+                        <div class="vault__footer">
                             <q-pagination
                                 v-model="currentPage"
-                                class="q-mt-lg storage__nav"
+                                class="q-mt-lg vault__nav"
                                 :max="3"
                                 direction-links
                                 flat
@@ -141,12 +274,23 @@ onMounted(async () => {
                                 input-class="text-primary"
                             />
 
-                            <div class="flex q-mt-lg storage__gold-panel" style="gap: 0.75rem">
-                                <q-btn icon="add" flat dense></q-btn>
+                            <div class="flex q-mt-lg vault__gold-panel" style="gap: 0.75rem">
+                                <q-btn
+                                    style="border-radius: var(--rounded)"
+                                    icon="add"
+                                    flat
+                                    dense
+                                    @click="balanceDialog = true"
+                                ></q-btn>
                                 <div class="flex items-center q-gutter-x-sm">
                                     <span>0</span>
                                     <q-img src="~assets/vault/gold.avif" width="18px" height="18px" />
-                                    <q-tooltip anchor="bottom right" self="center start" class="bg-primary text-center">
+                                    <q-tooltip
+                                        :delay="500"
+                                        anchor="bottom right"
+                                        self="center start"
+                                        class="bg-primary text-center"
+                                    >
                                         <span class="text-caption text-negative">Gold</span>
                                     </q-tooltip>
                                 </div>
@@ -154,6 +298,7 @@ onMounted(async () => {
                                     <span>0</span>
                                     <q-img src="~assets/vault/ruby.avif" width="18px" height="18px" />
                                     <q-tooltip
+                                        :delay="500"
                                         anchor="bottom right"
                                         self="center start"
                                         class="bg-primary text-center text-dark"
@@ -165,6 +310,7 @@ onMounted(async () => {
                                     <span>0</span>
                                     <q-img src="~assets/vault/gamblers-lootbox.avif" width="22px" height="22px" />
                                     <q-tooltip
+                                        :delay="500"
                                         anchor="bottom right"
                                         self="center start"
                                         class="bg-primary text-center text-dark"
@@ -182,37 +328,73 @@ onMounted(async () => {
 </template>
 
 <style scoped>
-.storage {
+.vault {
+    position: relative;
     background-color: var(--q-dark-page);
-    border: 1px solid var(--q-gold-frame);
     border-radius: var(--rounded);
+    box-shadow:
+        rgba(0, 0, 0, 0.15) 0px 13px 27px -5px,
+        rgba(0, 0, 0, 0.3) 0px 8px 16px -8px;
 }
 
-.storage__header {
+.vault::before {
+    position: absolute;
+    top: 0;
+    left: 0;
+    content: '';
     width: 100%;
+    height: 100%;
+    /* background: radial-gradient(circle at top, rgba(60, 30, 15, 0.35), transparent); */
+    /* background: linear-gradient(
+            135deg,
+            rgba(24, 24, 24, 0.2) 0%,
+            rgba(27, 27, 27, 0.3) 50%,
+            rgba(140, 140, 140, 0.2) 100%
+        ); */
+
+    background: linear-gradient(
+        135deg,
+        rgba(80, 80, 80, 0.2) 0%,
+        rgba(200, 200, 200, 0.3) 50%,
+        rgba(80, 80, 80, 0.2) 100%
+    );
+
+    /* box-shadow: rgba(0, 0, 0, 0.1) 0px 4px 12px; */
+    border-radius: 0.75rem;
+    border: 1px solid rgba(255, 255, 255, 0.125);
 }
-.storage__header h2 {
+
+.vault__header {
+    display: grid;
+    place-items: center;
+    grid-template-columns: 1fr auto 1fr;
+}
+.vault__header h2 {
     grid-column-start: 2;
 }
-.storage__header .q-btn {
+.vault__header .q-btn {
     justify-self: end;
     grid-column-start: 3;
 }
 
-.storage__cells {
-    width: 100%;
-    display: grid;
-    grid-template-columns: 1fr 1fr 1fr 1fr 1fr 1fr 1fr;
-    grid-template-rows: 1fr 1fr 1fr 1fr;
-    gap: 1rem;
-    grid-template-areas:
-        '. . . . . .'
-        '. . . . . .'
-        '. . . . . .'
-        '. . . . . .';
+.vault__title-wrapper {
+    grid-column-start: 2;
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    z-index: 0;
 }
 
-.storage__cell {
+.vault__cells {
+    display: grid;
+    grid-template-columns: repeat(9, 1fr);
+    grid-template-rows: repeat(4, 1fr);
+    gap: 1rem;
+    width: 100%;
+    place-items: center;
+}
+
+.vault__cell {
     position: relative;
     cursor: pointer;
     display: flex;
@@ -221,67 +403,83 @@ onMounted(async () => {
     padding: 0.25em;
     width: 5.25rem;
     height: 5.25rem;
-    border-radius: 0.625rem;
-    background: linear-gradient(145deg, rgba(255, 255, 255, 0.1), rgba(0, 0, 0, 0.2));
+    /* border-radius: 0.625rem; */
+    border-radius: var(--rounded);
+    background: linear-gradient(145deg, rgba(30, 18, 12, 0.85), rgba(60, 30, 15, 0.7));
     box-shadow:
-        0 4px 12px rgba(0, 0, 0, 0.2),
-        inset 0 0 5px rgba(255, 255, 255, 0.5);
+        0 6px 15px rgba(0, 0, 0, 0.6),
+        inset 0 0 12px rgba(255, 255, 255, 0.3);
     overflow: hidden;
+    border: 1px solid rgba(255, 255, 255, 0.25);
+    transition: box-shadow 0.15s linear;
+    z-index: 3;
 }
 
-.storage__cell-placeholder {
+.vault__cell:hover {
+    box-shadow: 0 8px 20px rgba(92, 90, 78, 0.5);
+    background: linear-gradient(145deg, rgb(50, 50, 50), rgba(0, 0, 0, 0.7));
+}
+
+.vault__cell-placeholder {
     position: absolute;
     top: 50%;
     left: 50%;
     transform: translateX(-50%) translateY(-50%);
     width: 100%;
     height: 100%;
-    background: linear-gradient(135deg, #2a2a2a, #1f1f1f, #0a0a0a);
+    background: linear-gradient(135deg, #1e1e1e, #191919, #0a0a0a);
     box-shadow:
         0 0 15px rgba(255, 255, 255, 0.1),
         inset 0 0 10px rgba(255, 255, 255, 0.3);
 }
 
-.storage__cell-image {
+.vault__cell-image {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translateX(-50%) translateY(-50%);
+    width: 100%;
+    height: 100%;
     user-select: none;
+    z-index: 0;
 }
 
-.storage__footer {
+.vault__footer {
     display: grid;
     place-items: center;
-    grid-template-columns: 1fr 1fr 1fr;
+    grid-template-columns: repeat(3, 1fr);
     gap: 0px 0px;
     width: 100%;
 }
 
-.storage__nav {
+.vault__nav {
     grid-column-start: 2;
     justify-self: center;
 }
 
-:deep(.storage__nav button:last-child),
-:deep(.storage__nav button:first-child) {
+:deep(.vault__nav button:last-child),
+:deep(.vault__nav button:first-child) {
     display: none;
 }
-:deep(.storage__nav .q-btn[disabled]) {
+:deep(.vault__nav .q-btn[disabled]) {
     cursor: default !important;
     pointer-events: none !important;
 }
-:deep(.storage__nav .q-btn),
-:deep(.storage__nav .q-btn .q-icon) {
+:deep(.vault__nav .q-btn),
+:deep(.vault__nav .q-btn .q-icon) {
     cursor: pointer !important;
 }
-:deep(.storage__nav .q-btn[disabled] .q-icon),
-:deep(.storage__nav .q-icon),
-:deep(.storage__nav span) {
+:deep(.vault__nav .q-btn[disabled] .q-icon),
+:deep(.vault__nav .q-icon),
+:deep(.vault__nav span) {
     cursor: default !important;
 }
-:deep(.storage__nav label) {
+:deep(.vault__nav label) {
     pointer-events: none !important;
     user-select: none !important;
 }
 
-.storage__gold-panel {
+.vault__gold-panel {
     display: flex;
     justify-content: space-between;
     align-items: center;
@@ -291,5 +489,6 @@ onMounted(async () => {
     grid-column-start: 3;
     justify-self: end;
     padding-right: 0.285em;
+    z-index: 0;
 }
 </style>

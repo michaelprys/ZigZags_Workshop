@@ -1,10 +1,12 @@
 <script setup lang="ts">
 import { ref } from 'vue';
 import IconCursed from 'src/components/icons/IconCursed.vue';
-import IconEnchantable from 'src/components/icons/IconEnchantable.vue';
-import ItemTooltipEffect from 'src/components/items/ItemTooltipEffect.vue';
 
 const current = ref(5);
+
+import { useAddToStash } from 'src/use/useAddToStash';
+
+const { addToStash } = useAddToStash('negative', 'primary');
 </script>
 
 <template>
@@ -12,7 +14,7 @@ const current = ref(5);
         <div class="overlay"></div>
 
         <section id="workshop" style="padding-top: 4.625em; padding-bottom: 8.5em">
-            <h1 class="text-center text-h3 text-negative">Trade in Shadows</h1>
+            <h1 class="text-center text-h3 title">Trade in shadows</h1>
 
             <div class="column flex-center q-px-md relative-position">
                 <ul class="flex q-gutter-x-xl q-mt-lg text-subtitle1" style="user-select: none">
@@ -28,16 +30,12 @@ const current = ref(5);
                     <li v-for="item in 8" :key="item" style="cursor: pointer">
                         <q-card class="card" style="max-width: 19.625rem" flat dark>
                             <div class="card__image-wrapper">
-                                <q-img
-                                    class="card__image"
-                                    src="~assets/index/featured/image-3.avif"
-                                    style="height: 210px"
-                                />
+                                <q-img class="card__image" src="~assets/index/featured/image-3.avif" />
                             </div>
 
                             <q-card-section>
                                 <div class="items-center no-wrap row">
-                                    <div class="col ellipsis text-h6">Boots of swiftness</div>
+                                    <div class="col ellipsis text-h6 text-primary">Boots of swiftness</div>
                                 </div>
                             </q-card-section>
 
@@ -47,26 +45,23 @@ const current = ref(5);
                                     <div class="flex items-center q-gutter-x-xs text-negative">
                                         <IconCursed>
                                             <q-tooltip
+                                                :delay="500"
                                                 anchor="center right"
                                                 self="top start"
                                                 class="column text-center text-dark"
                                                 style="
                                                     background-color: var(--q-dark);
                                                     border: 1px solid
-                                                        color-mix(in srgb, var(--q-primary) 50%, #8a2be2 90%);
+                                                        color-mix(in srgb, var(--q-primary) 50%, #23b35c 90%);
                                                     border-radius: var(--rounded);
                                                     box-shadow:
                                                         0px 3px 8px rgba(0, 0, 0, 0.4),
-                                                        2px 5px 12px #8a2be2;
+                                                        2px 5px 12px #23b35c;
                                                 "
                                             >
-                                                <span class="text-caption" style="color: #8a2be2">Cursed</span>
+                                                <span class="text-caption" style="color: #23b35c">Cursed</span>
                                             </q-tooltip>
                                         </IconCursed>
-
-                                        <IconEnchantable>
-                                            <ItemTooltipEffect />
-                                        </IconEnchantable>
                                     </div>
                                 </div>
                                 <span class="inline-block text-caption text-grey">
@@ -75,7 +70,7 @@ const current = ref(5);
                             </q-card-section>
 
                             <q-card-actions class="flex justify-between q-pt-none">
-                                <q-btn flat color="primary">💰 &nbsp; Add to stash </q-btn>
+                                <q-btn flat color="primary" @click="addToStash">💰 &nbsp; Add to stash </q-btn>
                                 <q-btn flat color="info">
                                     <RouterLink :to="{ name: 'black-market-details', params: { id: 1 } }">
                                         Details
@@ -103,6 +98,14 @@ const current = ref(5);
 </template>
 
 <style scoped>
+.notification {
+    background-color: #fff;
+}
+
+.title {
+    color: #710b03;
+}
+
 .overlay {
     position: absolute;
     top: 0;
@@ -114,6 +117,7 @@ const current = ref(5);
     background-size: cover;
     background-repeat: no-repeat;
     opacity: 50%;
+    z-index: -1;
 }
 
 .overlay::before {
@@ -123,14 +127,12 @@ const current = ref(5);
     left: 50%;
     width: 120%;
     min-height: 100svh;
-
     background: radial-gradient(
         ellipse at center,
         rgba(10, 0, 0, 0.9) 0%,
         rgba(20, 0, 0, 0.85) 50%,
         rgba(0, 0, 0, 1) 80%
     );
-
     transform: translateX(-50%) scaleY(1.2);
     filter: blur(50px);
     z-index: -1;
@@ -155,9 +157,7 @@ const current = ref(5);
         0 0 25px rgba(255, 0, 0, 0.5);
     overflow: hidden;
     padding: 0.9375rem;
-    border: 2px solid transparent;
     background-clip: border-box;
-    position: relative;
 }
 
 .card::after {
@@ -185,5 +185,6 @@ const current = ref(5);
 .card__image {
     transition: transform 0.15s linear;
     transform: scale(1);
+    height: 210px;
 }
 </style>
