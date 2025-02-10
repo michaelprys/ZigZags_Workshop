@@ -4,7 +4,7 @@ import { ref } from 'vue';
 const activeSlide = ref(1);
 
 const imgSrc = (name: string) => {
-    return new URL(`/src/assets/index/featured/${name}.avif`, import.meta.url).href;
+    return new URL(`/src/assets/index/${name}.avif`, import.meta.url).href;
 };
 
 const slides = [

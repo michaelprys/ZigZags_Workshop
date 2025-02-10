@@ -6,11 +6,7 @@
 
         <div class="flex flex-center q-px-md">
             <div style="display: flex; gap: 2.8rem; max-width: 87.5rem; border-radius: var(--rounded)">
-                <q-img
-                    class="shadow-8"
-                    src="~assets/index/black-market/bg.avif"
-                    style="width: 45%; border-radius: var(--rounded)"
-                />
+                <q-img class="shadow-8" src="~assets/index/bg.avif" style="width: 45%; border-radius: var(--rounded)" />
 
                 <div style="width: 55%">
                     <h2 class="text-h3">Goblin Black Market</h2>

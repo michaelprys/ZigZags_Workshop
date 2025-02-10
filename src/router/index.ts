@@ -15,11 +15,12 @@ import { supabase } from 'src/clients/supabase';
 let localOwner;
 
 export default defineRouter(function (/* { store, ssrContext } */) {
-    const createHistory = process.env.SERVER
-        ? createMemoryHistory
-        : process.env.VUE_ROUTER_MODE === 'history'
-          ? createWebHistory
-          : createWebHashHistory;
+    // const createHistory = process.env.SERVER
+    //     ? createMemoryHistory
+    //     : process.env.VUE_ROUTER_MODE === 'history'
+    //       ? createWebHistory
+    //       : createWebHashHistory;
+    const createHistory = createWebHistory;
 
     const Router = createRouter({
         scrollBehavior(to, from, savedPosition) {

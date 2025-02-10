@@ -86,14 +86,14 @@ const balanceDialog = ref(false);
 const topUpAmount = ref(100);
 
 const paymentTypes = [
-    { value: 'gold', label: 'Gold' },
-    { value: 'crimson_gems', label: 'Crimson Gems' },
-    { value: 'gamblers_lootbox', label: 'Gamblers Lootbox' },
+    { value: 'gold', label: 'Gold', price: 'price_1QqFU0A5CEpsldcvnaDyHOVm' },
+    { value: 'emberheart_rubies', label: 'Emberheart Rubies', price: 'price_1QqFW9A5CEpsldcvw6nZHFB6' },
+    { value: 'gamblers_lootbox', label: "Gambler's Lootbox", price: 'price_1QqFWzA5CEpsldcvzS0tGLAk' },
 ];
 
 const minAmounts = {
     gold: 100,
-    crimson_gems: 10,
+    emberheart_rubies: 10,
     gamblers_lootbox: 1,
 };
 
@@ -104,22 +104,24 @@ const resetAmount = () => {
 };
 
 const increment = () => {
-    if (paymentType.value.value === 'gold') {
-        topUpAmount.value += 100;
-    } else if (paymentType.value.value === 'crimson_gems') {
-        topUpAmount.value += 5;
-    } else {
-        topUpAmount.value += 1;
-    }
+    topUpAmount.value += minAmounts[paymentType.value.value];
 };
 
 const decrement = () => {
-    const step = minAmounts[paymentType.value.value];
-    topUpAmount.value = Math.max(topUpAmount.value - step, step);
+    const min = minAmounts[paymentType.value.value];
+    topUpAmount.value = Math.max(topUpAmount.value - min, min);
 };
 
-const validateInput = (e) => {
+const preventIncorrectChars = (e) => {
     if (!/[\d.]/.test(e.key)) {
+        e.preventDefault();
+    }
+};
+
+const handlePaste = (e) => {
+    const pastedVal = e.clipboardData.getData('text');
+
+    if (!/^\d+$/.test(pastedVal)) {
         event.preventDefault();
     }
 };
@@ -129,7 +131,7 @@ const goldToUsd: number = 0.01;
 const calculatedAmount = computed(() => {
     let goldEquivalent: number = topUpAmount.value;
 
-    if (paymentType.value.value === 'crimson_gems') {
+    if (paymentType.value.value === 'emberheart_rubies') {
         goldEquivalent = topUpAmount.value * 100;
     } else if (paymentType.value.value === 'gamblers_lootbox') {
         goldEquivalent = topUpAmount.value * 1000;
@@ -140,11 +142,67 @@ const calculatedAmount = computed(() => {
 
 // stripe
 
-// const stripe = ref(null);
+const stripePromise = loadStripe(import.meta.env.VITE_PUBLISHABLEKEY);
+
+const topUpForm = ref(null);
+
+const pending = ref(false);
+
+const handlePayment = async () => {
+    pending.value = true;
+
+    const stripe = await stripePromise;
+
+    if (!topUpForm.value || !stripe) return;
+
+    try {
+        const valid = topUpForm.value.validate();
+
+        if (valid) {
+            const price = paymentType.value?.price;
+            console.log(price);
+            if (!price) {
+                console.error('Price not found for the selected type');
+                return;
+            }
+
+            const res = await fetch(`${import.meta.env.VITE_SITE_URL}/create-checkout-session`, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({
+                    price,
+                    quantity: topUpAmount.value,
+                }),
+            });
+
+            const contentType = res.headers.get('Content-Type');
+
+            if (contentType && contentType.includes('application/json')) {
+                const jsonResponse = await res.json();
+                const { sessionID } = jsonResponse;
+                const { error } = stripe.redirectToCheckout({ sessionId: sessionID });
+
+                if (error) {
+                    console.error(error);
+                }
+            } else {
+                const textResponse = await res.text();
+                console.error('Response is not JSON:', textResponse);
+            }
+        } else {
+            console.error('Validation error');
+        }
+    } catch (err) {
+        console.error('Payment processing error:', err);
+    } finally {
+        pending.value = true;
+    }
+};
 
 onMounted(async () => {
     await getCurrentOwner();
-    // stripe.value = await loadStripe(import.meta.env.VITE_PUBLISHABLEKEY);
 });
 </script>
 
@@ -157,56 +215,71 @@ onMounted(async () => {
         >
             <h1 class="sr-only">Vault</h1>
 
-            <q-dialog v-model="balanceDialog">
+            <q-dialog v-model="balanceDialog" backdrop-filter="blur(8px); brightness(60%)">
                 <q-card dark class="q-pa-md" style="max-width: 22.25rem; width: 100%">
                     <q-card-section class="q-pt-none">
-                        <div class="text-h6 text-primary">Add gold</div>
+                        <div class="text-h6 text-primary">Add funds</div>
                     </q-card-section>
 
-                    <q-card-actions class="q-pb-none" align="center">
-                        <q-select
-                            v-model="paymentType"
-                            :options="paymentTypes"
-                            filled
-                            style="flex: 1"
-                            dark
-                            label-color="info"
-                            input-class="text-primary"
-                            label="Currency of choice *"
-                            lazy-rules="ondemand"
-                            :rules="[(val) => (val && val.length > 0) || 'Choose payment type']"
-                            @update:model-value="resetAmount"
-                        />
-                    </q-card-actions>
-
-                    <q-card-actions class="column q-gutter-x-sm" align="center">
-                        <span class="text-secondary">Price: ${{ calculatedAmount }}</span>
-                        <div class="flex q-mt-md">
-                            <q-btn icon="remove" color="primary" flat @click="decrement" />
-
-                            <q-input
-                                v-model.number="topUpAmount"
-                                type="number"
-                                input-class="text-primary text-h6 text-center"
-                                dense
+                    <q-form ref="topUpForm">
+                        <q-card-actions class="q-pb-none" align="center">
+                            <q-select
+                                v-model="paymentType"
+                                :options="paymentTypes"
+                                filled
+                                style="flex: 1"
                                 dark
-                                style="max-width: 6.25rem"
-                                @keypress="validateInput"
+                                label-color="info"
+                                input-class="text-primary"
+                                label="Currency of choice *"
+                                lazy-rules="ondemand"
+                                :rules="[(val) => val.value !== '' || 'Choose currency']"
+                                @update:model-value="resetAmount"
                             />
-                            <q-btn icon="add" color="primary" flat @click="increment" />
-                        </div>
-                    </q-card-actions>
+                        </q-card-actions>
 
-                    <q-card-actions class="q-mt-lg" align="center">
-                        <q-btn
-                            v-close-popup
-                            label="Accept"
-                            outline
-                            color="secondary"
-                            text-color="primary"
-                            style="width: 100%"
-                        />
-                    </q-card-actions>
+                        <q-card-actions class="column q-gutter-x-sm" align="center">
+                            <span class="text-secondary">Cost: ${{ calculatedAmount }}</span>
+                            <div class="flex items-center q-mt-md" style="gap: 0.5rem">
+                                <q-btn
+                                    :disable="topUpAmount <= minAmounts[paymentType.value]"
+                                    icon="remove"
+                                    color="primary"
+                                    flat
+                                    @click="decrement"
+                                />
+
+                                <q-input
+                                    v-model.number="topUpAmount"
+                                    type="number"
+                                    input-class="text-primary text-h6 text-center"
+                                    style="max-width: 6.25rem"
+                                    dense
+                                    dark
+                                    lazy-rules="ondemand"
+                                    :rules="[
+                                        (val) =>
+                                            val >= minAmounts[paymentType.value] ||
+                                            `Minimal is ${minAmounts[paymentType.value]}`,
+                                    ]"
+                                    @keypress="preventIncorrectChars"
+                                    @paste="handlePaste"
+                                />
+                                <q-btn icon="add" color="primary" flat @click="increment" />
+                            </div>
+                        </q-card-actions>
+
+                        <q-card-actions align="center">
+                            <q-btn
+                                label="Continue"
+                                outline
+                                style="width: 100%"
+                                :loading="pending"
+                                @click="handlePayment"
+                            >
+                            </q-btn>
+                        </q-card-actions>
+                    </q-form>
                 </q-card>
             </q-dialog>
 
@@ -240,7 +313,7 @@ onMounted(async () => {
                         </div>
 
                         <div class="q-mt-lg vault__cells">
-                            <div v-for="i in 36" :key="i" class="vault__cell">
+                            <div v-for="i in 45" :key="i" class="vault__cell">
                                 <q-tooltip
                                     :delay="500"
                                     anchor="bottom right"
@@ -255,7 +328,7 @@ onMounted(async () => {
                                 <div class="vault__cell-placeholder"></div>
                                 <q-img
                                     class="vault__cell-image"
-                                    src="~assets/index/featured/image-2.avif"
+                                    src="~assets/index/image-2.avif"
                                     width="1024px"
                                     height="1024px"
                                     style="width: 4.8125rem; height: 4.8125rem"
@@ -296,26 +369,26 @@ onMounted(async () => {
                                 </div>
                                 <div class="flex items-center q-gutter-x-sm">
                                     <span>0</span>
-                                    <q-img src="~assets/vault/ruby.avif" width="18px" height="18px" />
+                                    <q-img src="~assets/vault/emberheart-rubies.avif" width="26px" height="26px" />
                                     <q-tooltip
                                         :delay="500"
                                         anchor="bottom right"
                                         self="center start"
                                         class="bg-primary text-center text-dark"
                                     >
-                                        <span class="text-caption text-negative">Crimson gems</span>
+                                        <span class="text-caption text-negative">Emberheart rubies</span>
                                     </q-tooltip>
                                 </div>
                                 <div class="flex items-center q-gutter-x-sm">
                                     <span>0</span>
-                                    <q-img src="~assets/vault/gamblers-lootbox.avif" width="22px" height="22px" />
+                                    <q-img src="~assets/vault/gamblers-lootbox.avif" width="23px" height="23px" />
                                     <q-tooltip
                                         :delay="500"
                                         anchor="bottom right"
                                         self="center start"
                                         class="bg-primary text-center text-dark"
                                     >
-                                        <span class="text-caption text-negative">Gambler's lootbox</span>
+                                        <span class="text-caption text-negative">Gambler's lootbox </span>
                                     </q-tooltip>
                                 </div>
                             </div>
@@ -344,22 +417,7 @@ onMounted(async () => {
     content: '';
     width: 100%;
     height: 100%;
-    /* background: radial-gradient(circle at top, rgba(60, 30, 15, 0.35), transparent); */
-    /* background: linear-gradient(
-            135deg,
-            rgba(24, 24, 24, 0.2) 0%,
-            rgba(27, 27, 27, 0.3) 50%,
-            rgba(140, 140, 140, 0.2) 100%
-        ); */
-
-    background: linear-gradient(
-        135deg,
-        rgba(80, 80, 80, 0.2) 0%,
-        rgba(200, 200, 200, 0.3) 50%,
-        rgba(80, 80, 80, 0.2) 100%
-    );
-
-    /* box-shadow: rgba(0, 0, 0, 0.1) 0px 4px 12px; */
+    background: radial-gradient(circle at top, rgba(60, 30, 15, 0.35), transparent);
     border-radius: 0.75rem;
     border: 1px solid rgba(255, 255, 255, 0.125);
 }
@@ -403,7 +461,6 @@ onMounted(async () => {
     padding: 0.25em;
     width: 5.25rem;
     height: 5.25rem;
-    /* border-radius: 0.625rem; */
     border-radius: var(--rounded);
     background: linear-gradient(145deg, rgba(30, 18, 12, 0.85), rgba(60, 30, 15, 0.7));
     box-shadow:

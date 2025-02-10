@@ -160,12 +160,7 @@ const setupVault = async () => {
     content: '';
     width: 100%;
     height: 100%;
-    background: linear-gradient(
-        135deg,
-        rgba(80, 80, 80, 0.2) 0%,
-        rgba(200, 200, 200, 0.3) 50%,
-        rgba(80, 80, 80, 0.2) 100%
-    );
+    background: radial-gradient(circle at top, rgba(60, 30, 15, 0.35), transparent);
     box-shadow: rgba(0, 0, 0, 0.1) 0px 4px 12px;
     border-radius: 0.75rem;
     border: 1px solid rgba(255, 255, 255, 0.125);

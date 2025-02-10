@@ -26,7 +26,7 @@ const { moveImage, resetImage } = useMoveImage(imgRef);
                         <img
                             ref="imgRef"
                             class="image"
-                            src="~assets/index/featured/image-3.avif"
+                            src="~assets/index/image-3.avif"
                             @mousemove="moveImage"
                             @mouseleave="resetImage"
                         />

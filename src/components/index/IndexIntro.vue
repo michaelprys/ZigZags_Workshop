@@ -47,12 +47,12 @@ const model = [];
                                 width="1516"
                                 height="926"
                                 style="object-fit: cover; filter: brightness(150%)"
-                                poster="~assets/index/intro/poster.avif"
+                                poster="~assets/index/poster.avif"
                                 loop
                                 muted
                                 autoplay
                             >
-                                <source src="~assets/index/intro/intro.mp4" type="video/mp4" />
+                                <source src="~assets/index/intro.mp4" type="video/mp4" />
                             </video>
                         </template>
                     </q-parallax>

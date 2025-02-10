@@ -31,7 +31,7 @@ const paymentType = ref(null);
 
 const paymentTypes = [
     { label: 'Gold', value: 'gold', conversionRate: 1 },
-    { label: 'Crimson gems', value: 'crimson-gems', conversionRate: 250 },
+    { label: 'Crimson gems', value: 'emberheart_rubies', conversionRate: 250 },
     { label: "Gambler's lootbox", value: 'gamblers-lootbox', conversionRate: 100 },
 ];
 
@@ -123,7 +123,7 @@ const quantity = ref(1);
                                     >
                                         <template v-slot:loading>
                                             <q-spinner-hourglass class="on-left" />
-                                            In process...
+                                            In progress...
                                         </template>
                                     </q-btn>
 
@@ -163,7 +163,7 @@ const quantity = ref(1);
                         <div class="column q-mr-xl wrapper">
                             <q-scroll-area dark class="panel q-pa-lg" style="height: 486px; width: 45rem">
                                 <div v-for="card in 10" :key="card" class="card shadow-1">
-                                    <q-img class="card__image" src="~assets/index/featured/image-1.avif" />
+                                    <q-img class="card__image" src="~assets/index/image-1.avif" />
 
                                     <div class="flex justify-between q-pa-md" style="width: 100%">
                                         <div>

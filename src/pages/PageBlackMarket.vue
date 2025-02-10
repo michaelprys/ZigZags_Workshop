@@ -30,7 +30,7 @@ const { addToStash } = useAddToStash('negative', 'primary');
                     <li v-for="item in 8" :key="item" style="cursor: pointer">
                         <q-card class="card" style="max-width: 19.625rem" flat dark>
                             <div class="card__image-wrapper">
-                                <q-img class="card__image" src="~assets/index/featured/image-3.avif" />
+                                <q-img class="card__image" src="~assets/index/image-3.avif" />
                             </div>
 
                             <q-card-section>
