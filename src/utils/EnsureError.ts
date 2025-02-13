@@ -1,3 +1,7 @@
+export interface ErrorResponse {
+    message?: string;
+}
+
 export const ensureError = (err: unknown): Error => {
     if (err instanceof Error) {
         return err;

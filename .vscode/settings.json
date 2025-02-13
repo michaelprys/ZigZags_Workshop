@@ -48,7 +48,7 @@
         "**/node_modules": true,
         "**/pnpm-lock.yaml": true,
         "**/postcss.config.js": true,
-        "**/tsconfig.json": false
+        "**/tsconfig.json": true
     },
     "typescript.tsdk": "node_modules/typescript/lib",
     "deno.enable": true

@@ -1,7 +1,7 @@
 import { Dialog, Notify } from 'quasar';
 import { supabase } from 'src/clients/supabase';
 
-export const useAddToStash = (color, textColor) => {
+export const useAddToStash = () => {
     const addToStash = async () => {
         const { data } = await supabase.auth.getSession();
 
@@ -21,8 +21,8 @@ export const useAddToStash = (color, textColor) => {
             Notify.create({
                 timeout: 2000,
                 message: 'Item added to stash',
-                color,
-                textColor,
+                color: 'positive',
+                textColor: 'dark',
                 position: 'bottom-right',
                 progress: true,
                 progressClass: 'progress',

@@ -6,7 +6,7 @@ const current = ref(5);
 
 import { useAddToStash } from 'src/use/useAddToStash';
 
-const { addToStash } = useAddToStash('negative', 'primary');
+const { addToStash } = useAddToStash();
 </script>
 
 <template>

@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { ref } from 'vue';
 import { useRouter } from 'vue-router';
-
+import { callToast } from 'src/utils/callToast';
 import { supabase } from 'src/clients/supabase';
 
 const router = useRouter();
@@ -10,18 +10,23 @@ const setupVaultForm = ref(null);
 const name = ref('');
 const mailbox = ref('');
 const vaultKey = ref('');
+const vaultConfirmKey = ref('');
 const faction = ref(null);
 
 const isPwd = ref(true);
+const isPwdConfirm = ref(true);
+const pending = ref(false);
 
 const factions = ['Horde', 'Alliance', 'No faction (Outsiders)'];
 
 const setupVault = async () => {
+    pending.value = true;
+
     try {
         const valid = await setupVaultForm.value.validate();
 
         if (valid) {
-            const { data, error } = await supabase.auth.signUp({
+            const { error } = await supabase.auth.signUp({
                 email: mailbox.value,
                 password: vaultKey.value,
 
@@ -34,16 +39,18 @@ const setupVault = async () => {
             });
 
             if (error) {
-                console.error(error);
+                callToast(error ? 'This vault is already claimed' : 'Something went wrong', false);
             } else {
+                callToast('Vault has been successfully set up', true);
                 await router.push({ name: 'access-vault' });
-                console.log(data);
             }
         } else {
             console.error('Validation Error');
         }
     } catch (err) {
-        console.error('Error opening vault: ', err);
+        console.error("Couldn't set up the vault: ", err);
+    } finally {
+        pending.value = false;
     }
 };
 </script>
@@ -58,111 +65,121 @@ const setupVault = async () => {
             <div class="q-px-md" style="max-width: 40.25rem; width: 100%">
                 <q-form
                     ref="setupVaultForm"
-                    class="form q-gutter-y-md q-pa-lg shadow-10"
-                    style="
-                        background-color: var(--q-bg-modal);
-
-                        width: 100%;
-                        max-width: 40rem;
-                        margin-inline: auto;
-                    "
-                    @keydown.enter="setupVault"
+                    class="shadow-10 vault-form"
+                    style="background-color: var(--q-bg-modal)"
+                    @keydown.enter.prevent="setupVault"
+                    @submit.prevent="setupVault"
                 >
-                    <div class="column q-mt-none">
-                        <h2 class="text-h5 text-secondary" style="z-index: 0">Set up vault</h2>
-                        <span class="q-mt-sm" style="z-index: 0">Let's set up your vault for safe keeping.</span>
-                    </div>
+                    <div class="q-gutter-y-md q-pa-lg vault-form__inner">
+                        <div class="column q-mt-none">
+                            <h2 class="text-h5 text-secondary">Set up vault</h2>
+                            <span class="q-mt-sm">Let's set up your vault for safe keeping.</span>
+                        </div>
 
-                    <div>
-                        <q-input
-                            v-model="name"
-                            filled
-                            bg-color="dark"
-                            label-color="info"
-                            input-class="text-primary"
-                            label="True name *"
-                            lazy-rules="ondemand"
-                            :rules="[(val) => val.length > 0 || 'No name? How do we call ya then?']"
-                        />
-                        <q-input
-                            v-model="mailbox"
-                            filled
-                            bg-color="dark"
-                            label-color="info"
-                            input-class="text-primary"
-                            label="Mailbox *"
-                            lazy-rules="ondemand"
-                            :rules="[(val) => val.length > 0 || 'A place where we send you stuff.']"
-                        />
-                        <q-input
-                            v-model="vaultKey"
-                            :type="isPwd ? 'password' : 'text'"
-                            filled
-                            bg-color="dark"
-                            label-color="info"
-                            input-class="text-primary"
-                            label="Vault key *"
-                            lazy-rules="ondemand"
-                            :rules="[
-                                (val) => (val && val.length > 0) || 'That key\'s too easy. Should be least 6 chars.',
-                            ]"
-                        >
-                            <template v-slot:append>
-                                <q-icon
-                                    :name="isPwd ? 'visibility_off' : 'visibility'"
-                                    color="info"
-                                    class="cursor-pointer"
-                                    @click="isPwd = !isPwd"
-                                />
-                            </template>
-                        </q-input>
+                        <div>
+                            <q-input
+                                v-model="name"
+                                filled
+                                bg-color="dark"
+                                label-color="info"
+                                input-class="text-primary"
+                                label="True name *"
+                                lazy-rules="ondemand"
+                                :rules="[(val) => val.length > 0 || 'No name? How do we call ya then?']"
+                            />
+                            <q-input
+                                v-model="mailbox"
+                                filled
+                                bg-color="dark"
+                                label-color="info"
+                                input-class="text-primary"
+                                label="Mailbox *"
+                                lazy-rules="ondemand"
+                                :rules="[
+                                    (val) => val.length > 0 || 'Got to have a mailbox to order a new vault key.',
+                                    (val) => /.+@.+\..+/.test(val) || 'Enter proper mailbox.',
+                                ]"
+                            />
+                            <q-input
+                                v-model="vaultKey"
+                                :type="isPwd ? 'password' : 'text'"
+                                filled
+                                bg-color="dark"
+                                label-color="info"
+                                input-class="text-primary"
+                                label="Vault key *"
+                                lazy-rules="ondemand"
+                                :rules="[
+                                    (val) => (val && val.length >= 6) || 'The key\'s too easy. Should be least 6 chars',
+                                ]"
+                                ><template v-slot:append>
+                                    <q-icon
+                                        :name="isPwd ? 'visibility_off' : 'visibility'"
+                                        color="info"
+                                        class="cursor-pointer"
+                                        @click="isPwd = !isPwd"
+                                    />
+                                </template>
+                            </q-input>
 
-                        <q-select
-                            v-model="faction"
-                            :options="factions"
-                            filled
-                            dark
-                            bg-color="dark"
-                            label-color="info"
-                            input-class="text-primary"
-                            label="Your faction *"
-                            lazy-rules="ondemand"
-                            :rules="[(val) => (val && val.length > 0) || 'Who do you fight for?']"
-                        />
-                    </div>
+                            <q-input
+                                v-model="vaultConfirmKey"
+                                :type="isPwdConfirm ? 'password' : 'text'"
+                                filled
+                                bg-color="dark"
+                                label-color="info"
+                                input-class="text-primary"
+                                label="Confirm vault key *"
+                                lazy-rules="ondemand"
+                                :rules="[(val) => val === vaultKey || 'That keys must match']"
+                            >
+                                <template v-slot:append>
+                                    <q-icon
+                                        :name="isPwdConfirm ? 'visibility_off' : 'visibility'"
+                                        color="info"
+                                        class="cursor-pointer"
+                                        @click="isPwdConfirm = !isPwdConfirm"
+                                    />
+                                </template>
+                            </q-input>
 
-                    <div class="flex items-center justify-between">
-                        <q-btn
-                            class="q-mt-none"
-                            label="Set up"
-                            color="secondary"
-                            text-color="dark"
-                            @click.prevent="setupVault"
-                        />
+                            <q-select
+                                v-model="faction"
+                                :options="factions"
+                                filled
+                                dark
+                                bg-color="dark"
+                                label-color="info"
+                                input-class="text-primary"
+                                label="Your faction *"
+                                lazy-rules="ondemand"
+                                :rules="[(val) => (val && val.length > 0) || 'Who do you fight for?']"
+                            />
+                        </div>
 
-                        <RouterLink :to="{ name: 'access-vault' }"
-                            ><q-btn class="q-mt-none" flat label="Access vault" text-color="primary"
-                        /></RouterLink>
+                        <div class="flex items-center justify-between">
+                            <q-btn
+                                class="q-mt-none"
+                                label="Set up"
+                                type="submit"
+                                style="width: 10rem"
+                                :loading="pending"
+                                :color="pending ? 'positive' : 'secondary'"
+                                text-color="dark"
+                            >
+                                <template v-slot:loading>
+                                    <q-spinner-hourglass class="on-left" />
+                                    In progress...
+                                </template>
+                            </q-btn>
+                            <RouterLink :to="{ name: 'access-vault' }"
+                                ><q-btn class="q-mt-none q-px-sm" flat label="Access vault" text-color="secondary"
+                            /></RouterLink>
+                        </div>
                     </div>
                 </q-form>
             </div></section
     ></q-page>
 </template>
 
-<style scoped>
-.form {
-    border-radius: 0.75rem;
-}
-.form::before {
-    position: absolute;
-    top: 0;
-    left: 0;
-    content: '';
-    width: 100%;
-    height: 100%;
-    background: radial-gradient(circle at top, rgba(60, 30, 15, 0.35), transparent);
-    box-shadow: rgba(0, 0, 0, 0.1) 0px 4px 12px;
-    border-radius: 0.75rem;
-    border: 1px solid rgba(255, 255, 255, 0.125);
-}
-</style>
+<style scoped></style>

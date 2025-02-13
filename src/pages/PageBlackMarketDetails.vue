@@ -4,7 +4,7 @@ import { useRouter } from 'vue-router';
 import { useMoveImage } from 'src/use/useMoveImage';
 import { useAddToStash } from 'src/use/useAddToStash';
 
-const { addToStash } = useAddToStash('negative', 'primary');
+const { addToStash } = useAddToStash();
 
 const router = useRouter();
 

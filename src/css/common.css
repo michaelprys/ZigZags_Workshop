@@ -1,0 +1,78 @@
+/* Transitions */
+.fade-enter-active,
+.fade-leave-active {
+    transition: opacity 150ms ease;
+}
+
+.fade-enter-from,
+.fade-leave-to {
+    opacity: 0;
+}
+/* Divider */
+/* ------------------------------- */
+.divider {
+    margin-inline: auto;
+    content: '';
+    width: 100%;
+    height: 1px;
+    top: 0;
+    background-color: #1e1e1e;
+    position: relative;
+    display: block;
+    z-index: 100;
+}
+
+.divider::before {
+    content: '';
+    position: absolute;
+    top: 0.375rem;
+    width: 100%;
+    height: 1px;
+    background-color: #1e1e1e;
+}
+.divider::after {
+    content: '';
+    position: absolute;
+}
+/* Text glow */
+/* ------------------------------- */
+.text-glow-dark {
+    text-shadow: 0.1875rem 0.3125rem 0.3125rem rgba(21, 21, 21, 0.5);
+}
+/* Vault form */
+/* ------------------------------- */
+.vault-form {
+    position: relative;
+    border-radius: 0.75rem;
+}
+.vault-form:before {
+    position: absolute;
+    top: 0;
+    left: 0;
+    content: '';
+    width: 100%;
+    height: 100%;
+    background: radial-gradient(circle at top, rgba(53, 0, 0, 0.5), rgba(0, 79, 80, 0.4), rgba(30, 0, 0, 0.4));
+    border-radius: 0.75rem;
+    border: 1px solid rgba(255, 255, 255, 0.125);
+    z-index: 0;
+}
+.vault-form:after {
+    position: absolute;
+    top: 0;
+    left: 0;
+    content: '';
+    width: 100%;
+    height: 100%;
+    background-image: url('/src/assets/vault/texture.avif');
+    background-size: cover;
+    background-position: center;
+    opacity: 10%;
+    border-radius: 0.75rem;
+    border: 1px solid rgba(255, 255, 255, 0.125);
+    z-index: 0;
+}
+.vault-form__inner {
+    position: relative;
+    z-index: 1;
+}

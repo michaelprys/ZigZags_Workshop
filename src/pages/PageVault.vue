@@ -4,6 +4,7 @@ import { useRouter } from 'vue-router';
 import { useQuasar } from 'quasar';
 import { supabase } from 'src/clients/supabase';
 import { loadStripe } from '@stripe/stripe-js';
+import { callToast } from 'src/utils/callToast';
 
 const vault = ref(null);
 
@@ -11,7 +12,7 @@ const getCurrentOwner = async () => {
     const { data, error } = await supabase.auth.getSession();
 
     if (error) {
-        console.error('Error getting current user', error);
+        console.error(error);
     } else {
         vault.value = data.session;
     }
@@ -21,9 +22,9 @@ const leaveVault = async () => {
     const { error } = await supabase.auth.signOut();
 
     if (error) {
-        console.error(error);
+        callToast(error ? 'Unable to leave the vault' : 'Something went wrong', false);
     } else {
-        console.log('You have successfully left the vault');
+        callToast("You've left the vault, safe travels", true);
     }
 };
 
@@ -86,9 +87,17 @@ const balanceDialog = ref(false);
 const topUpAmount = ref(100);
 
 const paymentTypes = [
-    { value: 'gold', label: 'Gold', price: 'price_1QqFU0A5CEpsldcvnaDyHOVm' },
-    { value: 'emberheart_rubies', label: 'Emberheart Rubies', price: 'price_1QqFW9A5CEpsldcvw6nZHFB6' },
-    { value: 'gamblers_lootbox', label: "Gambler's Lootbox", price: 'price_1QqFWzA5CEpsldcvzS0tGLAk' },
+    { value: 'gold', label: 'Gold', price: import.meta.env.VITE_PRICE_GOLD },
+    {
+        value: 'emberheart_rubies',
+        label: 'Emberheart Rubies',
+        price: import.meta.env.VITE_PRICE_EMBERHEART_RUBIES,
+    },
+    {
+        value: 'gamblers_lootbox',
+        label: "Gambler's Lootbox",
+        price: import.meta.env.VITE_PRICE_GAMBLERS_LOOTBOX,
+    },
 ];
 
 const minAmounts = {
@@ -142,7 +151,7 @@ const calculatedAmount = computed(() => {
 
 // stripe
 
-const stripePromise = loadStripe(import.meta.env.VITE_PUBLISHABLEKEY);
+const stripePromise = loadStripe(import.meta.env.VITE_PUBLISHABLE_KEY);
 
 const topUpForm = ref(null);
 
@@ -158,6 +167,13 @@ const handlePayment = async () => {
     try {
         const valid = topUpForm.value.validate();
 
+        const minAmount = minAmounts[paymentType.value.value];
+
+        if (topUpAmount.value < minAmount) {
+            console.error(`The minimal quantity is ${minAmount}`);
+            return;
+        }
+
         if (valid) {
             const price = paymentType.value?.price;
             console.log(price);
@@ -166,10 +182,21 @@ const handlePayment = async () => {
                 return;
             }
 
+            const {
+                data: { session },
+                error,
+            } = await supabase.auth.getSession();
+
+            if (error || !session) {
+                console.error(error);
+                return;
+            }
+
             const res = await fetch(`${import.meta.env.VITE_SITE_URL}/create-checkout-session`, {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
+                    Authorization: `Bearer ${session.access_token}`,
                 },
                 body: JSON.stringify({
                     price,
@@ -197,7 +224,7 @@ const handlePayment = async () => {
     } catch (err) {
         console.error('Payment processing error:', err);
     } finally {
-        pending.value = true;
+        pending.value = false;
     }
 };
 
@@ -215,13 +242,15 @@ onMounted(async () => {
         >
             <h1 class="sr-only">Vault</h1>
 
+            <div class="bg"></div>
+
             <q-dialog v-model="balanceDialog" backdrop-filter="blur(8px); brightness(60%)">
                 <q-card dark class="q-pa-md" style="max-width: 22.25rem; width: 100%">
                     <q-card-section class="q-pt-none">
                         <div class="text-h6 text-primary">Add funds</div>
                     </q-card-section>
 
-                    <q-form ref="topUpForm">
+                    <q-form ref="topUpForm" @submit.prevent="handlePayment" @keydown.enter.prevent="handlePayment">
                         <q-card-actions class="q-pb-none" align="center">
                             <q-select
                                 v-model="paymentType"
@@ -260,7 +289,7 @@ onMounted(async () => {
                                     :rules="[
                                         (val) =>
                                             val >= minAmounts[paymentType.value] ||
-                                            `Minimal is ${minAmounts[paymentType.value]}`,
+                                            `Minimal: ${minAmounts[paymentType.value]}`,
                                     ]"
                                     @keypress="preventIncorrectChars"
                                     @paste="handlePaste"
@@ -270,13 +299,7 @@ onMounted(async () => {
                         </q-card-actions>
 
                         <q-card-actions align="center">
-                            <q-btn
-                                label="Continue"
-                                outline
-                                style="width: 100%"
-                                :loading="pending"
-                                @click="handlePayment"
-                            >
+                            <q-btn type="submit" label="Continue" outline style="width: 100%" :loading="pending">
                             </q-btn>
                         </q-card-actions>
                     </q-form>
@@ -309,11 +332,11 @@ onMounted(async () => {
                                 </h2>
                             </div>
 
-                            <q-btn icon="close" color="grey" flat dense @click="alert"></q-btn>
+                            <q-btn icon="close" color="primary" flat dense @click="alert"></q-btn>
                         </div>
 
                         <div class="q-mt-lg vault__cells">
-                            <div v-for="i in 45" :key="i" class="vault__cell">
+                            <div v-for="i in 50" :key="i" class="vault__cell">
                                 <q-tooltip
                                     :delay="500"
                                     anchor="bottom right"
@@ -326,13 +349,13 @@ onMounted(async () => {
                                 </q-tooltip>
 
                                 <div class="vault__cell-placeholder"></div>
-                                <q-img
+                                <!-- <q-img
                                     class="vault__cell-image"
-                                    src="~assets/index/image-2.avif"
+                                    src="~assets/index/image-7.avif"
                                     width="1024px"
                                     height="1024px"
                                     style="width: 4.8125rem; height: 4.8125rem"
-                                />
+                                /> -->
                             </div>
                         </div>
 
@@ -404,22 +427,43 @@ onMounted(async () => {
 .vault {
     position: relative;
     background-color: var(--q-dark-page);
-    border-radius: var(--rounded);
+    border-radius: 0.75rem;
     box-shadow:
         rgba(0, 0, 0, 0.15) 0px 13px 27px -5px,
         rgba(0, 0, 0, 0.3) 0px 8px 16px -8px;
 }
 
-.vault::before {
+.vault:before {
     position: absolute;
     top: 0;
     left: 0;
     content: '';
     width: 100%;
     height: 100%;
-    background: radial-gradient(circle at top, rgba(60, 30, 15, 0.35), transparent);
+    background: radial-gradient(circle at top, rgba(53, 0, 0, 0.5), rgba(0, 79, 80, 0.4), rgba(30, 0, 0, 0.4));
     border-radius: 0.75rem;
     border: 1px solid rgba(255, 255, 255, 0.125);
+    z-index: 0;
+}
+
+.vault:after {
+    position: absolute;
+    top: 0;
+    left: 0;
+    content: '';
+    width: 100%;
+    height: 100%;
+    background-image: url('/src/assets/vault/texture.avif');
+    background-size: cover;
+    background-position: center;
+    opacity: 10%;
+    border-radius: 0.75rem;
+    border: 1px solid rgba(255, 255, 255, 0.125);
+}
+
+.vault__inner {
+    position: relative;
+    z-index: 1;
 }
 
 .vault__header {
@@ -445,11 +489,16 @@ onMounted(async () => {
 
 .vault__cells {
     display: grid;
-    grid-template-columns: repeat(9, 1fr);
+    grid-template-columns: repeat(10, 1fr);
     grid-template-rows: repeat(4, 1fr);
     gap: 1rem;
     width: 100%;
     place-items: center;
+}
+
+.vault__cell:hover {
+    box-shadow: 0 8px 20px rgba(92, 90, 78, 0.5);
+    background: linear-gradient(145deg, rgb(50, 50, 50), rgba(0, 0, 0, 0.7));
 }
 
 .vault__cell {
@@ -462,19 +511,10 @@ onMounted(async () => {
     width: 5.25rem;
     height: 5.25rem;
     border-radius: var(--rounded);
-    background: linear-gradient(145deg, rgba(30, 18, 12, 0.85), rgba(60, 30, 15, 0.7));
-    box-shadow:
-        0 6px 15px rgba(0, 0, 0, 0.6),
-        inset 0 0 12px rgba(255, 255, 255, 0.3);
     overflow: hidden;
-    border: 1px solid rgba(255, 255, 255, 0.25);
+    border: 1px solid rgba(255, 255, 255, 0.4);
     transition: box-shadow 0.15s linear;
     z-index: 3;
-}
-
-.vault__cell:hover {
-    box-shadow: 0 8px 20px rgba(92, 90, 78, 0.5);
-    background: linear-gradient(145deg, rgb(50, 50, 50), rgba(0, 0, 0, 0.7));
 }
 
 .vault__cell-placeholder {
@@ -484,10 +524,23 @@ onMounted(async () => {
     transform: translateX(-50%) translateY(-50%);
     width: 100%;
     height: 100%;
-    background: linear-gradient(135deg, #1e1e1e, #191919, #0a0a0a);
+    background: linear-gradient(145deg, #444, #222);
     box-shadow:
-        0 0 15px rgba(255, 255, 255, 0.1),
-        inset 0 0 10px rgba(255, 255, 255, 0.3);
+        0 0 10px rgba(255, 255, 255, 0.1),
+        0 2px 4px rgba(0, 0, 0, 0.5),
+        inset 0 0 12px rgba(255, 255, 255, 0.2),
+        inset 0 -2px 6px rgba(0, 0, 0, 0.6);
+}
+
+.vault__cell-placeholder::before {
+    content: '';
+    position: absolute;
+    top: 2px;
+    left: 2px;
+    right: 2px;
+    bottom: 2px;
+    background: radial-gradient(circle at top left, rgba(255, 255, 255, 0.2), transparent);
+    border-radius: var(--rounded);
 }
 
 .vault__cell-image {
@@ -498,7 +551,8 @@ onMounted(async () => {
     width: 100%;
     height: 100%;
     user-select: none;
-    z-index: 0;
+    border-radius: 0.3125rem;
+    filter: grayscale(20%) contrast(90%) brightness(90%);
 }
 
 .vault__footer {

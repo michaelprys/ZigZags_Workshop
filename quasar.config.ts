@@ -4,7 +4,7 @@ export default defineConfig(() => {
     return {
         boot: ['quasar-defaults'],
 
-        css: ['app.css', 'variables.css'],
+        css: ['app.css', 'variables.css', 'common.css'],
 
         extras: ['roboto-font', 'material-icons'],
 

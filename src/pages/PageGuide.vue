@@ -80,8 +80,6 @@
 
                     <div class="flex flex-center q-mt-xl relative-position wrapper">
                         <div class="map-texture" />
-
-                        <div class="map q-mb-lg q-mt-none shadow-1" />
                     </div>
 
                     <div
@@ -174,23 +172,9 @@
     min-height: 39rem;
 }
 
-.map {
-    width: 32rem;
-    height: 26rem;
-    background-image: url('src/assets/guide/map.avif');
-    background-size: cover;
-    background-position: center;
-    background-repeat: no-repeat;
-    filter: drop-shadow(4px 4px 10px rgba(0, 0, 0, 0.5)) grayscale(30%) brightness(77%);
-    border-radius: 0.0625rem;
-    margin-bottom: 0;
-    z-index: 1;
-    filter: grayscale(30%) brightness(60%);
-}
-
 .map-texture {
     position: absolute;
-    background-image: url('src/assets/guide/bg.avif');
+    background-image: url('src/assets/guide/entrance.avif');
     width: 100%;
     height: 100%;
     top: 0;
@@ -199,7 +183,6 @@
     background-position: center;
     background-repeat: no-repeat;
     opacity: 60%;
-    filter: grayscale(30%) brightness(70%);
     mask-image: radial-gradient(circle, rgb(255, 255, 255) 60%, rgba(255, 255, 255, 0) 100%);
 }
 </style>

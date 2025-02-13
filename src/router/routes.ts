@@ -25,6 +25,16 @@ const routes: RouteRecordRaw[] = [
                         component: () => import('pages/PageSetUpVault.vue'),
                     },
                     {
+                        path: 'order-key',
+                        name: 'order-key',
+                        component: () => import('pages/PageOrderKey.vue'),
+                    },
+                    {
+                        path: 'set-new-vault-key',
+                        name: 'set-new-vault-key',
+                        component: () => import('pages/PageSetNewKey.vue'),
+                    },
+                    {
                         path: 'vault',
                         name: 'vault',
                         meta: { requiresAuth: true },

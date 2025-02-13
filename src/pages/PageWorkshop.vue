@@ -4,7 +4,7 @@ import IconEnchantable from 'src/components/icons/IconEnchantable.vue';
 import ItemTooltipEffect from 'src/components/items/ItemTooltipEffect.vue';
 import { useAddToStash } from 'src/use/useAddToStash';
 
-const { addToStash } = useAddToStash('positive', 'dark');
+const { addToStash } = useAddToStash();
 
 const current = ref(5);
 </script>
@@ -13,7 +13,6 @@ const current = ref(5);
     <q-page>
         <section id="workshop" style="padding-top: 4.625em; padding-bottom: 8.5em">
             <h1 class="text-center text-h3">Explore goods</h1>
-
             <div class="column flex-center q-px-md relative-position">
                 <ul class="flex q-gutter-x-xl q-mt-lg text-subtitle1" style="user-select: none">
                     <li>

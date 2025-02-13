@@ -35,7 +35,7 @@ const isAuthorized = ref(true);
                             /></RouterLink>
                         </div>
 
-                        <q-form v-else class="full-width">
+                        <div v-else class="full-width">
                             <div class="column q-mt-none">
                                 <h2 class="q-mt-none text-h5 text-secondary">
                                     Get an invitation<span class="text-subtitle1">&nbsp;&nbsp;(1000 gold)</span>
@@ -65,7 +65,7 @@ const isAuthorized = ref(true);
                                     text-color="dark"
                                 />
                             </div>
-                        </q-form>
+                        </div>
                     </div>
                 </div>
             </section></div

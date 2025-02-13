@@ -6,13 +6,13 @@ const router = useRouter();
 
 const isAuthorized = ref(true);
 const hasInvitation = ref(true);
-const loading = ref(false);
+const pending = ref(false);
 
 const enter = () => {
-    loading.value = true;
+    pending.value = true;
     setTimeout(() => {
         router.push({ name: 'black-market' });
-        loading.value = false;
+        pending.value = false;
     }, 3000);
 };
 </script>
@@ -60,9 +60,9 @@ const enter = () => {
 
                             <div class="flex flex-center q-mt-lg">
                                 <q-btn
-                                    :loading="loading"
+                                    :loading="pending"
                                     style="width: 160px"
-                                    :color="loading ? 'positive' : 'primary'"
+                                    :color="pending ? 'positive' : 'primary'"
                                     class="q-mt-none"
                                     outline
                                     label="Enter"

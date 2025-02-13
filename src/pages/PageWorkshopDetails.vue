@@ -3,7 +3,7 @@ import { ref } from 'vue';
 import { useRouter } from 'vue-router';
 import { useAddToStash } from 'src/use/useAddToStash';
 
-const { addToStash } = useAddToStash('positive', 'dark');
+const { addToStash } = useAddToStash();
 
 const router = useRouter();
 

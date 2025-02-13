@@ -3,7 +3,6 @@ import { ref } from 'vue';
 import { useQuasar } from 'quasar';
 import { useRouter } from 'vue-router';
 
-const activeSlide = ref(2);
 const myForm = ref(null);
 
 const imgSrc = (name: string) => {
@@ -39,7 +38,7 @@ const $q = useQuasar();
 const router = useRouter();
 
 const trade = ref(false);
-const loading = ref(false);
+const pending = ref(false);
 
 const onSubmit = async () => {
     if (!myForm.value) return;
@@ -55,10 +54,10 @@ const onSubmit = async () => {
             return;
         }
 
-        loading.value = true;
+        pending.value = true;
 
         setTimeout(() => {
-            loading.value = false;
+            pending.value = false;
             dialog.value = false;
             trade.value = true;
 
@@ -93,7 +92,7 @@ const quantity = ref(1);
                         </div>
 
                         <div>
-                            <q-form ref="myForm" class="q-gutter-md q-mt-lg" @submit="onSubmit">
+                            <q-form ref="myForm" class="q-gutter-md q-mt-lg" @submit.prevent="onSubmit">
                                 <div class="flex" style="gap: 1rem">
                                     <q-select
                                         v-model="paymentType"
@@ -114,11 +113,11 @@ const quantity = ref(1);
 
                                 <div class="flex justify-between q-mt-md">
                                     <q-btn
-                                        :loading="loading"
-                                        style="width: 160px"
                                         type="submit"
+                                        :loading="pending"
+                                        style="width: 10rem"
                                         label="Trade"
-                                        :color="loading ? 'positive' : 'secondary'"
+                                        :color="pending ? 'positive' : 'secondary'"
                                         text-color="dark"
                                     >
                                         <template v-slot:loading>
@@ -127,8 +126,13 @@ const quantity = ref(1);
                                         </template>
                                     </q-btn>
 
-                                    <q-btn v-close-popup label="Close" flat color="secondary" text-color="primary">
-                                    </q-btn>
+                                    <q-btn
+                                        v-close-popup
+                                        label="Close"
+                                        flat
+                                        color="secondary"
+                                        text-color="primary"
+                                    ></q-btn>
                                 </div>
                             </q-form>
                         </div>
@@ -160,51 +164,40 @@ const quantity = ref(1);
                     </div>
 
                     <div class="flex q-mt-lg">
-                        <div class="column q-mr-xl wrapper">
-                            <q-scroll-area dark class="panel q-pa-lg" style="height: 486px; width: 45rem">
-                                <div v-for="card in 10" :key="card" class="card shadow-1">
-                                    <q-img class="card__image" src="~assets/index/image-1.avif" />
+                        <div dark class="panel q-mr-xl q-pa-lg">
+                            <div v-for="card in 10" :key="card" class="card shadow-1">
+                                <q-img class="card__image" src="~assets/index/image-1.avif" />
 
-                                    <div class="flex justify-between q-pa-md" style="width: 100%">
-                                        <div>
-                                            <div class="column">
-                                                <span class="text-bold">Sneaky Boots of Swift Exit</span>
-                                                <span class="text-bold">Enchantment: None</span>
-                                                <span class="q-mt-lg text-bold"
-                                                    ><span class="text-secondary">Price</span>: 250 Gold</span
-                                                >
-                                            </div>
-                                        </div>
+                                <div class="flex justify-between q-pa-md" style="width: 100%">
+                                    <div class="column">
+                                        <span class="text-bold">Sneaky Boots of Swift Exit</span>
+                                        <span class="text-bold">Enchantment: None</span>
+                                        <span class="q-mt-lg text-bold"
+                                            ><span class="text-secondary">Price</span>: 250 Gold</span
+                                        >
+                                    </div>
 
-                                        <div class="column justify-between" style="align-items: flex-end">
+                                    <div class="column justify-between" style="align-items: flex-end">
+                                        <q-btn v-model="quantity" outline color="info" size="sm" dense icon="close" />
+
+                                        <div class="flex items-center q-gutter-x-md">
                                             <q-btn
                                                 v-model="quantity"
-                                                outline
-                                                color="info"
-                                                size="sm"
                                                 dense
-                                                icon="close"
+                                                icon="remove"
+                                                @click="quantity > 1 ? quantity-- : 0"
                                             />
-
-                                            <div class="flex items-center q-gutter-x-md">
-                                                <q-btn
-                                                    v-model="quantity"
-                                                    dense
-                                                    icon="remove"
-                                                    @click="quantity > 1 ? quantity-- : 0"
-                                                />
-                                                <span>{{ quantity }}</span>
-                                                <q-btn
-                                                    v-model="quantity"
-                                                    dense
-                                                    icon="add"
-                                                    @click="quantity < 5 ? quantity++ : 5"
-                                                />
-                                            </div>
+                                            <span>{{ quantity }}</span>
+                                            <q-btn
+                                                v-model="quantity"
+                                                dense
+                                                icon="add"
+                                                @click="quantity < 5 ? quantity++ : 5"
+                                            />
                                         </div>
                                     </div>
                                 </div>
-                            </q-scroll-area>
+                            </div>
                         </div>
 
                         <div class="column price q-pa-lg">
@@ -250,8 +243,10 @@ const quantity = ref(1);
 }
 
 .panel {
+    position: relative;
     background-color: var(--q-dark-page);
     border-radius: var(--rounded);
+    width: 60rem;
 }
 
 .panel::before {
@@ -266,7 +261,7 @@ const quantity = ref(1);
     box-shadow: rgba(0, 0, 0, 0.1) 0px 4px 12px;
     border-radius: 0.75rem;
     border: 1px solid rgba(255, 255, 255, 0.125);
-    background: radial-gradient(circle at top, rgba(60, 30, 15, 0.35), transparent);
+    background: radial-gradient(circle at top, rgba(60, 30, 15, 0.35), rgba(0, 0, 0, 0.35));
 }
 
 .price {
@@ -274,6 +269,7 @@ const quantity = ref(1);
     background-color: var(--q-dark-page);
     border-radius: var(--rounded);
     height: 100%;
+    padding: 2.5em;
 }
 
 .price > * {
@@ -291,7 +287,7 @@ const quantity = ref(1);
     box-shadow: rgba(0, 0, 0, 0.1) 0px 4px 12px;
     border-radius: 0.75rem;
     border: 1px solid rgba(255, 255, 255, 0.125);
-    background: radial-gradient(circle at top, rgba(60, 30, 15, 0.35), transparent);
+    background: radial-gradient(circle at top, rgba(60, 30, 15, 0.35), rgba(9, 9, 9, 0.35));
 }
 
 .toast {
@@ -313,10 +309,6 @@ const quantity = ref(1);
     border-radius: var(--rounded);
 }
 
-.wrapper {
-    display: flex;
-}
-
 .card {
     display: flex;
     justify-content: space-between;
@@ -334,7 +326,7 @@ const quantity = ref(1);
     border-top-left-radius: var(--rounded);
     border-top-right-radius: var(--rounded);
     width: 200px;
-    height: 130px;
+    /* height: 130px; */
     background-size: cover;
 }
 </style>
