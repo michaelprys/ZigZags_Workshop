@@ -1,11 +1,11 @@
 <script setup lang="ts">
-import { ref } from 'vue';
-import IconCursed from 'src/components/icons/IconCursed.vue';
-
-const current = ref(5);
-
+import IconDebuff from 'src/components/icons/IconDebuff.vue';
 import { useAddToStash } from 'src/use/useAddToStash';
+import { usePaginatedGoods } from 'src/use/usePaginatedGoods';
+import { useStoreGoods } from 'src/stores/useStoreGoods';
 
+const store = useStoreGoods();
+const { totalPages, currentPage, loadPaginatedGoods, imageUrl } = usePaginatedGoods(true);
 const { addToStash } = useAddToStash();
 </script>
 
@@ -14,60 +14,67 @@ const { addToStash } = useAddToStash();
         <div class="overlay"></div>
 
         <section id="workshop" style="padding-top: 4.625em; padding-bottom: 8.5em">
-            <h1 class="text-center text-h3 title">Trade in shadows</h1>
+            <h1 class="text-center text-h3 title">Find treasures</h1>
 
             <div class="column flex-center q-px-md relative-position">
-                <ul class="flex q-gutter-x-xl q-mt-lg text-subtitle1" style="user-select: none">
-                    <li>
-                        <q-checkbox label="All" size="lg"></q-checkbox>
-                    </li>
-                    <li><q-checkbox label="Consumables" size="lg"></q-checkbox></li>
-                    <li><q-checkbox label="Scrolls" size="lg"></q-checkbox></li>
-                    <li><q-checkbox label="Trinkets" size="lg"></q-checkbox></li>
+                <ul class="flex q-mt-lg text-subtitle1" style="gap: 2rem; user-select: none">
+                    <li><q-checkbox label="All" size="md"></q-checkbox></li>
+                    <li><q-checkbox label="Consumables" size="md"></q-checkbox></li>
+                    <li><q-checkbox label="Scrolls" size="md"></q-checkbox></li>
+                    <li><q-checkbox label="Weapons" size="md"></q-checkbox></li>
+                    <li><q-checkbox label="Companions" size="md"></q-checkbox></li>
+                    <li><q-checkbox label="Mounts" size="md"></q-checkbox></li>
                 </ul>
 
                 <ul class="flex flex-center q-gutter-lg q-mt-none q-pl-none" style="max-width: 84.5rem">
-                    <li v-for="item in 8" :key="item" style="cursor: pointer">
+                    <li v-for="(good, idx) in store.goods" :key="good.id" style="cursor: pointer">
                         <q-card class="card" style="max-width: 19.625rem" flat dark>
-                            <div class="card__image-wrapper">
-                                <q-img class="card__image" src="~assets/index/image-3.avif" />
-                            </div>
-
-                            <q-card-section>
-                                <div class="items-center no-wrap row">
-                                    <div class="col ellipsis text-h6 text-primary">Boots of swiftness</div>
+                            <div>
+                                <div class="card__image-wrapper">
+                                    <q-img class="card__image" :src="imageUrl[idx]" />
                                 </div>
-                            </q-card-section>
 
-                            <q-card-section class="q-pt-none">
-                                <div class="flex items-center text-subtitle1">
-                                    <span class="q-mr-sm text-negative">Price: 500 gold</span>
-                                    <div class="flex items-center q-gutter-x-xs text-negative">
-                                        <IconCursed>
-                                            <q-tooltip
-                                                :delay="500"
-                                                anchor="center right"
-                                                self="top start"
-                                                class="column text-center text-dark"
-                                                style="
-                                                    background-color: var(--q-dark);
-                                                    border: 1px solid
-                                                        color-mix(in srgb, var(--q-primary) 50%, #23b35c 90%);
-                                                    border-radius: var(--rounded);
-                                                    box-shadow:
-                                                        0px 3px 8px rgba(0, 0, 0, 0.4),
-                                                        2px 5px 12px #23b35c;
-                                                "
-                                            >
-                                                <span class="text-caption" style="color: #23b35c">Cursed</span>
-                                            </q-tooltip>
-                                        </IconCursed>
+                                <q-card-section>
+                                    <div class="items-center no-wrap row">
+                                        <div class="col ellipsis text-h6 text-primary">{{ good.name }}</div>
                                     </div>
-                                </div>
-                                <span class="inline-block text-caption text-grey">
-                                    Speedy boots for fast getaways. Run like a goblin on fire!
-                                </span>
-                            </q-card-section>
+                                </q-card-section>
+
+                                <q-card-section class="q-pt-none">
+                                    <div class="flex items-center text-subtitle1">
+                                        <span class="q-mr-sm text-negative">Price: {{ good.price }} gold</span>
+
+                                        <div
+                                            v-if="good.debuff"
+                                            class="flex items-center text-negative"
+                                            style="margin-bottom: 3px"
+                                        >
+                                            <IconDebuff class="debuff">
+                                                <q-tooltip
+                                                    :delay="500"
+                                                    anchor="center right"
+                                                    self="top start"
+                                                    class="column text-center text-dark"
+                                                    style="
+                                                        background-color: var(--q-dark);
+                                                        border: 1px solid
+                                                            color-mix(in srgb, var(--q-primary) 50%, #ff7f50 90%);
+                                                        border-radius: var(--rounded);
+                                                        box-shadow:
+                                                            0px 3px 8px rgba(0, 0, 0, 0.4),
+                                                            2px 5px 12px #ff7f50;
+                                                    "
+                                                >
+                                                    <span class="text-caption" style="color: #ff7f50">Debuff</span>
+                                                </q-tooltip>
+                                            </IconDebuff>
+                                        </div>
+                                    </div>
+                                    <span class="inline-block text-caption text-grey">
+                                        {{ good.short_description }}
+                                    </span>
+                                </q-card-section>
+                            </div>
 
                             <q-card-actions class="flex justify-between q-pt-none">
                                 <q-btn flat color="primary" @click="addToStash">💰 &nbsp; Add to stash </q-btn>
@@ -83,18 +90,19 @@ const { addToStash } = useAddToStash();
 
                 <div class="flex flex-center q-pa-lg">
                     <q-pagination
-                        v-model="current"
-                        class="q-mt-md"
+                        v-model="currentPage"
+                        class="pagination q-mt-md"
                         color="negative"
                         active-text-color="primary"
                         size="lg"
-                        :max="10"
-                        :max-pages="6"
                         :boundary-numbers="false"
+                        :max="totalPages"
+                        @update:model-value="loadPaginatedGoods"
                     />
                 </div>
-            </div></section
-    ></q-page>
+            </div>
+        </section>
+    </q-page>
 </template>
 
 <style scoped>
@@ -158,6 +166,10 @@ const { addToStash } = useAddToStash();
     overflow: hidden;
     padding: 0.9375rem;
     background-clip: border-box;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    min-height: 27.25rem;
 }
 
 .card::after {
@@ -186,5 +198,12 @@ const { addToStash } = useAddToStash();
     transition: transform 0.15s linear;
     transform: scale(1);
     height: 210px;
+}
+
+.debuff {
+    transition: filter 0.15s linear;
+}
+.debuff:hover {
+    filter: brightness(120%);
 }
 </style>

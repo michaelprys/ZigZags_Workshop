@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { ref } from 'vue';
-import { supabase } from 'src/clients/supabase';
+import supabase from 'src/utils/supabase';
 import { useRouter } from 'vue-router';
 import { callToast } from 'src/utils/callToast';
 
@@ -75,7 +75,7 @@ const setNewKey = async () => {
                                     (val) => (val && val.length >= 6) || 'Too easy! Must be 6 characters at least.',
                                 ]"
                             >
-                                <template v-slot:append>
+                                <template #append>
                                     <q-icon
                                         :name="isPwd ? 'visibility_off' : 'visibility'"
                                         color="info"
@@ -95,7 +95,7 @@ const setNewKey = async () => {
                                 :color="pending ? 'positive' : 'secondary'"
                                 text-color="dark"
                             >
-                                <template v-slot:loading>
+                                <template #loading>
                                     <q-spinner-hourglass class="on-left" />
                                     In progress...
                                 </template>

@@ -1,20 +1,26 @@
 <script setup lang="ts">
-import { ref } from 'vue';
-import { useRouter } from 'vue-router';
+import { ref, onMounted } from 'vue';
+import supabase from 'src/utils/supabase';
 
-const router = useRouter();
-
-const isAuthorized = ref(true);
 const hasInvitation = ref(true);
+const isAuthenticated = ref(true);
 const pending = ref(false);
 
-const enter = () => {
+const enterMarket = async () => {
     pending.value = true;
-    setTimeout(() => {
-        router.push({ name: 'black-market' });
+
+    const { data } = await supabase.auth.getSession();
+
+    if (data.session) {
+        isAuthenticated.value = true;
         pending.value = false;
-    }, 3000);
+    }
+    console.log(isAuthenticated.value);
 };
+
+onMounted(async () => {
+    await enterMarket();
+});
 </script>
 
 <template>
@@ -32,18 +38,18 @@ const enter = () => {
                         class="bg-dark message q-px-xl q-py-lg shadow-10 text-center"
                         style="max-width: 40rem; width: 100%"
                     >
-                        <template v-if="!isAuthorized && !hasInvitation">
+                        <template v-if="!isAuthenticated && !hasInvitation">
                             <h2 class="text-h4 text-negative">INVITATION UNCONFIRMED</h2>
                             <h3 class="q-mt-xs text-info text-subtitle1">ACCESS VAULT TO VERIFY INVITATION</h3>
 
                             <div class="flex flex-center q-mt-lg">
-                                <RouterLink :to="{ name: 'merchant' }"
-                                    ><q-btn class="q-mt-none" outline label="Get invitation"
+                                <RouterLink :to="{ name: 'vault' }"
+                                    ><q-btn class="q-mt-none" outline label="Go to vault"
                                 /></RouterLink>
                             </div>
                         </template>
 
-                        <template v-if="isAuthorized && !hasInvitation">
+                        <template v-if="isAuthenticated && !hasInvitation">
                             <h2 class="text-h4 text-negative">ACCESS DENIED</h2>
                             <h3 class="q-mt-xs text-info text-subtitle1">NO INVITATION FOUND</h3>
 
@@ -54,7 +60,7 @@ const enter = () => {
                             </div>
                         </template>
 
-                        <template v-if="isAuthorized && hasInvitation">
+                        <template v-if="isAuthenticated && hasInvitation">
                             <h2 class="text-h4 text-positive">INVITATION DETECTED</h2>
                             <h3 class="q-mt-xs text-info text-subtitle1">INITIATING PROTOCOL... PROCEED</h3>
 
@@ -68,7 +74,7 @@ const enter = () => {
                                     label="Enter"
                                     @click="enter"
                                 >
-                                    <template v-slot:loading>
+                                    <template #loading>
                                         <q-spinner-hourglass class="on-left" />
                                         Entering...
                                     </template>

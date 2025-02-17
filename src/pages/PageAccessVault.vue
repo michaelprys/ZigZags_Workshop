@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { ref } from 'vue';
-import { supabase } from 'src/clients/supabase';
+import supabase from 'src/utils/supabase';
 import { useRouter } from 'vue-router';
 import { callToast } from 'src/utils/callToast';
 
@@ -27,7 +27,7 @@ const accessVault = async () => {
                 callToast(error ? 'Wrong vault key or mailbox. Try again' : 'Something went wrong', false);
             } else {
                 await router.push({ name: 'vault' });
-                callToast('Vault access successful. Welcome', true);
+                callToast('Welcome to vault', true);
             }
         } else {
             console.error('Validation Error');
@@ -80,7 +80,7 @@ const accessVault = async () => {
                                 lazy-rules="ondemand"
                                 :rules="[(val) => (val && val.length >= 6) || 'Must have a valid vault key.']"
                             >
-                                <template v-slot:append>
+                                <template #append>
                                     <q-icon
                                         :name="isPwd ? 'visibility_off' : 'visibility'"
                                         color="info"

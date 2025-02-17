@@ -37,7 +37,6 @@ const routes: RouteRecordRaw[] = [
                     {
                         path: 'vault',
                         name: 'vault',
-                        meta: { requiresAuth: true },
                         component: () => import('pages/PageVault.vue'),
                     },
                 ],
@@ -81,7 +80,6 @@ const routes: RouteRecordRaw[] = [
             {
                 path: 'merchant',
                 name: 'merchant',
-                meta: { requiresAuth: true },
                 component: () => import('pages/PageMerchant.vue'),
             },
         ],
@@ -89,6 +87,7 @@ const routes: RouteRecordRaw[] = [
 
     // Always leave this as last one,
     // but you can also remove it
+
     {
         path: '/:catchAll(.*)*',
         name: 'not-found',

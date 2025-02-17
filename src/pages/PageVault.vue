@@ -2,7 +2,7 @@
 import { ref, computed, onMounted } from 'vue';
 import { useRouter } from 'vue-router';
 import { useQuasar } from 'quasar';
-import { supabase } from 'src/clients/supabase';
+import supabase from 'src/utils/supabase';
 import { loadStripe } from '@stripe/stripe-js';
 import { callToast } from 'src/utils/callToast';
 
@@ -24,7 +24,7 @@ const leaveVault = async () => {
     if (error) {
         callToast(error ? 'Unable to leave the vault' : 'Something went wrong', false);
     } else {
-        callToast("You've left the vault, safe travels", true);
+        callToast('Safe travels!', true);
     }
 };
 
@@ -176,7 +176,7 @@ const handlePayment = async () => {
 
         if (valid) {
             const price = paymentType.value?.price;
-            console.log(price);
+
             if (!price) {
                 console.error('Price not found for the selected type');
                 return;
@@ -440,7 +440,7 @@ onMounted(async () => {
     content: '';
     width: 100%;
     height: 100%;
-    background: radial-gradient(circle at top, rgba(53, 0, 0, 0.5), rgba(0, 79, 80, 0.4), rgba(30, 0, 0, 0.4));
+    background: radial-gradient(circle at top, rgba(53, 0, 0, 0.5), rgba(17, 80, 0, 0.4), rgba(211, 0, 60, 0.4));
     border-radius: 0.75rem;
     border: 1px solid rgba(255, 255, 255, 0.125);
     z-index: 0;

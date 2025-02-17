@@ -1,11 +1,14 @@
 import { Dialog, Notify } from 'quasar';
-import { supabase } from 'src/clients/supabase';
+import supabase from 'src/utils/supabase';
+import { useRoute } from 'vue-router';
 
 export const useAddToStash = () => {
+    const route = useRoute();
+
     const addToStash = async () => {
         const { data } = await supabase.auth.getSession();
 
-        if (!data.session) {
+        if (!data.session && route.name !== 'black-market' && route.name !== 'black-market-access') {
             Dialog.create({
                 dark: true,
                 title: 'Access required',

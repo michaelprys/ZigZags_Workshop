@@ -1,7 +1,7 @@
 import { defineRouter } from '#q-app/wrappers';
 import { createMemoryHistory, createRouter, createWebHashHistory, createWebHistory } from 'vue-router';
 import routes from './routes';
-import { supabase } from 'src/clients/supabase';
+import supabase from 'src/utils/supabase';
 
 /*
  * If not building with SSR mode, you can
@@ -45,21 +45,30 @@ export default defineRouter(function (/* { store, ssrContext } */) {
         history: createHistory(process.env.VUE_ROUTER_BASE),
     });
 
-    const getUser = async (next) => {
-        localOwner = await supabase.auth.getSession();
-
-        if (localOwner.data.session === null) {
-            next({ name: 'access-vault' });
-        } else {
-            next();
-        }
-    };
-
     Router.beforeEach(async (to, from, next) => {
-        if (to.meta.requiresAuth) {
-            await getUser(next);
-        } else {
+        const { data } = await supabase.auth.getSession();
+        const hasInvitation = true;
+
+        if (!data.session) {
+            if (to.name === 'black-market' || to.name === 'black-market-details') {
+                return next({ name: 'black-market-access' });
+            }
+            if (to.name === 'vault') {
+                return next({ name: 'access-vault' });
+            }
             next();
+        } else {
+            if (to.name === 'black-market' || to.name === 'black-market-details') {
+                if (!hasInvitation) {
+                    return next({ name: 'black-market-access' });
+                }
+                next();
+            }
+            if (to.name === 'access-vault') {
+                return next({ name: 'vault' });
+            } else {
+                next();
+            }
         }
     });
 

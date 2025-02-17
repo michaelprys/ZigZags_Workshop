@@ -70,7 +70,7 @@ watch(
                         "
                         src="~assets/common/logo.avif"
                         alt="Zigzag's Workshop logo"
-                        :spinnerSize="'0'"
+                        :spinner-size="'0'"
                     />
                     <div class="column font-secondary text-primary">
                         <span class="text-h6">Zigzag's</span>

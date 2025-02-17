@@ -27,9 +27,7 @@ export default defineConfig(() => {
 
             vitePlugins: [
                 [
-                    'vite-plugin-checker',
                     {
-                        vueTsc: false,
                         eslint: {
                             lintCommand: 'eslint -c ./eslint.config.js "./src*/**/*.{ts,js,mjs,cjs,vue}"',
                             useFlatConfig: true,

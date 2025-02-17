@@ -1,12 +1,11 @@
 <script setup lang="ts">
-import { ref } from 'vue';
-import IconEnchantable from 'src/components/icons/IconEnchantable.vue';
-import ItemTooltipEffect from 'src/components/items/ItemTooltipEffect.vue';
 import { useAddToStash } from 'src/use/useAddToStash';
+import { useStoreGoods } from 'src/stores/useStoreGoods';
+import { usePaginatedGoods } from 'src/use/usePaginatedGoods';
 
+const store = useStoreGoods();
+const { totalPages, currentPage, loadPaginatedGoods, imageUrl } = usePaginatedGoods(false);
 const { addToStash } = useAddToStash();
-
-const current = ref(5);
 </script>
 
 <template>
@@ -14,41 +13,42 @@ const current = ref(5);
         <section id="workshop" style="padding-top: 4.625em; padding-bottom: 8.5em">
             <h1 class="text-center text-h3">Explore goods</h1>
             <div class="column flex-center q-px-md relative-position">
-                <ul class="flex q-gutter-x-xl q-mt-lg text-subtitle1" style="user-select: none">
-                    <li>
-                        <q-checkbox label="All" size="lg"></q-checkbox>
-                    </li>
-                    <li><q-checkbox label="Gadgets" size="lg"></q-checkbox></li>
-                    <li><q-checkbox label="Trinkets" size="lg"></q-checkbox></li>
-                    <li><q-checkbox label="Craft" size="lg"></q-checkbox></li>
+                <ul class="flex q-mt-lg text-subtitle1" style="gap: 2rem; user-select: none">
+                    <li><q-checkbox label="All" size="md"></q-checkbox></li>
+                    <li><q-checkbox label="Gadgets" size="md"></q-checkbox></li>
+                    <li><q-checkbox label="Trinkets" size="md"></q-checkbox></li>
+                    <li><q-checkbox label="Weapons" size="md"></q-checkbox></li>
+                    <li><q-checkbox label="Companions" size="md"></q-checkbox></li>
+                    <li><q-checkbox label="Mounts" size="md"></q-checkbox></li>
                 </ul>
 
                 <ul class="flex flex-center q-gutter-lg q-mt-none q-pl-none" style="max-width: 84.5rem">
-                    <li v-for="item in 8" :key="item" style="cursor: pointer">
-                        <q-card class="card" style="max-width: 19.625rem" flat dark>
-                            <div class="card__image-wrapper">
-                                <q-img class="card__image" src="~assets/index/image-2.avif" style="height: 210px" />
+                    <li v-for="(good, idx) in store.goods" :key="good.id" style="cursor: pointer">
+                        <q-card class="card" flat dark>
+                            <div>
+                                <div class="card__image-wrapper">
+                                    <q-img class="card__image" :src="imageUrl[idx]" style="height: 210px" />
+                                </div>
+
+                                <q-card-section>
+                                    <div class="items-center no-wrap row">
+                                        <div class="col ellipsis text-h6 text-primary">{{ good.name }}</div>
+                                    </div>
+                                </q-card-section>
+
+                                <q-card-section class="q-pt-none">
+                                    <div class="flex items-center q-gutter-x-xs text-negative">
+                                        <span class="inline-block text-secondary text-subtitle1"
+                                            >Price: {{ good.price }} gold</span
+                                        >
+                                    </div>
+                                    <span class="inline-block text-caption text-grey">
+                                        {{ good.short_description }}
+                                    </span>
+                                </q-card-section>
+
+                                <q-separator />
                             </div>
-
-                            <q-card-section>
-                                <div class="items-center no-wrap row">
-                                    <div class="col ellipsis text-h6 text-primary">Boots of swiftness</div>
-                                </div>
-                            </q-card-section>
-
-                            <q-card-section class="q-pt-none">
-                                <div class="flex items-center q-gutter-x-xs text-negative">
-                                    <span class="inline-block text-secondary text-subtitle1">Price: 500 gold</span>
-                                    <IconEnchantable style="color: #00bcd4; width: 1.5em; height: 1.5em">
-                                        <ItemTooltipEffect />
-                                    </IconEnchantable>
-                                </div>
-                                <span class="inline-block text-caption text-grey">
-                                    Speedy boots for fast getaways. Run like a goblin on fire!
-                                </span>
-                            </q-card-section>
-
-                            <q-separator />
 
                             <q-card-actions class="flex justify-between">
                                 <q-btn flat color="primary" @click="addToStash"> 💰 &nbsp; Add to stash </q-btn>
@@ -64,14 +64,14 @@ const current = ref(5);
 
                 <div class="flex flex-center q-pa-lg">
                     <q-pagination
-                        v-model="current"
+                        v-model="currentPage"
                         class="q-mt-md"
                         color="secondary"
                         active-text-color="dark"
                         size="lg"
-                        :max="10"
-                        :max-pages="6"
                         :boundary-numbers="false"
+                        :max="totalPages"
+                        @update:model-value="loadPaginatedGoods"
                     />
                 </div>
             </div></section
@@ -89,7 +89,11 @@ const current = ref(5);
 .card {
     border: 1px solid color-mix(in srgb, var(--q-primary) 20%, black 90%);
     border-radius: var(--rounded);
-    border-radius: var(--rounded);
+    max-width: 19.625rem;
+    min-height: 25rem;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
 }
 
 .card:hover .card__image {
@@ -97,6 +101,8 @@ const current = ref(5);
 }
 
 .card__image-wrapper {
+    border-top-left-radius: var(--rounded);
+    border-top-right-radius: var(--rounded);
     overflow: hidden;
 }
 

@@ -2,7 +2,7 @@
 import { ref } from 'vue';
 import { useRouter } from 'vue-router';
 import { callToast } from 'src/utils/callToast';
-import { supabase } from 'src/clients/supabase';
+import supabase from 'src/utils/supabase';
 
 const router = useRouter();
 
@@ -112,7 +112,7 @@ const setupVault = async () => {
                                 :rules="[
                                     (val) => (val && val.length >= 6) || 'The key\'s too easy. Should be least 6 chars',
                                 ]"
-                                ><template v-slot:append>
+                                ><template #append>
                                     <q-icon
                                         :name="isPwd ? 'visibility_off' : 'visibility'"
                                         color="info"
@@ -133,7 +133,7 @@ const setupVault = async () => {
                                 lazy-rules="ondemand"
                                 :rules="[(val) => val === vaultKey || 'That keys must match']"
                             >
-                                <template v-slot:append>
+                                <template #append>
                                     <q-icon
                                         :name="isPwdConfirm ? 'visibility_off' : 'visibility'"
                                         color="info"
@@ -167,7 +167,7 @@ const setupVault = async () => {
                                 :color="pending ? 'positive' : 'secondary'"
                                 text-color="dark"
                             >
-                                <template v-slot:loading>
+                                <template #loading>
                                     <q-spinner-hourglass class="on-left" />
                                     In progress...
                                 </template>

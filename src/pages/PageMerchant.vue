@@ -1,8 +1,4 @@
-<script setup lang="ts">
-import { ref } from 'vue';
-
-const isAuthorized = ref(true);
-</script>
+<script setup lang="ts"></script>
 
 <template>
     <q-page>
@@ -14,7 +10,7 @@ const isAuthorized = ref(true);
                 class="flex flex-center relative-position"
                 style="padding-top: 4.625em; padding-bottom: 8.5em; min-height: calc(100svh - 4.625em)"
             >
-                <div class="q-px-md" style="max-width: 40.25rem; width: 100%">
+                <div class="q-px-md">
                     <div
                         class="column flex-center q-pa-lg shadow-10"
                         style="
@@ -25,36 +21,14 @@ const isAuthorized = ref(true);
                             margin-inline: auto;
                         "
                     >
-                        <div v-if="!isAuthorized" class="column items-center">
-                            <h2 class="text-h5 text-secondary">Secrets have a price. Got the gold?</h2>
-
-                            <span class="q-mt-sm text-center">Access the Vault to check your balance.</span>
-
-                            <RouterLink class="q-mt-lg" :to="{ name: 'vault' }"
-                                ><q-btn color="secondary" label="Go to vault" text-color="dark"
-                            /></RouterLink>
-                        </div>
-
-                        <div v-else class="full-width">
+                        <div class="flex full-width x">
                             <div class="column q-mt-none">
                                 <h2 class="q-mt-none text-h5 text-secondary">
                                     Get an invitation<span class="text-subtitle1">&nbsp;&nbsp;(1000 gold)</span>
                                 </h2>
-                                <span class="q-mt-sm">Who am I dealing with?</span>
+                                <span class="q-mt-sm">Are you ready to pay?</span>
                             </div>
-                            <div class="flex q-mt-md" style="width: 100%; gap: 1rem">
-                                <q-input
-                                    v-model="name"
-                                    style="flex: 1"
-                                    filled
-                                    bg-color="dark"
-                                    label-color="info"
-                                    input-class="text-primary"
-                                    label="True name *"
-                                    lazy-rules="ondemand"
-                                    :rules="[(val) => val.length > 0 || 'No name? How do we call ya then?']"
-                                />
-                            </div>
+                            <div class="flex q-mt-md" style="width: 100%; gap: 1rem"></div>
 
                             <div class="flex items-center justify-between">
                                 <q-btn

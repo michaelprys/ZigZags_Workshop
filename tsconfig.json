@@ -1,6 +1,6 @@
 {
     "extends": "./.quasar/tsconfig.json",
     "compilerOptions": {
-        "lib": ["deno.ns", "dom", "esnext"]
+        "lib": ["dom", "esnext"]
     }
 }

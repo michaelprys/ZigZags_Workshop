@@ -28,7 +28,7 @@ const model = [];
                             style="width: 100%"
                             @filter="filterFn"
                         >
-                            <template v-slot:no-option>
+                            <template #no-option>
                                 <q-item>
                                     <q-item-section class="text-primary"> No results </q-item-section>
                                 </q-item>
@@ -42,7 +42,7 @@ const model = [];
                 </div>
                 <div class="absolute-top fit" style="border-radius: var(--rounded)">
                     <q-parallax class="fit">
-                        <template v-slot:media>
+                        <template #media>
                             <video
                                 width="1516"
                                 height="926"

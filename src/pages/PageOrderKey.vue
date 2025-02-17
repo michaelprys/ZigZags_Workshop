@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { ref } from 'vue';
-import { supabase } from 'src/clients/supabase';
+import supabase from 'src/utils/supabase';
 import { callToast } from 'src/utils/callToast';
 import { uxDelay } from 'src/utils/uxDelay';
 
@@ -35,6 +35,7 @@ const orderKey = async () => {
         console.error("Couldn't order the vault key: ", err);
     } finally {
         pending.value = false;
+        mailbox.value = '';
     }
 };
 </script>
@@ -84,7 +85,7 @@ const orderKey = async () => {
                                 :color="pending ? 'positive' : 'secondary'"
                                 text-color="dark"
                             >
-                                <template v-slot:loading>
+                                <template #loading>
                                     <q-spinner-hourglass class="on-left" />
                                     In progress...
                                 </template>

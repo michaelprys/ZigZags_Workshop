@@ -1,9 +1,0 @@
-<template>
-    <div class="flex items-center">
-        <svg xmlns="http://www.w3.org/2000/svg" width="1.1em" height="1.1em" viewBox="0 0 24 24">
-            <path fill="currentColor" d="M11 9.47V11h3.76L13 14.53V13H9.24zM13 1L6 15h5v8l7-14h-5z"></path>
-        </svg>
-
-        <slot></slot>
-    </div>
-</template>

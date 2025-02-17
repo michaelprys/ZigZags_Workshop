@@ -1,5 +1,6 @@
 <script setup lang="ts">
-import { ref } from 'vue';
+import { ref, onMounted } from 'vue';
+import supabase from 'src/utils/supabase';
 import { useQuasar } from 'quasar';
 import { useRouter } from 'vue-router';
 
@@ -79,6 +80,18 @@ const onSubmit = async () => {
 };
 
 const quantity = ref(1);
+
+const vaultAccessed = ref(false);
+
+onMounted(async () => {
+    const { data } = await supabase.auth.getSession();
+
+    if (!data.session) {
+        vaultAccessed.value = false;
+    } else {
+        vaultAccessed.value = true;
+    }
+});
 </script>
 
 <template>
@@ -120,7 +133,7 @@ const quantity = ref(1);
                                         :color="pending ? 'positive' : 'secondary'"
                                         text-color="dark"
                                     >
-                                        <template v-slot:loading>
+                                        <template #loading>
                                             <q-spinner-hourglass class="on-left" />
                                             In progress...
                                         </template>
@@ -214,7 +227,14 @@ const quantity = ref(1);
                                 ><span class="text-secondary">Final Price: </span>300 Gold</span
                             >
 
-                            <q-btn class="q-mt-md" outline color="primary" @click="dialog = true">Begin trade</q-btn>
+                            <q-btn
+                                class="q-mt-md"
+                                outline
+                                color="primary"
+                                :disable="!vaultAccessed"
+                                :label="vaultAccessed ? 'Begin trade' : 'Access vault to pay'"
+                                @click="dialog = true"
+                            />
                         </div>
                     </div>
                 </div>
