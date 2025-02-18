@@ -52,10 +52,9 @@ const routes: RouteRecordRaw[] = [
                 component: () => import('pages/PageWorkshop.vue'),
             },
             {
-                path: 'workshop/:id',
-                name: 'workshop-details',
-                component: () => import('pages/PageWorkshopDetails.vue'),
-                meta: { section: 'workshop' },
+                path: 'goods/:category/:slug',
+                name: 'good-details',
+                component: () => import('pages/PageGoodDetails.vue'),
             },
             {
                 path: 'stash',
@@ -71,11 +70,6 @@ const routes: RouteRecordRaw[] = [
                 path: 'black-market',
                 name: 'black-market',
                 component: () => import('pages/PageBlackMarket.vue'),
-            },
-            {
-                path: 'black-market-details/:id',
-                name: 'black-market-details',
-                component: () => import('pages/PageBlackMarketDetails.vue'),
             },
             {
                 path: 'merchant',

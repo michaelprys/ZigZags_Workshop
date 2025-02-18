@@ -3,7 +3,6 @@ import { useStoreGoods } from 'src/stores/useStoreGoods';
 
 export const usePaginatedGoods = (requiresAuth: boolean) => {
     const store = useStoreGoods();
-    const { loadGoods } = store;
 
     const currentPage = ref(1);
     const goodsPerPage = 8;
@@ -15,11 +14,13 @@ export const usePaginatedGoods = (requiresAuth: boolean) => {
     const loadPaginatedGoods = async () => {
         const start = (currentPage.value - 1) * goodsPerPage;
         const end = start + goodsPerPage - 1;
-        await loadGoods(start, end, requiresAuth);
+        await store.loadGoods(start, end, requiresAuth);
     };
 
     const imageUrl = computed(() => {
-        return store.goods.map((good) => new URL(good.image_url, import.meta.url).href);
+        return store.goods.map(
+            (good) => new URL(good.image_url, import.meta.url).href,
+        );
     });
 
     onMounted(async () => {

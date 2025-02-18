@@ -1,13 +1,14 @@
 <script setup lang="ts">
 import { ref, onMounted } from 'vue';
-import supabase from 'src/utils/supabase';
 import { useQuasar } from 'quasar';
 import { useRouter } from 'vue-router';
+import { useStoreAuth } from 'src/stores/useStoreAuth';
 
 const myForm = ref(null);
 
 const imgSrc = (name: string) => {
-    return new URL(`/src/assets/index/featured/${name}.avif`, import.meta.url).href;
+    return new URL(`/src/assets/index/featured/${name}.avif`, import.meta.url)
+        .href;
 };
 
 const stashItems = ref([
@@ -32,7 +33,11 @@ const paymentType = ref(null);
 const paymentTypes = [
     { label: 'Gold', value: 'gold', conversionRate: 1 },
     { label: 'Crimson gems', value: 'emberheart_rubies', conversionRate: 250 },
-    { label: "Gambler's lootbox", value: 'gamblers-lootbox', conversionRate: 100 },
+    {
+        label: "Gambler's lootbox",
+        value: 'gamblers-lootbox',
+        conversionRate: 100,
+    },
 ];
 
 const $q = useQuasar();
@@ -80,17 +85,16 @@ const onSubmit = async () => {
 };
 
 const quantity = ref(1);
-
 const vaultAccessed = ref(false);
 
-onMounted(async () => {
-    const { data } = await supabase.auth.getSession();
+const store = useStoreAuth();
 
-    if (!data.session) {
-        vaultAccessed.value = false;
-    } else {
-        vaultAccessed.value = true;
+onMounted(async () => {
+    if (!store.session) {
+        await store.checkSession();
     }
+
+    vaultAccessed.value = !!store.session;
 });
 </script>
 
@@ -98,14 +102,23 @@ onMounted(async () => {
     <q-page>
         <div>
             <Teleport to="body">
-                <q-dialog v-model="dialog" backdrop-filter="blur(8px); brightness(60%)">
+                <q-dialog
+                    v-model="dialog"
+                    backdrop-filter="blur(8px); brightness(60%)"
+                >
                     <div class="modal">
                         <div class="column q-pb-none">
-                            <span class="text-h5 text-secondary">Complete trade</span>
+                            <span class="text-h5 text-secondary"
+                                >Complete trade</span
+                            >
                         </div>
 
                         <div>
-                            <q-form ref="myForm" class="q-gutter-md q-mt-lg" @submit.prevent="onSubmit">
+                            <q-form
+                                ref="myForm"
+                                class="q-gutter-md q-mt-lg"
+                                @submit.prevent="onSubmit"
+                            >
                                 <div class="flex" style="gap: 1rem">
                                     <q-select
                                         v-model="paymentType"
@@ -119,7 +132,10 @@ onMounted(async () => {
                                         label="Currency of Choice *"
                                         lazy-rules="ondemand"
                                         :rules="[
-                                            (val) => (val && val.value ? true : 'Please select currency of choice'),
+                                            (val) =>
+                                                val && val.value
+                                                    ? true
+                                                    : 'Please select currency of choice',
                                         ]"
                                     />
                                 </div>
@@ -130,11 +146,15 @@ onMounted(async () => {
                                         :loading="pending"
                                         style="width: 10rem"
                                         label="Trade"
-                                        :color="pending ? 'positive' : 'secondary'"
+                                        :color="
+                                            pending ? 'positive' : 'secondary'
+                                        "
                                         text-color="dark"
                                     >
                                         <template #loading>
-                                            <q-spinner-hourglass class="on-left" />
+                                            <q-spinner-hourglass
+                                                class="on-left"
+                                            />
                                             In progress...
                                         </template>
                                     </q-btn>
@@ -178,34 +198,70 @@ onMounted(async () => {
 
                     <div class="flex q-mt-lg">
                         <div dark class="panel q-mr-xl q-pa-lg">
-                            <div v-for="card in 10" :key="card" class="card shadow-1">
-                                <q-img class="card__image" src="~assets/index/image-1.avif" />
+                            <div
+                                v-for="card in 10"
+                                :key="card"
+                                class="card shadow-1"
+                            >
+                                <q-img
+                                    class="card__image"
+                                    src="~assets/index/image-1.avif"
+                                />
 
-                                <div class="flex justify-between q-pa-md" style="width: 100%">
+                                <div
+                                    class="flex justify-between q-pa-md"
+                                    style="width: 100%"
+                                >
                                     <div class="column">
-                                        <span class="text-bold">Sneaky Boots of Swift Exit</span>
-                                        <span class="text-bold">Enchantment: None</span>
+                                        <span class="text-bold"
+                                            >Sneaky Boots of Swift Exit</span
+                                        >
+                                        <span class="text-bold"
+                                            >Enchantment: None</span
+                                        >
                                         <span class="q-mt-lg text-bold"
-                                            ><span class="text-secondary">Price</span>: 250 Gold</span
+                                            ><span class="text-secondary"
+                                                >Price</span
+                                            >: 250 Gold</span
                                         >
                                     </div>
 
-                                    <div class="column justify-between" style="align-items: flex-end">
-                                        <q-btn v-model="quantity" outline color="info" size="sm" dense icon="close" />
+                                    <div
+                                        class="column justify-between"
+                                        style="align-items: flex-end"
+                                    >
+                                        <q-btn
+                                            v-model="quantity"
+                                            outline
+                                            color="info"
+                                            size="sm"
+                                            dense
+                                            icon="close"
+                                        />
 
-                                        <div class="flex items-center q-gutter-x-md">
+                                        <div
+                                            class="flex items-center q-gutter-x-md"
+                                        >
                                             <q-btn
                                                 v-model="quantity"
                                                 dense
                                                 icon="remove"
-                                                @click="quantity > 1 ? quantity-- : 0"
+                                                @click="
+                                                    quantity > 1
+                                                        ? quantity--
+                                                        : 0
+                                                "
                                             />
                                             <span>{{ quantity }}</span>
                                             <q-btn
                                                 v-model="quantity"
                                                 dense
                                                 icon="add"
-                                                @click="quantity < 5 ? quantity++ : 5"
+                                                @click="
+                                                    quantity < 5
+                                                        ? quantity++
+                                                        : 5
+                                                "
                                             />
                                         </div>
                                     </div>
@@ -215,16 +271,24 @@ onMounted(async () => {
 
                         <div class="column price q-pa-lg">
                             <span class="text-subtitle1"
-                                ><span class="text-secondary">💰 Base price:</span> 250 Gold</span
+                                ><span class="text-secondary"
+                                    >💰 Base price:</span
+                                >
+                                250 Gold</span
                             >
                             <span class="q-mt-xs text-subtitle1"
-                                ><span class="text-secondary">💎 Goblin Tax:</span> +50 Gold</span
+                                ><span class="text-secondary"
+                                    >💎 Goblin Tax:</span
+                                >
+                                +50 Gold</span
                             >
 
                             <div class="divider-single q-my-md"></div>
 
                             <span class="q-mt-xs text-subtitle1"
-                                ><span class="text-secondary">Final Price: </span>300 Gold</span
+                                ><span class="text-secondary"
+                                    >Final Price: </span
+                                >300 Gold</span
                             >
 
                             <q-btn
@@ -232,7 +296,11 @@ onMounted(async () => {
                                 outline
                                 color="primary"
                                 :disable="!vaultAccessed"
-                                :label="vaultAccessed ? 'Begin trade' : 'Access vault to pay'"
+                                :label="
+                                    vaultAccessed
+                                        ? 'Begin trade'
+                                        : 'Access vault to pay'
+                                "
                                 @click="dialog = true"
                             />
                         </div>
@@ -240,9 +308,15 @@ onMounted(async () => {
                 </div>
             </section>
 
-            <section v-else class="column flex-center relative-position" style="padding-top: 19em">
+            <section
+                v-else
+                class="column flex-center relative-position"
+                style="padding-top: 19em"
+            >
                 <div class="column flex-center">
-                    <span class="text-h3 text-secondary">The stash is bone dry, mate!</span>
+                    <span class="text-h3 text-secondary"
+                        >The stash is bone dry, mate!</span
+                    >
                 </div>
             </section>
         </div></q-page
@@ -281,7 +355,11 @@ onMounted(async () => {
     box-shadow: rgba(0, 0, 0, 0.1) 0px 4px 12px;
     border-radius: 0.75rem;
     border: 1px solid rgba(255, 255, 255, 0.125);
-    background: radial-gradient(circle at top, rgba(60, 30, 15, 0.35), rgba(0, 0, 0, 0.35));
+    background: radial-gradient(
+        circle at top,
+        rgba(60, 30, 15, 0.35),
+        rgba(0, 0, 0, 0.35)
+    );
 }
 
 .price {
@@ -307,7 +385,11 @@ onMounted(async () => {
     box-shadow: rgba(0, 0, 0, 0.1) 0px 4px 12px;
     border-radius: 0.75rem;
     border: 1px solid rgba(255, 255, 255, 0.125);
-    background: radial-gradient(circle at top, rgba(60, 30, 15, 0.35), rgba(9, 9, 9, 0.35));
+    background: radial-gradient(
+        circle at top,
+        rgba(60, 30, 15, 0.35),
+        rgba(9, 9, 9, 0.35)
+    );
 }
 
 .toast {
@@ -346,7 +428,6 @@ onMounted(async () => {
     border-top-left-radius: var(--rounded);
     border-top-right-radius: var(--rounded);
     width: 200px;
-    /* height: 130px; */
     background-size: cover;
 }
 </style>

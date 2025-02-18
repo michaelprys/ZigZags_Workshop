@@ -1,25 +1,16 @@
 <script setup lang="ts">
 import { ref, onMounted } from 'vue';
-import supabase from 'src/utils/supabase';
+import { useStoreAuth } from 'src/stores/useStoreAuth';
 
-const hasInvitation = ref(true);
-const isAuthenticated = ref(true);
+const hasInvitation = ref(false);
+
 const pending = ref(false);
+const store = useStoreAuth();
 
-const enterMarket = async () => {
-    pending.value = true;
-
-    const { data } = await supabase.auth.getSession();
-
-    if (data.session) {
-        isAuthenticated.value = true;
-        pending.value = false;
-    }
-    console.log(isAuthenticated.value);
-};
+const enterMarket = async () => {};
 
 onMounted(async () => {
-    await enterMarket();
+    await store.checkSession();
 });
 </script>
 
@@ -31,38 +22,58 @@ onMounted(async () => {
             <section
                 id="black-market-access"
                 class="flex flex-center relative-position"
-                style="padding-top: 4.625em; padding-bottom: 8.5em; min-height: calc(100svh - 4.625em)"
+                style="
+                    padding-top: 4.625em;
+                    padding-bottom: 8.5em;
+                    min-height: calc(100svh - 4.625em);
+                "
             >
                 <div class="flex flex-center q-px-md" style="width: 100%">
                     <div
                         class="bg-dark message q-px-xl q-py-lg shadow-10 text-center"
                         style="max-width: 40rem; width: 100%"
                     >
-                        <template v-if="!isAuthenticated && !hasInvitation">
-                            <h2 class="text-h4 text-negative">INVITATION UNCONFIRMED</h2>
-                            <h3 class="q-mt-xs text-info text-subtitle1">ACCESS VAULT TO VERIFY INVITATION</h3>
+                        <template v-if="!store.session && !hasInvitation">
+                            <h2 class="text-h4 text-negative">
+                                INVITATION UNCONFIRMED
+                            </h2>
+                            <h3 class="q-mt-xs text-info text-subtitle1">
+                                ACCESS VAULT TO VERIFY INVITATION
+                            </h3>
 
                             <div class="flex flex-center q-mt-lg">
                                 <RouterLink :to="{ name: 'vault' }"
-                                    ><q-btn class="q-mt-none" outline label="Go to vault"
+                                    ><q-btn
+                                        class="q-mt-none"
+                                        outline
+                                        label="Go to vault"
                                 /></RouterLink>
                             </div>
                         </template>
 
-                        <template v-if="isAuthenticated && !hasInvitation">
+                        <template v-if="store.session && !hasInvitation">
                             <h2 class="text-h4 text-negative">ACCESS DENIED</h2>
-                            <h3 class="q-mt-xs text-info text-subtitle1">NO INVITATION FOUND</h3>
+                            <h3 class="q-mt-xs text-info text-subtitle1">
+                                NO INVITATION FOUND
+                            </h3>
 
                             <div class="flex flex-center q-mt-lg">
                                 <RouterLink :to="{ name: 'merchant' }"
-                                    ><q-btn class="q-mt-none" outline label="Get invitation"
+                                    ><q-btn
+                                        class="q-mt-none"
+                                        outline
+                                        label="Get invitation"
                                 /></RouterLink>
                             </div>
                         </template>
 
-                        <template v-if="isAuthenticated && hasInvitation">
-                            <h2 class="text-h4 text-positive">INVITATION DETECTED</h2>
-                            <h3 class="q-mt-xs text-info text-subtitle1">INITIATING PROTOCOL... PROCEED</h3>
+                        <template v-if="store.session && hasInvitation">
+                            <h2 class="text-h4 text-positive">
+                                INVITATION DETECTED
+                            </h2>
+                            <h3 class="q-mt-xs text-info text-subtitle1">
+                                INITIATING PROTOCOL... PROCEED
+                            </h3>
 
                             <div class="flex flex-center q-mt-lg">
                                 <q-btn
@@ -72,7 +83,7 @@ onMounted(async () => {
                                     class="q-mt-none"
                                     outline
                                     label="Enter"
-                                    @click="enter"
+                                    @click="enterMarket"
                                 >
                                     <template #loading>
                                         <q-spinner-hourglass class="on-left" />

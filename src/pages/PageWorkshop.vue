@@ -4,45 +4,76 @@ import { useStoreGoods } from 'src/stores/useStoreGoods';
 import { usePaginatedGoods } from 'src/use/usePaginatedGoods';
 
 const store = useStoreGoods();
-const { totalPages, currentPage, loadPaginatedGoods, imageUrl } = usePaginatedGoods(false);
+const { totalPages, currentPage, loadPaginatedGoods, imageUrl } =
+    usePaginatedGoods(false);
 const { addToStash } = useAddToStash();
 </script>
 
 <template>
     <q-page>
-        <section id="workshop" style="padding-top: 4.625em; padding-bottom: 8.5em">
+        <section
+            id="workshop"
+            style="padding-top: 4.625em; padding-bottom: 8.5em"
+        >
             <h1 class="text-center text-h3">Explore goods</h1>
             <div class="column flex-center q-px-md relative-position">
-                <ul class="flex q-mt-lg text-subtitle1" style="gap: 2rem; user-select: none">
+                <ul
+                    class="flex q-mt-lg text-subtitle1"
+                    style="gap: 2rem; user-select: none"
+                >
                     <li><q-checkbox label="All" size="md"></q-checkbox></li>
                     <li><q-checkbox label="Gadgets" size="md"></q-checkbox></li>
-                    <li><q-checkbox label="Trinkets" size="md"></q-checkbox></li>
+                    <li>
+                        <q-checkbox label="Trinkets" size="md"></q-checkbox>
+                    </li>
                     <li><q-checkbox label="Weapons" size="md"></q-checkbox></li>
-                    <li><q-checkbox label="Companions" size="md"></q-checkbox></li>
+                    <li>
+                        <q-checkbox label="Companions" size="md"></q-checkbox>
+                    </li>
                     <li><q-checkbox label="Mounts" size="md"></q-checkbox></li>
                 </ul>
 
-                <ul class="flex flex-center q-gutter-lg q-mt-none q-pl-none" style="max-width: 84.5rem">
-                    <li v-for="(good, idx) in store.goods" :key="good.id" style="cursor: pointer">
+                <ul
+                    class="flex flex-center q-gutter-lg q-mt-none q-pl-none"
+                    style="max-width: 84.5rem"
+                >
+                    <li
+                        v-for="(good, idx) in store.goods"
+                        :key="good.id"
+                        style="cursor: pointer"
+                    >
                         <q-card class="card" flat dark>
                             <div>
                                 <div class="card__image-wrapper">
-                                    <q-img class="card__image" :src="imageUrl[idx]" style="height: 210px" />
+                                    <q-img
+                                        class="card__image"
+                                        :src="imageUrl[idx]"
+                                        style="height: 210px"
+                                    />
                                 </div>
 
                                 <q-card-section>
                                     <div class="items-center no-wrap row">
-                                        <div class="col ellipsis text-h6 text-primary">{{ good.name }}</div>
+                                        <div
+                                            class="col ellipsis text-h6 text-primary"
+                                        >
+                                            {{ good.name }}
+                                        </div>
                                     </div>
                                 </q-card-section>
 
                                 <q-card-section class="q-pt-none">
-                                    <div class="flex items-center q-gutter-x-xs text-negative">
-                                        <span class="inline-block text-secondary text-subtitle1"
+                                    <div
+                                        class="flex items-center q-gutter-x-xs text-negative"
+                                    >
+                                        <span
+                                            class="inline-block text-secondary text-subtitle1"
                                             >Price: {{ good.price }} gold</span
                                         >
                                     </div>
-                                    <span class="inline-block text-caption text-grey">
+                                    <span
+                                        class="inline-block text-caption text-grey"
+                                    >
                                         {{ good.short_description }}
                                     </span>
                                 </q-card-section>
@@ -51,9 +82,20 @@ const { addToStash } = useAddToStash();
                             </div>
 
                             <q-card-actions class="flex justify-between">
-                                <q-btn flat color="primary" @click="addToStash"> 💰 &nbsp; Add to stash </q-btn>
+                                <q-btn flat color="primary" @click="addToStash">
+                                    💰 &nbsp; Add to stash
+                                </q-btn>
                                 <q-btn flat color="info">
-                                    <RouterLink :to="{ name: 'workshop-details', params: { id: 1 } }">
+                                    <RouterLink
+                                        :to="{
+                                            name: 'good-details',
+                                            params: {
+                                                category: good.category,
+                                                slug: good.slug,
+                                            },
+                                        }"
+                                        @click="store.selectGood(good)"
+                                    >
                                         Details
                                     </RouterLink></q-btn
                                 >

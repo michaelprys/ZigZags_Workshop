@@ -5,7 +5,8 @@ import { usePaginatedGoods } from 'src/use/usePaginatedGoods';
 import { useStoreGoods } from 'src/stores/useStoreGoods';
 
 const store = useStoreGoods();
-const { totalPages, currentPage, loadPaginatedGoods, imageUrl } = usePaginatedGoods(true);
+const { totalPages, currentPage, loadPaginatedGoods, imageUrl } =
+    usePaginatedGoods(true);
 const { addToStash } = useAddToStash();
 </script>
 
@@ -13,36 +14,69 @@ const { addToStash } = useAddToStash();
     <q-page>
         <div class="overlay"></div>
 
-        <section id="workshop" style="padding-top: 4.625em; padding-bottom: 8.5em">
+        <section
+            id="workshop"
+            style="padding-top: 4.625em; padding-bottom: 8.5em"
+        >
             <h1 class="text-center text-h3 title">Find treasures</h1>
 
             <div class="column flex-center q-px-md relative-position">
-                <ul class="flex q-mt-lg text-subtitle1" style="gap: 2rem; user-select: none">
+                <ul
+                    class="flex q-mt-lg text-subtitle1"
+                    style="gap: 2rem; user-select: none"
+                >
                     <li><q-checkbox label="All" size="md"></q-checkbox></li>
-                    <li><q-checkbox label="Consumables" size="md"></q-checkbox></li>
+                    <li>
+                        <q-checkbox label="Consumables" size="md"></q-checkbox>
+                    </li>
                     <li><q-checkbox label="Scrolls" size="md"></q-checkbox></li>
                     <li><q-checkbox label="Weapons" size="md"></q-checkbox></li>
-                    <li><q-checkbox label="Companions" size="md"></q-checkbox></li>
+                    <li>
+                        <q-checkbox label="Companions" size="md"></q-checkbox>
+                    </li>
                     <li><q-checkbox label="Mounts" size="md"></q-checkbox></li>
                 </ul>
 
-                <ul class="flex flex-center q-gutter-lg q-mt-none q-pl-none" style="max-width: 84.5rem">
-                    <li v-for="(good, idx) in store.goods" :key="good.id" style="cursor: pointer">
-                        <q-card class="card" style="max-width: 19.625rem" flat dark>
+                <ul
+                    class="flex flex-center q-gutter-lg q-mt-none q-pl-none"
+                    style="max-width: 84.5rem"
+                >
+                    <li
+                        v-for="(good, idx) in store.goods"
+                        :key="good.id"
+                        style="cursor: pointer"
+                    >
+                        <q-card
+                            class="card"
+                            style="max-width: 19.625rem"
+                            flat
+                            dark
+                        >
                             <div>
                                 <div class="card__image-wrapper">
-                                    <q-img class="card__image" :src="imageUrl[idx]" />
+                                    <q-img
+                                        class="card__image"
+                                        :src="imageUrl[idx]"
+                                    />
                                 </div>
 
                                 <q-card-section>
                                     <div class="items-center no-wrap row">
-                                        <div class="col ellipsis text-h6 text-primary">{{ good.name }}</div>
+                                        <div
+                                            class="col ellipsis text-h6 text-primary"
+                                        >
+                                            {{ good.name }}
+                                        </div>
                                     </div>
                                 </q-card-section>
 
                                 <q-card-section class="q-pt-none">
-                                    <div class="flex items-center text-subtitle1">
-                                        <span class="q-mr-sm text-negative">Price: {{ good.price }} gold</span>
+                                    <div
+                                        class="flex items-center text-subtitle1"
+                                    >
+                                        <span class="q-mr-sm text-negative"
+                                            >Price: {{ good.price }} gold</span
+                                        >
 
                                         <div
                                             v-if="good.debuff"
@@ -56,30 +90,64 @@ const { addToStash } = useAddToStash();
                                                     self="top start"
                                                     class="column text-center text-dark"
                                                     style="
-                                                        background-color: var(--q-dark);
+                                                        background-color: var(
+                                                            --q-dark
+                                                        );
                                                         border: 1px solid
-                                                            color-mix(in srgb, var(--q-primary) 50%, #ff7f50 90%);
-                                                        border-radius: var(--rounded);
+                                                            color-mix(
+                                                                in srgb,
+                                                                var(--q-primary)
+                                                                    50%,
+                                                                #ff7f50 90%
+                                                            );
+                                                        border-radius: var(
+                                                            --rounded
+                                                        );
                                                         box-shadow:
-                                                            0px 3px 8px rgba(0, 0, 0, 0.4),
+                                                            0px 3px 8px
+                                                                rgba(
+                                                                    0,
+                                                                    0,
+                                                                    0,
+                                                                    0.4
+                                                                ),
                                                             2px 5px 12px #ff7f50;
                                                     "
                                                 >
-                                                    <span class="text-caption" style="color: #ff7f50">Debuff</span>
+                                                    <span
+                                                        class="text-caption"
+                                                        style="color: #ff7f50"
+                                                        >Debuff</span
+                                                    >
                                                 </q-tooltip>
                                             </IconDebuff>
                                         </div>
                                     </div>
-                                    <span class="inline-block text-caption text-grey">
+                                    <span
+                                        class="inline-block text-caption text-grey"
+                                    >
                                         {{ good.short_description }}
                                     </span>
                                 </q-card-section>
                             </div>
 
-                            <q-card-actions class="flex justify-between q-pt-none">
-                                <q-btn flat color="primary" @click="addToStash">💰 &nbsp; Add to stash </q-btn>
+                            <q-card-actions
+                                class="flex justify-between q-pt-none"
+                            >
+                                <q-btn flat color="primary" @click="addToStash"
+                                    >💰 &nbsp; Add to stash
+                                </q-btn>
                                 <q-btn flat color="info">
-                                    <RouterLink :to="{ name: 'black-market-details', params: { id: 1 } }">
+                                    <RouterLink
+                                        :to="{
+                                            name: 'good-details',
+                                            params: {
+                                                category: good.category,
+                                                slug: good.slug,
+                                            },
+                                        }"
+                                        @click="store.selectGood(good)"
+                                    >
                                         Details
                                     </RouterLink></q-btn
                                 >
@@ -158,7 +226,11 @@ const { addToStash } = useAddToStash();
     position: relative;
     border: 2px solid transparent;
     border-radius: var(--rounded);
-    background: linear-gradient(45deg, rgba(0, 0, 0, 0.9) 0%, rgba(50, 0, 0, 1) 100%);
+    background: linear-gradient(
+        45deg,
+        rgba(0, 0, 0, 0.9) 0%,
+        rgba(50, 0, 0, 1) 100%
+    );
     color: #ddd;
     box-shadow:
         inset 0 0 15px rgba(0, 0, 0, 0.8),
@@ -179,7 +251,11 @@ const { addToStash } = useAddToStash();
     left: 50%;
     width: 120%;
     height: 120%;
-    background: radial-gradient(circle, rgba(255, 0, 0, 0.8) 0%, rgba(0, 0, 0, 0.3) 100%);
+    background: radial-gradient(
+        circle,
+        rgba(255, 0, 0, 0.8) 0%,
+        rgba(0, 0, 0, 0.3) 100%
+    );
     transform: translate(-50%, -50%) rotate(45deg);
     border-radius: 50%;
     z-index: -2;

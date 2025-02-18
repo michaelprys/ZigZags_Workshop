@@ -1,7 +1,12 @@
 import { defineRouter } from '#q-app/wrappers';
-import { createMemoryHistory, createRouter, createWebHashHistory, createWebHistory } from 'vue-router';
+import {
+    createMemoryHistory,
+    createRouter,
+    createWebHashHistory,
+    createWebHistory,
+} from 'vue-router';
 import routes from './routes';
-import supabase from 'src/utils/supabase';
+import { useStoreAuth } from 'src/stores/useStoreAuth';
 
 /*
  * If not building with SSR mode, you can
@@ -12,8 +17,6 @@ import supabase from 'src/utils/supabase';
  * with the Router instance.
  */
 
-let localOwner;
-
 export default defineRouter(function (/* { store, ssrContext } */) {
     // const createHistory = process.env.SERVER
     //     ? createMemoryHistory
@@ -23,19 +26,13 @@ export default defineRouter(function (/* { store, ssrContext } */) {
     const createHistory = createWebHistory;
 
     const Router = createRouter({
-        scrollBehavior(to, from, savedPosition) {
-            if (savedPosition) {
-                return savedPosition;
-            }
-
+        scrollBehavior(to) {
             if (to.hash || to.fullPath === '/') {
                 return {
                     el: to.hash || 'body',
                     behavior: 'smooth',
                 };
             }
-
-            return { left: 0, top: 0 };
         },
         routes,
 
@@ -46,11 +43,19 @@ export default defineRouter(function (/* { store, ssrContext } */) {
     });
 
     Router.beforeEach(async (to, from, next) => {
-        const { data } = await supabase.auth.getSession();
+        const store = useStoreAuth();
+
+        if (!store.session) {
+            await store.checkSession();
+        }
+
         const hasInvitation = true;
 
-        if (!data.session) {
-            if (to.name === 'black-market' || to.name === 'black-market-details') {
+        if (!store.session) {
+            if (
+                to.name === 'black-market' ||
+                to.name === 'black-market-details'
+            ) {
                 return next({ name: 'black-market-access' });
             }
             if (to.name === 'vault') {
@@ -58,7 +63,10 @@ export default defineRouter(function (/* { store, ssrContext } */) {
             }
             next();
         } else {
-            if (to.name === 'black-market' || to.name === 'black-market-details') {
+            if (
+                to.name === 'black-market' ||
+                to.name === 'black-market-details'
+            ) {
                 if (!hasInvitation) {
                     return next({ name: 'black-market-access' });
                 }

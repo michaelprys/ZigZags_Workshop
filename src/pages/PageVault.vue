@@ -5,25 +5,25 @@ import { useQuasar } from 'quasar';
 import supabase from 'src/utils/supabase';
 import { loadStripe } from '@stripe/stripe-js';
 import { callToast } from 'src/utils/callToast';
+import { useStoreAuth } from 'src/stores/useStoreAuth';
+import { useStoreGoods } from 'src/stores/useStoreGoods';
 
-const vault = ref(null);
-
-const getCurrentOwner = async () => {
-    const { data, error } = await supabase.auth.getSession();
-
-    if (error) {
-        console.error(error);
-    } else {
-        vault.value = data.session;
-    }
-};
+const storeAuth = useStoreAuth();
+const storeGoods = useStoreGoods();
 
 const leaveVault = async () => {
     const { error } = await supabase.auth.signOut();
 
     if (error) {
-        callToast(error ? 'Unable to leave the vault' : 'Something went wrong', false);
+        callToast(
+            error ? 'Unable to leave the vault' : 'Something went wrong',
+            false,
+        );
     } else {
+        await storeAuth.checkSession();
+        if (storeGoods.goods.find((good) => good.requires_auth === true)) {
+            localStorage.removeItem('goods');
+        }
         callToast('Safe travels!', true);
     }
 };
@@ -65,7 +65,7 @@ const alert = () => {
 };
 
 const determineFaction = computed(() => {
-    const faction = vault.value?.user.user_metadata.faction;
+    const faction = storeAuth.session?.user_metadata.faction;
 
     if (faction === 'Horde') {
         return 'horde';
@@ -77,7 +77,10 @@ const determineFaction = computed(() => {
 });
 
 const imgSrc = (ext) => {
-    return new URL(`/src/assets/vault/${determineFaction.value}.${ext}`, import.meta.url).href;
+    return new URL(
+        `/src/assets/vault/${determineFaction.value}.${ext}`,
+        import.meta.url,
+    ).href;
 };
 
 // top-up
@@ -192,24 +195,29 @@ const handlePayment = async () => {
                 return;
             }
 
-            const res = await fetch(`${import.meta.env.VITE_SITE_URL}/create-checkout-session`, {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                    Authorization: `Bearer ${session.access_token}`,
+            const res = await fetch(
+                `${import.meta.env.VITE_SITE_URL}/create-checkout-session`,
+                {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        Authorization: `Bearer ${session.access_token}`,
+                    },
+                    body: JSON.stringify({
+                        price,
+                        quantity: topUpAmount.value,
+                    }),
                 },
-                body: JSON.stringify({
-                    price,
-                    quantity: topUpAmount.value,
-                }),
-            });
+            );
 
             const contentType = res.headers.get('Content-Type');
 
             if (contentType && contentType.includes('application/json')) {
                 const jsonResponse = await res.json();
                 const { sessionID } = jsonResponse;
-                const { error } = stripe.redirectToCheckout({ sessionId: sessionID });
+                const { error } = stripe.redirectToCheckout({
+                    sessionId: sessionID,
+                });
 
                 if (error) {
                     console.error(error);
@@ -229,7 +237,7 @@ const handlePayment = async () => {
 };
 
 onMounted(async () => {
-    await getCurrentOwner();
+    await storeAuth.checkSession();
 });
 </script>
 
@@ -238,19 +246,34 @@ onMounted(async () => {
         <section
             id="vault"
             class="flex flex-center"
-            style="padding-top: 4.625em; padding-bottom: 8.5em; min-height: calc(100svh - 4.625em)"
+            style="
+                padding-top: 4.625em;
+                padding-bottom: 8.5em;
+                min-height: calc(100svh - 4.625em);
+            "
         >
             <h1 class="sr-only">Vault</h1>
 
             <div class="bg"></div>
 
-            <q-dialog v-model="balanceDialog" backdrop-filter="blur(8px); brightness(60%)">
-                <q-card dark class="q-pa-md" style="max-width: 22.25rem; width: 100%">
+            <q-dialog
+                v-model="balanceDialog"
+                backdrop-filter="blur(8px); brightness(60%)"
+            >
+                <q-card
+                    dark
+                    class="q-pa-md"
+                    style="max-width: 22.25rem; width: 100%"
+                >
                     <q-card-section class="q-pt-none">
                         <div class="text-h6 text-primary">Add funds</div>
                     </q-card-section>
 
-                    <q-form ref="topUpForm" @submit.prevent="handlePayment" @keydown.enter.prevent="handlePayment">
+                    <q-form
+                        ref="topUpForm"
+                        @submit.prevent="handlePayment"
+                        @keydown.enter.prevent="handlePayment"
+                    >
                         <q-card-actions class="q-pb-none" align="center">
                             <q-select
                                 v-model="paymentType"
@@ -262,16 +285,30 @@ onMounted(async () => {
                                 input-class="text-primary"
                                 label="Currency of choice *"
                                 lazy-rules="ondemand"
-                                :rules="[(val) => val.value !== '' || 'Choose currency']"
+                                :rules="[
+                                    (val) =>
+                                        val.value !== '' || 'Choose currency',
+                                ]"
                                 @update:model-value="resetAmount"
                             />
                         </q-card-actions>
 
-                        <q-card-actions class="column q-gutter-x-sm" align="center">
-                            <span class="text-secondary">Cost: ${{ calculatedAmount }}</span>
-                            <div class="flex items-center q-mt-md" style="gap: 0.5rem">
+                        <q-card-actions
+                            class="column q-gutter-x-sm"
+                            align="center"
+                        >
+                            <span class="text-secondary"
+                                >Cost: ${{ calculatedAmount }}</span
+                            >
+                            <div
+                                class="flex items-center q-mt-md"
+                                style="gap: 0.5rem"
+                            >
                                 <q-btn
-                                    :disable="topUpAmount <= minAmounts[paymentType.value]"
+                                    :disable="
+                                        topUpAmount <=
+                                        minAmounts[paymentType.value]
+                                    "
                                     icon="remove"
                                     color="primary"
                                     flat
@@ -288,18 +325,30 @@ onMounted(async () => {
                                     lazy-rules="ondemand"
                                     :rules="[
                                         (val) =>
-                                            val >= minAmounts[paymentType.value] ||
+                                            val >=
+                                                minAmounts[paymentType.value] ||
                                             `Minimal: ${minAmounts[paymentType.value]}`,
                                     ]"
                                     @keypress="preventIncorrectChars"
                                     @paste="handlePaste"
                                 />
-                                <q-btn icon="add" color="primary" flat @click="increment" />
+                                <q-btn
+                                    icon="add"
+                                    color="primary"
+                                    flat
+                                    @click="increment"
+                                />
                             </div>
                         </q-card-actions>
 
                         <q-card-actions align="center">
-                            <q-btn type="submit" label="Continue" outline style="width: 100%" :loading="pending">
+                            <q-btn
+                                type="submit"
+                                label="Continue"
+                                outline
+                                style="width: 100%"
+                                :loading="pending"
+                            >
                             </q-btn>
                         </q-card-actions>
                     </q-form>
@@ -324,15 +373,27 @@ onMounted(async () => {
                                         anchor="center start"
                                         self="bottom end"
                                     >
-                                        <span class="text-caption text-negative">{{ determineFaction }}</span>
+                                        <span
+                                            class="text-caption text-negative"
+                                            >{{ determineFaction }}</span
+                                        >
                                     </q-tooltip>
                                 </div>
                                 <h2 class="text-center text-h6">
-                                    {{ vault?.user.user_metadata.first_name }}'s Inventory
+                                    {{
+                                        storeAuth.session?.user_metadata
+                                            .first_name
+                                    }}'s Inventory
                                 </h2>
                             </div>
 
-                            <q-btn icon="close" color="primary" flat dense @click="alert"></q-btn>
+                            <q-btn
+                                icon="close"
+                                color="primary"
+                                flat
+                                dense
+                                @click="alert"
+                            ></q-btn>
                         </div>
 
                         <div class="q-mt-lg vault__cells">
@@ -344,8 +405,13 @@ onMounted(async () => {
                                     class="bg-primary column text-center text-dark"
                                     style="width: 11.25rem"
                                 >
-                                    <span class="text-caption text-negative">Boots of swiftness</span>
-                                    <span> Speedy boots for fast getaways. Run like a goblin on fire! </span>
+                                    <span class="text-caption text-negative"
+                                        >Boots of swiftness</span
+                                    >
+                                    <span>
+                                        Speedy boots for fast getaways. Run like
+                                        a goblin on fire!
+                                    </span>
                                 </q-tooltip>
 
                                 <div class="vault__cell-placeholder"></div>
@@ -354,7 +420,7 @@ onMounted(async () => {
                                     src="~assets/index/image-7.avif"
                                     width="1024px"
                                     height="1024px"
-                                    style="width: 4.8125rem; height: 4.8125rem"
+                                    style="width: 100%; height: 100%"
                                 /> -->
                             </div>
                         </div>
@@ -370,7 +436,10 @@ onMounted(async () => {
                                 input-class="text-primary"
                             />
 
-                            <div class="flex q-mt-lg vault__gold-panel" style="gap: 0.75rem">
+                            <div
+                                class="flex q-mt-lg vault__gold-panel"
+                                style="gap: 0.75rem"
+                            >
                                 <q-btn
                                     style="border-radius: var(--rounded)"
                                     icon="add"
@@ -380,38 +449,56 @@ onMounted(async () => {
                                 ></q-btn>
                                 <div class="flex items-center q-gutter-x-sm">
                                     <span>0</span>
-                                    <q-img src="~assets/vault/gold.avif" width="18px" height="18px" />
+                                    <q-img
+                                        src="~assets/vault/gold.avif"
+                                        width="18px"
+                                        height="18px"
+                                    />
                                     <q-tooltip
                                         :delay="500"
                                         anchor="bottom right"
                                         self="center start"
                                         class="bg-primary text-center"
                                     >
-                                        <span class="text-caption text-negative">Gold</span>
+                                        <span class="text-caption text-negative"
+                                            >Gold</span
+                                        >
                                     </q-tooltip>
                                 </div>
                                 <div class="flex items-center q-gutter-x-sm">
                                     <span>0</span>
-                                    <q-img src="~assets/vault/emberheart-rubies.avif" width="26px" height="26px" />
+                                    <q-img
+                                        src="~assets/vault/emberheart-rubies.avif"
+                                        width="26px"
+                                        height="26px"
+                                    />
                                     <q-tooltip
                                         :delay="500"
                                         anchor="bottom right"
                                         self="center start"
                                         class="bg-primary text-center text-dark"
                                     >
-                                        <span class="text-caption text-negative">Emberheart rubies</span>
+                                        <span class="text-caption text-negative"
+                                            >Emberheart rubies</span
+                                        >
                                     </q-tooltip>
                                 </div>
                                 <div class="flex items-center q-gutter-x-sm">
                                     <span>0</span>
-                                    <q-img src="~assets/vault/gamblers-lootbox.avif" width="23px" height="23px" />
+                                    <q-img
+                                        src="~assets/vault/gamblers-lootbox.avif"
+                                        width="23px"
+                                        height="23px"
+                                    />
                                     <q-tooltip
                                         :delay="500"
                                         anchor="bottom right"
                                         self="center start"
                                         class="bg-primary text-center text-dark"
                                     >
-                                        <span class="text-caption text-negative">Gambler's lootbox </span>
+                                        <span class="text-caption text-negative"
+                                            >Gambler's lootbox
+                                        </span>
                                     </q-tooltip>
                                 </div>
                             </div>
@@ -440,10 +527,8 @@ onMounted(async () => {
     content: '';
     width: 100%;
     height: 100%;
-    background: radial-gradient(circle at top, rgba(53, 0, 0, 0.5), rgba(17, 80, 0, 0.4), rgba(211, 0, 60, 0.4));
     border-radius: 0.75rem;
     border: 1px solid rgba(255, 255, 255, 0.125);
-    z-index: 0;
 }
 
 .vault:after {
@@ -456,7 +541,7 @@ onMounted(async () => {
     background-image: url('/src/assets/vault/texture.avif');
     background-size: cover;
     background-position: center;
-    opacity: 10%;
+    opacity: 30%;
     border-radius: 0.75rem;
     border: 1px solid rgba(255, 255, 255, 0.125);
 }
@@ -484,7 +569,6 @@ onMounted(async () => {
     display: flex;
     align-items: center;
     gap: 16px;
-    z-index: 0;
 }
 
 .vault__cells {
@@ -498,7 +582,6 @@ onMounted(async () => {
 
 .vault__cell:hover {
     box-shadow: 0 8px 20px rgba(92, 90, 78, 0.5);
-    background: linear-gradient(145deg, rgb(50, 50, 50), rgba(0, 0, 0, 0.7));
 }
 
 .vault__cell {
@@ -512,9 +595,7 @@ onMounted(async () => {
     height: 5.25rem;
     border-radius: var(--rounded);
     overflow: hidden;
-    border: 1px solid rgba(255, 255, 255, 0.4);
-    transition: box-shadow 0.15s linear;
-    z-index: 3;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.5);
 }
 
 .vault__cell-placeholder {
@@ -524,23 +605,29 @@ onMounted(async () => {
     transform: translateX(-50%) translateY(-50%);
     width: 100%;
     height: 100%;
+    border: 2px solid rgb(117, 117, 117);
     background: linear-gradient(145deg, #444, #222);
     box-shadow:
         0 0 10px rgba(255, 255, 255, 0.1),
         0 2px 4px rgba(0, 0, 0, 0.5),
         inset 0 0 12px rgba(255, 255, 255, 0.2),
         inset 0 -2px 6px rgba(0, 0, 0, 0.6);
+    border-radius: var(--rounded);
 }
 
 .vault__cell-placeholder::before {
     content: '';
     position: absolute;
-    top: 2px;
-    left: 2px;
-    right: 2px;
-    bottom: 2px;
-    background: radial-gradient(circle at top left, rgba(255, 255, 255, 0.2), transparent);
-    border-radius: var(--rounded);
+    top: 0px;
+    left: 0px;
+    right: 0px;
+    bottom: 0px;
+    background: radial-gradient(
+        circle at top left,
+        rgba(255, 255, 255, 0.2),
+        transparent
+    );
+    border-radius: 0.3125rem;
 }
 
 .vault__cell-image {
@@ -551,8 +638,19 @@ onMounted(async () => {
     width: 100%;
     height: 100%;
     user-select: none;
-    border-radius: 0.3125rem;
+    border-radius: var(--rounded);
     filter: grayscale(20%) contrast(90%) brightness(90%);
+}
+.vault__cell-image::before {
+    content: '';
+    position: absolute;
+    top: 0px;
+    left: 0px;
+    right: 0px;
+    bottom: 0px;
+    border: 2px solid rgb(132, 132, 132);
+    border-radius: var(--rounded);
+    z-index: 3;
 }
 
 .vault__footer {

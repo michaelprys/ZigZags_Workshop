@@ -16,6 +16,7 @@
         "postinstall": "quasar prepare"
     },
     "dependencies": {
+        "@pinia/colada": "^0.13.6",
         "@quasar/extras": "^1.16.16",
         "@supabase/supabase-js": "^2.48.1",
         "pinia": "^2.3.1",
