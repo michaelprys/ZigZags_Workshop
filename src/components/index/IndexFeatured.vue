@@ -1,29 +1,23 @@
 <script setup lang="ts">
-import { ref } from 'vue';
+import { ref, onMounted, computed } from 'vue';
+import { useStoreGoods } from 'src/stores/useStoreGoods';
 
+const store = useStoreGoods();
 const activeSlide = ref(1);
 
-const imgSrc = (name: string) => {
-    return new URL(`/src/assets/index/${name}.avif`, import.meta.url).href;
-};
+const slideGroup = computed(() => {
+    const img = store.featuredGoods;
 
-const slides = [
-    [
-        { col: 'col', name: 'image-7', src: imgSrc('image-7') },
-        { col: 'col-5', name: 'image-8', src: imgSrc('image-8') },
-        { col: 'col', name: 'image-9', src: imgSrc('image-9') },
-    ],
-    [
-        { col: 'col', name: 'image-2', src: imgSrc('image-2') },
-        { col: 'col-5', name: 'image-1', src: imgSrc('image-1') },
-        { col: 'col', name: 'image-3', src: imgSrc('image-3') },
-    ],
-    [
-        { col: 'col', name: 'image-4', src: imgSrc('image-4') },
-        { col: 'col-5', name: 'image-5', src: imgSrc('image-5') },
-        { col: 'col', name: 'image-6', src: imgSrc('image-6') },
-    ],
-];
+    return [
+        [img[4], img[3], img[8]],
+        [img[0], img[1], img[2]],
+        [img[5], img[6], img[7]],
+    ];
+});
+
+onMounted(async () => {
+    await store.loadFeaturedGoods();
+});
 </script>
 
 <template>
@@ -50,27 +44,28 @@ const slides = [
                         padding
                         navigation
                         infinite
-                        autoplay
                         arrows
+                        autoplay
                         height="24rem"
                     >
                         <q-carousel-slide
-                            v-for="(slide, idx) in slides"
+                            v-for="(slide, idx) in slideGroup"
                             :key="idx"
-                            class="cursor-pointer no-wrap"
                             :name="idx + 1"
+                            class="cursor-pointer no-wrap"
                         >
                             <div class="fit items-center row">
                                 <div
-                                    v-for="content in slide"
-                                    :key="content.name"
+                                    v-for="(img, imgIdx) in slide"
+                                    :key="imgIdx + 1"
+                                    :class="imgIdx === 1 ? 'col-5' : 'col'"
                                     class="full-height q-mr-md"
-                                    :class="content.col"
                                     style="border-radius: var(--rounded)"
                                 >
                                     <q-img
+                                        :src="img?.image_url"
+                                        :alt="img?.name"
                                         class="full-height inner shadow-1"
-                                        :src="content.src"
                                         style="border-radius: var(--rounded)"
                                     />
                                 </div>

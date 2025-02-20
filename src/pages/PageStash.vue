@@ -6,23 +6,18 @@ import { useStoreAuth } from 'src/stores/useStoreAuth';
 
 const myForm = ref(null);
 
-const imgSrc = (name: string) => {
-    return new URL(`/src/assets/index/featured/${name}.avif`, import.meta.url)
-        .href;
-};
-
 const stashItems = ref([
     [
-        { name: 'image-7', src: imgSrc('image-7') },
-        { name: 'image-8', src: imgSrc('image-8') },
+        { name: 'image-7', src: 'https://placehold.co/150' },
+        { name: 'image-8', src: 'https://placehold.co/150' },
     ],
     [
-        { name: 'image-2', src: imgSrc('image-2') },
-        { name: 'image-1', src: imgSrc('image-1') },
+        { name: 'image-2', src: 'https://placehold.co/150' },
+        { name: 'image-1', src: 'https://placehold.co/150' },
     ],
     [
-        { name: 'image-4', src: imgSrc('image-4') },
-        { name: 'image-5', src: imgSrc('image-5') },
+        { name: 'image-4', src: 'https://placehold.co/150' },
+        { name: 'image-5', src: 'https://placehold.co/150' },
     ],
 ]);
 
@@ -102,15 +97,10 @@ onMounted(async () => {
     <q-page>
         <div>
             <Teleport to="body">
-                <q-dialog
-                    v-model="dialog"
-                    backdrop-filter="blur(8px); brightness(60%)"
-                >
+                <q-dialog v-model="dialog" backdrop-filter="blur(8px); brightness(60%)">
                     <div class="modal">
                         <div class="column q-pb-none">
-                            <span class="text-h5 text-secondary"
-                                >Complete trade</span
-                            >
+                            <span class="text-h5 text-secondary">Complete trade</span>
                         </div>
 
                         <div>
@@ -146,15 +136,11 @@ onMounted(async () => {
                                         :loading="pending"
                                         style="width: 10rem"
                                         label="Trade"
-                                        :color="
-                                            pending ? 'positive' : 'secondary'
-                                        "
+                                        :color="pending ? 'positive' : 'secondary'"
                                         text-color="dark"
                                     >
                                         <template #loading>
-                                            <q-spinner-hourglass
-                                                class="on-left"
-                                            />
+                                            <q-spinner-hourglass class="on-left" />
                                             In progress...
                                         </template>
                                     </q-btn>
@@ -179,50 +165,22 @@ onMounted(async () => {
                 style="padding-top: 2em; padding-bottom: 7.5em"
             >
                 <div class="q-pa-md">
-                    <div class="column items-center q-gutter-lg">
-                        <q-img
-                            width="1024px"
-                            height="1024px"
-                            style="
-                                user-select: none;
-                                border-radius: 50%;
-                                width: 90px;
-                                height: 90px;
-                                filter: contrast(96%) brightness(89%);
-                            "
-                            src="~assets/stash/goblin.avif"
-                        />
+                    <h1 class="block text-center text-h3">Your stash</h1>
 
-                        <h1 class="block text-h4">Your stash</h1>
-                    </div>
+                    <div class="flex q-mt-xl">
+                        <div dark class="panel q-mr-xl">
+                            <div class="layer"></div>
 
-                    <div class="flex q-mt-lg">
-                        <div dark class="panel q-mr-xl q-pa-lg">
-                            <div
-                                v-for="card in 10"
-                                :key="card"
-                                class="card shadow-1"
-                            >
-                                <q-img
-                                    class="card__image"
-                                    src="~assets/index/image-1.avif"
-                                />
+                            <div v-for="card in 4" :key="card" class="card shadow-1">
+                                <q-img class="card__image" src="~assets/guide/zigzag.avif" />
 
-                                <div
-                                    class="flex justify-between q-pa-md"
-                                    style="width: 100%"
-                                >
+                                <div class="flex justify-between q-pa-md" style="width: 100%">
                                     <div class="column">
-                                        <span class="text-bold"
-                                            >Sneaky Boots of Swift Exit</span
-                                        >
-                                        <span class="text-bold"
-                                            >Enchantment: None</span
-                                        >
+                                        <span class="text-bold">Sneaky Boots of Swift Exit</span>
+                                        <span class="text-bold">Enchantment: None</span>
                                         <span class="q-mt-lg text-bold"
-                                            ><span class="text-secondary"
-                                                >Price</span
-                                            >: 250 Gold</span
+                                            ><span class="text-secondary">Price</span>: 250
+                                            Gold</span
                                         >
                                     </div>
 
@@ -233,35 +191,27 @@ onMounted(async () => {
                                         <q-btn
                                             v-model="quantity"
                                             outline
-                                            color="info"
+                                            color="primary"
                                             size="sm"
                                             dense
                                             icon="close"
                                         />
 
-                                        <div
-                                            class="flex items-center q-gutter-x-md"
-                                        >
+                                        <div class="flex items-center q-gutter-x-md">
                                             <q-btn
                                                 v-model="quantity"
                                                 dense
                                                 icon="remove"
-                                                @click="
-                                                    quantity > 1
-                                                        ? quantity--
-                                                        : 0
-                                                "
+                                                flat
+                                                @click="quantity > 1 ? quantity-- : 0"
                                             />
                                             <span>{{ quantity }}</span>
                                             <q-btn
                                                 v-model="quantity"
                                                 dense
                                                 icon="add"
-                                                @click="
-                                                    quantity < 5
-                                                        ? quantity++
-                                                        : 5
-                                                "
+                                                flat
+                                                @click="quantity < 5 ? quantity++ : 5"
                                             />
                                         </div>
                                     </div>
@@ -269,26 +219,20 @@ onMounted(async () => {
                             </div>
                         </div>
 
-                        <div class="column price q-pa-lg">
+                        <div class="column price-panel q-pa-lg">
+                            <div class="layer"></div>
+
                             <span class="text-subtitle1"
-                                ><span class="text-secondary"
-                                    >💰 Base price:</span
-                                >
-                                250 Gold</span
+                                ><span class="text-secondary">💰 Base price:</span> 250 Gold</span
                             >
                             <span class="q-mt-xs text-subtitle1"
-                                ><span class="text-secondary"
-                                    >💎 Goblin Tax:</span
-                                >
-                                +50 Gold</span
+                                ><span class="text-secondary">💎 Goblin Tax:</span> +50 Gold</span
                             >
 
-                            <div class="divider-single q-my-md"></div>
+                            <div class="q-my-md separator-single"></div>
 
                             <span class="q-mt-xs text-subtitle1"
-                                ><span class="text-secondary"
-                                    >Final Price: </span
-                                >300 Gold</span
+                                ><span class="text-secondary">Final Price: </span>300 Gold</span
                             >
 
                             <q-btn
@@ -296,11 +240,7 @@ onMounted(async () => {
                                 outline
                                 color="primary"
                                 :disable="!vaultAccessed"
-                                :label="
-                                    vaultAccessed
-                                        ? 'Begin trade'
-                                        : 'Access vault to pay'
-                                "
+                                :label="vaultAccessed ? 'Begin trade' : 'Access vault to pay'"
                                 @click="dialog = true"
                             />
                         </div>
@@ -308,15 +248,9 @@ onMounted(async () => {
                 </div>
             </section>
 
-            <section
-                v-else
-                class="column flex-center relative-position"
-                style="padding-top: 19em"
-            >
+            <section v-else class="column flex-center relative-position" style="padding-top: 19em">
                 <div class="column flex-center">
-                    <span class="text-h3 text-secondary"
-                        >The stash is bone dry, mate!</span
-                    >
+                    <span class="text-h3 text-secondary">The stash is bone dry, mate!</span>
                 </div>
             </section>
         </div></q-page
@@ -324,7 +258,7 @@ onMounted(async () => {
 </template>
 
 <style scoped>
-.divider-single {
+.separator-single {
     margin-inline: auto;
     content: '';
     width: 100%;
@@ -338,58 +272,48 @@ onMounted(async () => {
 
 .panel {
     position: relative;
-    background-color: var(--q-dark-page);
     border-radius: var(--rounded);
     width: 60rem;
-}
-
-.panel::before {
-    position: absolute;
-    top: 0;
-    left: 0;
-    content: '';
-    width: 100%;
     height: 100%;
-    border-radius: var(--rounded);
-    overflow: hidden;
-    box-shadow: rgba(0, 0, 0, 0.1) 0px 4px 12px;
-    border-radius: 0.75rem;
     border: 1px solid rgba(255, 255, 255, 0.125);
-    background: radial-gradient(
-        circle at top,
-        rgba(60, 30, 15, 0.35),
-        rgba(0, 0, 0, 0.35)
-    );
 }
 
-.price {
+.price-panel {
     position: relative;
-    background-color: var(--q-dark-page);
     border-radius: var(--rounded);
     height: 100%;
     padding: 2.5em;
-}
-
-.price > * {
-    z-index: 1;
-}
-
-.price::before {
-    position: absolute;
-    top: 0;
-    left: 0;
-    content: '';
-    width: 100%;
-    height: 100%;
-    overflow: hidden;
     box-shadow: rgba(0, 0, 0, 0.1) 0px 4px 12px;
-    border-radius: 0.75rem;
-    border: 1px solid rgba(255, 255, 255, 0.125);
-    background: radial-gradient(
-        circle at top,
-        rgba(60, 30, 15, 0.35),
-        rgba(9, 9, 9, 0.35)
-    );
+}
+
+.panel::after,
+.price-panel::after {
+    position: absolute;
+    content: '';
+    inset-block: 0;
+    inset-inline: 0;
+    background-image: url('/src/assets/vault/texture-vault.avif');
+    background-repeat: repeat;
+    opacity: 40%;
+    border-radius: var(--rounded);
+    z-index: -2;
+}
+.panel::before,
+.price-panel::before {
+    position: absolute;
+    content: '';
+    inset-block: 0;
+    inset-inline: 0;
+    background-color: var(--q-dark-page);
+    z-index: -3;
+}
+.layer {
+    position: absolute;
+    content: '';
+    inset-block: 0;
+    inset-inline: 0;
+    background-color: rgba(18, 9, 4, 0.5);
+    z-index: -1;
 }
 
 .toast {
@@ -414,20 +338,20 @@ onMounted(async () => {
 .card {
     display: flex;
     justify-content: space-between;
-    border: 1px solid rgba(255, 255, 255, 0.125);
-    border-radius: var(--rounded);
-    background-color: rgba(18, 9, 4, 0.5);
-    margin-bottom: 1.25rem;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.125);
+    padding-block: 0.6rem;
+    padding-left: 0.6rem;
 }
 
 .card:last-child {
-    margin-bottom: 0;
+    border-bottom: 0;
 }
 
 .card__image {
-    border-top-left-radius: var(--rounded);
-    border-top-right-radius: var(--rounded);
     width: 200px;
     background-size: cover;
+}
+.card__image:first-child {
+    border-radius: var(--rounded);
 }
 </style>

@@ -14,7 +14,9 @@
             <div class="q-pt-xl">
                 <div class="text-h4">Oopsie! The path is closed, chum!</div>
 
-                <div class="q-mt-lg text-h6 text-info">Better turn back before Zigzag spots you.</div>
+                <div class="q-mt-lg text-h6 text-info">
+                    Better turn back before Zigzag spots you.
+                </div>
 
                 <q-btn
                     class="q-mt-lg"

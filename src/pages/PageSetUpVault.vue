@@ -72,7 +72,7 @@ const setupVault = async () => {
                 >
                     <div class="q-gutter-y-md q-pa-lg vault-form__inner">
                         <div class="column q-mt-none">
-                            <h2 class="text-h5 text-secondary">Set up vault</h2>
+                            <h2 class="text-h5 text-secondary vault-title">Set up vault</h2>
                             <span class="q-mt-sm">Let's set up your vault for safe keeping.</span>
                         </div>
 
@@ -85,7 +85,9 @@ const setupVault = async () => {
                                 input-class="text-primary"
                                 label="True name *"
                                 lazy-rules="ondemand"
-                                :rules="[(val) => val.length > 0 || 'No name? How do we call ya then?']"
+                                :rules="[
+                                    (val) => val.length > 0 || 'No name? How do we call ya then?',
+                                ]"
                             />
                             <q-input
                                 v-model="mailbox"
@@ -96,7 +98,9 @@ const setupVault = async () => {
                                 label="Mailbox *"
                                 lazy-rules="ondemand"
                                 :rules="[
-                                    (val) => val.length > 0 || 'Got to have a mailbox to order a new vault key.',
+                                    (val) =>
+                                        val.length > 0 ||
+                                        'Got to have a mailbox to order a new vault key.',
                                     (val) => /.+@.+\..+/.test(val) || 'Enter proper mailbox.',
                                 ]"
                             />
@@ -110,7 +114,9 @@ const setupVault = async () => {
                                 label="Vault key *"
                                 lazy-rules="ondemand"
                                 :rules="[
-                                    (val) => (val && val.length >= 6) || 'The key\'s too easy. Should be least 6 chars',
+                                    (val) =>
+                                        (val && val.length >= 6) ||
+                                        'The key\'s too easy. Should be least 6 chars',
                                 ]"
                                 ><template #append>
                                     <q-icon
@@ -153,7 +159,9 @@ const setupVault = async () => {
                                 input-class="text-primary"
                                 label="Your faction *"
                                 lazy-rules="ondemand"
-                                :rules="[(val) => (val && val.length > 0) || 'Who do you fight for?']"
+                                :rules="[
+                                    (val) => (val && val.length > 0) || 'Who do you fight for?',
+                                ]"
                             />
                         </div>
 
@@ -173,7 +181,11 @@ const setupVault = async () => {
                                 </template>
                             </q-btn>
                             <RouterLink :to="{ name: 'access-vault' }"
-                                ><q-btn class="q-mt-none q-px-sm" flat label="Access vault" text-color="secondary"
+                                ><q-btn
+                                    class="q-mt-none q-px-sm"
+                                    flat
+                                    label="Access vault"
+                                    text-color="secondary"
                             /></RouterLink>
                         </div>
                     </div>

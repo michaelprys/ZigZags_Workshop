@@ -2,7 +2,7 @@
 import { ref } from 'vue';
 import supabase from 'src/utils/supabase';
 import { callToast } from 'src/utils/callToast';
-import { uxDelay } from 'src/utils/uxDelay';
+import { delay } from 'src/utils/delay';
 
 const mailbox = ref('');
 const pending = ref(false);
@@ -20,13 +20,21 @@ const orderKey = async () => {
                 supabase.auth.resetPasswordForEmail(mailbox.value, {
                     redirectTo: 'http://localhost:9000/set-new-vault-key',
                 }),
-                uxDelay(500),
+                delay(500),
             ]);
 
             if (error) {
-                callToast(error ? 'Invalid mailbox format' : 'Something went wrong', false, 'bottom');
+                callToast(
+                    error ? 'Invalid mailbox format' : 'Something went wrong',
+                    false,
+                    'bottom',
+                );
             } else {
-                callToast("If this mailbox exists in our list, the key's on its way!", true, 'bottom');
+                callToast(
+                    "If this mailbox exists in our list, the key's on its way!",
+                    true,
+                    'bottom',
+                );
             }
         } else {
             console.error('Validation Error');
@@ -51,14 +59,21 @@ const orderKey = async () => {
                 <q-form
                     ref="orderKeyForm"
                     class="shadow-10 vault-form"
-                    style="background-color: var(--q-bg-modal); width: 100%; max-width: 40rem; margin-inline: auto"
+                    style="
+                        background-color: var(--q-bg-modal);
+                        width: 100%;
+                        max-width: 40rem;
+                        margin-inline: auto;
+                    "
                     @keydown.enter.prevent="orderKey"
                     @submit.prevent="orderKey"
                 >
                     <div class="q-gutter-y-md q-pa-lg vault-form__inner">
                         <div class="column q-mt-none">
                             <h2 class="text-h5 text-secondary">Order a vault key</h2>
-                            <span class="q-mt-sm">Forgot your key? No worries, we'll get you a new one!</span>
+                            <span class="q-mt-sm"
+                                >Forgot your key? No worries, we'll get you a new one!</span
+                            >
                         </div>
                         <div style="width: 100%; gap: 1rem">
                             <q-input
@@ -70,7 +85,9 @@ const orderKey = async () => {
                                 label="Mailbox *"
                                 lazy-rules="ondemand"
                                 :rules="[
-                                    (val) => val.length > 0 || 'Got to have a mailbox to order a new vault key.',
+                                    (val) =>
+                                        val.length > 0 ||
+                                        'Got to have a mailbox to order a new vault key.',
                                     (val) => /.+@.+\..+/.test(val) || 'Enter proper mailbox.',
                                 ]"
                             />
@@ -92,7 +109,11 @@ const orderKey = async () => {
                             </q-btn>
 
                             <RouterLink :to="{ name: 'access-vault' }">
-                                <q-btn class="q-mt-none q-px-sm" flat label="Access vault" text-color="secondary"
+                                <q-btn
+                                    class="q-mt-none q-px-sm"
+                                    flat
+                                    label="Access vault"
+                                    text-color="secondary"
                             /></RouterLink>
                         </div>
                     </div>

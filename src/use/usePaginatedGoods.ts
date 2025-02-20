@@ -18,9 +18,7 @@ export const usePaginatedGoods = (requiresAuth: boolean) => {
     };
 
     const imageUrl = computed(() => {
-        return store.goods.map(
-            (good) => new URL(good.image_url, import.meta.url).href,
-        );
+        return store.goods.map((good) => new URL(good.image_url, import.meta.url).href);
     });
 
     onMounted(async () => {

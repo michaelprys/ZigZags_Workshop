@@ -44,11 +44,12 @@
         "**/.quasar": true,
         "**/.vscode": true,
         "**/README.md": true,
-        "**/boot": true,
+        "**/boot": false,
         "**/node_modules": true,
         "**/pnpm-lock.yaml": true,
         "**/postcss.config.js": true,
-        "**/tsconfig.json": true
+        "**/tsconfig.json": true,
+        "src/boot": true
     },
     "typescript.tsdk": "node_modules/typescript/lib",
     "deno.enable": true

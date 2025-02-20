@@ -24,7 +24,10 @@ const accessVault = async () => {
             });
 
             if (error) {
-                callToast(error ? 'Wrong vault key or mailbox. Try again' : 'Something went wrong', false);
+                callToast(
+                    error ? 'Wrong vault key or mailbox. Try again' : 'Something went wrong',
+                    false,
+                );
             } else {
                 await router.push({ name: 'vault' });
                 callToast('Welcome to vault', true);
@@ -49,13 +52,18 @@ const accessVault = async () => {
                 <q-form
                     ref="accessVaultForm"
                     class="shadow-10 vault-form"
-                    style="background-color: var(--q-bg-modal); width: 100%; max-width: 40rem; margin-inline: auto"
+                    style="
+                        background-color: var(--q-bg-modal);
+                        width: 100%;
+                        max-width: 40rem;
+                        margin-inline: auto;
+                    "
                     @keydown.enter.prevent="accessVault"
                     @submit.prevent="accessVault"
                 >
                     <div class="q-gutter-y-md q-pa-lg vault-form__inner">
                         <div class="column q-mt-none">
-                            <h2 class="text-h5 text-secondary">Access vault</h2>
+                            <h2 class="text-h5 text-secondary vault-title">Access vault</h2>
                             <span class="q-mt-sm">Hey there, stranger!</span>
                         </div>
                         <div style="width: 100%; gap: 1rem">
@@ -67,7 +75,11 @@ const accessVault = async () => {
                                 input-class="text-primary"
                                 label="Mailbox *"
                                 lazy-rules="ondemand"
-                                :rules="[(val) => val.length > 0 || 'Got to have a mailbox to access the vault.']"
+                                :rules="[
+                                    (val) =>
+                                        val.length > 0 ||
+                                        'Got to have a mailbox to access the vault.',
+                                ]"
                             />
                             <q-input
                                 v-model="vaultKey"
@@ -78,7 +90,10 @@ const accessVault = async () => {
                                 input-class="text-primary"
                                 label="Vault key *"
                                 lazy-rules="ondemand"
-                                :rules="[(val) => (val && val.length >= 6) || 'Must have a valid vault key.']"
+                                :rules="[
+                                    (val) =>
+                                        (val && val.length >= 6) || 'Must have a valid vault key.',
+                                ]"
                             >
                                 <template #append>
                                     <q-icon
@@ -96,10 +111,18 @@ const accessVault = async () => {
 
                             <div class="flex items-center" style="gap: 0.5rem">
                                 <RouterLink :to="{ name: 'order-key' }">
-                                    <q-btn class="q-mt-none q-px-sm" flat label="Forgot key?" text-color="secondary"
+                                    <q-btn
+                                        class="q-mt-none q-px-sm"
+                                        flat
+                                        label="Forgot key?"
+                                        text-color="secondary"
                                 /></RouterLink>
                                 <RouterLink :to="{ name: 'setup-vault' }">
-                                    <q-btn class="q-mt-none q-px-sm" flat label="Set up Vault" text-color="secondary"
+                                    <q-btn
+                                        class="q-mt-none q-px-sm"
+                                        flat
+                                        label="Set up Vault"
+                                        text-color="secondary"
                                 /></RouterLink>
                             </div>
                         </div>
@@ -109,4 +132,8 @@ const accessVault = async () => {
     ></q-page>
 </template>
 
-<style scoped></style>
+<style scoped>
+.vault-form:after {
+    background-position: 50% calc(0% - 230px);
+}
+</style>

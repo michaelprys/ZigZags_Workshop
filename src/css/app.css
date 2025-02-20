@@ -67,7 +67,7 @@ body {
             oklch(from var(--q-dark-page) l c h / 0.23),
             oklch(from var(--q-dark-page) l c h / 0.23)
         ),
-        url('/src/assets/common/bg.avif');
+        url('/src/assets/common/bg-common.avif');
     color: var(--q-primary);
     background-color: #040405;
 }

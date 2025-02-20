@@ -54,6 +54,7 @@ watch(
 
 <template>
     <q-layout view="lhh LpR lff">
+        <div class="bg"></div>
         <q-header
             class="bg-dark-page bg-transparent justify-between q-py-lg"
             style="box-shadow: 0rem 0.25rem 0.625rem rgba(0, 0, 0, 0.5)"
@@ -80,10 +81,19 @@ watch(
                 <div class="flex q-gutter-lg">
                     <div class="flex items-center q-gutter-x-xl">
                         <q-tabs class="text-subtitle1">
-                            <q-route-tab exact class="q-px-lg text-primary" :to="{ name: 'base' }">Base</q-route-tab>
-                            <q-route-tab exact class="q-px-lg text-primary" to="/guide">Guide</q-route-tab>
-                            <q-route-tab exact class="q-px-lg text-primary" :to="{ name: 'vault' }">Vault</q-route-tab>
-                            <q-route-tab exact class="q-px-lg text-primary" :to="{ name: 'workshop' }"
+                            <q-route-tab exact class="q-px-lg text-primary" :to="{ name: 'base' }"
+                                >Base</q-route-tab
+                            >
+                            <q-route-tab exact class="q-px-lg text-primary" to="/guide"
+                                >Guide</q-route-tab
+                            >
+                            <q-route-tab exact class="q-px-lg text-primary" :to="{ name: 'vault' }"
+                                >Vault</q-route-tab
+                            >
+                            <q-route-tab
+                                exact
+                                class="q-px-lg text-primary"
+                                :to="{ name: 'workshop' }"
                                 >Workshop</q-route-tab
                             >
                             <div class="custom-tab">
@@ -96,7 +106,13 @@ watch(
                                 >
                                 <div class="button-animation"></div>
                             </div>
-                            <q-route-tab exact :to="{ name: 'stash' }" class="text-subtitle1" unelevated square>
+                            <q-route-tab
+                                exact
+                                :to="{ name: 'stash' }"
+                                class="text-subtitle1"
+                                unelevated
+                                square
+                            >
                                 <IconLoot class="loot shadow-6" style="color: var(--q-primary)" />
                             </q-route-tab>
                         </q-tabs>
@@ -131,7 +147,7 @@ watch(
                     </video>
                 </div>
             </div>
-            <div class="divider"></div>
+            <div class="separator"></div>
             <div
                 class="q-px-md"
                 style="
@@ -174,8 +190,16 @@ watch(
             rgba(11, 5, 4, 0.66) 50%,
             rgba(39, 22, 11, 0.82) 100%
         ),
-        linear-gradient(9deg, #000 -40%, rgba(0, 0, 0, 0) 50%, rgba(0, 0, 0, 0) 55%, rgba(0, 0, 0, 0) 55%, #000 170%),
-        linear-gradient(0deg, rgba(0, 0, 0, 0.25) 0%, rgba(0, 0, 0, 0.25) 100%), url('/src/assets/common/header.webp');
+        linear-gradient(
+            9deg,
+            #000 -40%,
+            rgba(0, 0, 0, 0) 50%,
+            rgba(0, 0, 0, 0) 55%,
+            rgba(0, 0, 0, 0) 55%,
+            #000 170%
+        ),
+        linear-gradient(0deg, rgba(0, 0, 0, 0.25) 0%, rgba(0, 0, 0, 0.25) 100%),
+        url('/src/assets/common/header-common.webp');
     /* mask-image: linear-gradient(to bottom, black 95%, transparent 100%); */
     width: 100%;
     height: 100%;
@@ -249,7 +273,12 @@ watch(
     left: 0;
     width: 100%;
     height: 2px;
-    background: linear-gradient(90deg, rgba(0, 0, 0, 0) 0%, var(--q-warning) 50%, rgba(0, 0, 0, 0) 100%);
+    background: linear-gradient(
+        90deg,
+        rgba(0, 0, 0, 0) 0%,
+        var(--q-warning) 50%,
+        rgba(0, 0, 0, 0) 100%
+    );
     transform-origin: top center;
     transform: scaleX(0);
     transition: transform 0.3s ease-in-out;

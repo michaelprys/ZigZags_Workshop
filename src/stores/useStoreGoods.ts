@@ -1,6 +1,7 @@
 import { defineStore, acceptHMRUpdate } from 'pinia';
 import { useStoreAuth } from 'src/stores/useStoreAuth';
 import supabase from 'src/utils/supabase';
+import { delay } from 'src/utils/delay';
 
 interface Good {
     id: number;
@@ -13,7 +14,13 @@ interface Good {
     source: string;
     image_url: string;
     requires_auth: boolean;
+    debuff?: string;
 }
+
+type FeaturedGood = {
+    name: string;
+    image_url: string;
+};
 
 export const useStoreGoods = defineStore('goods', {
     state: () => ({
@@ -21,6 +28,8 @@ export const useStoreGoods = defineStore('goods', {
         suggestedGoods: [] as Good[],
         totalGoods: 0,
         selectedGood: null as Good | null,
+        featuredGoods: [] as FeaturedGood[],
+        pending: false,
     }),
 
     persist: {
@@ -29,40 +38,79 @@ export const useStoreGoods = defineStore('goods', {
 
     actions: {
         async loadGoods(start: number, end: number, requiresAuth: boolean) {
-            const { data, error, count } = await supabase
-                .from('goods')
-                .select('*', { count: 'exact' })
-                .range(start, end)
-                .filter('requires_auth', 'eq', requiresAuth)
-                .order('id');
+            this.pending = true;
 
-            if (error) {
-                console.error(error);
-            } else {
+            try {
+                // await delay(2500);
+
+                const { data, error, count } = await supabase
+                    .from('goods')
+                    .select('*', { count: 'exact' })
+                    .range(start, end)
+                    .eq('requires_auth', requiresAuth)
+                    .order('id');
+
+                if (error) {
+                    throw new Error(error.message);
+                }
+
                 this.goods = data;
                 this.totalGoods = count;
+            } catch (error) {
+                console.error(error);
+            } finally {
+                this.pending = false;
             }
         },
 
         async loadSuggestedGoods() {
-            const storeAuth = useStoreAuth();
+            this.pending = true;
 
-            const query = supabase.from('goods').select('*').order('id');
+            try {
+                const storeAuth = useStoreAuth();
 
-            let filteredData = [];
+                const query = supabase.from('goods').select('*').order('id');
 
-            if (!storeAuth.session) {
-                filteredData = await query.eq('requires_auth', false);
-            } else {
-                filteredData = await query;
-            }
+                let filteredData = [];
 
-            const { data, error } = filteredData;
+                if (!storeAuth.session) {
+                    filteredData = await query.eq('requires_auth', false);
+                } else {
+                    filteredData = await query;
+                }
 
-            if (error) {
+                const { data, error } = filteredData;
+
+                if (error) {
+                    throw new Error(error.message);
+                } else {
+                    this.suggestedGoods = data;
+                }
+            } catch (error) {
                 console.error(error);
-            } else {
-                this.suggestedGoods = data;
+            } finally {
+                this.pending = false;
+            }
+        },
+
+        async loadFeaturedGoods() {
+            this.pending = true;
+
+            try {
+                const { data, error } = await supabase
+                    .from('goods')
+                    .select('name, image_url')
+                    .filter('is_featured', 'eq', true);
+
+                if (error) {
+                    throw new Error(error.message);
+                } else {
+                    this.featuredGoods = data;
+                }
+            } catch (error) {
+                console.error(error);
+            } finally {
+                this.pending = false;
             }
         },
 

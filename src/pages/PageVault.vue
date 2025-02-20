@@ -15,10 +15,7 @@ const leaveVault = async () => {
     const { error } = await supabase.auth.signOut();
 
     if (error) {
-        callToast(
-            error ? 'Unable to leave the vault' : 'Something went wrong',
-            false,
-        );
+        callToast(error ? 'Unable to leave the vault' : 'Something went wrong', false);
     } else {
         await storeAuth.checkSession();
         if (storeGoods.goods.find((good) => good.requires_auth === true)) {
@@ -77,10 +74,7 @@ const determineFaction = computed(() => {
 });
 
 const imgSrc = (ext) => {
-    return new URL(
-        `/src/assets/vault/${determineFaction.value}.${ext}`,
-        import.meta.url,
-    ).href;
+    return new URL(`/src/assets/vault/${determineFaction.value}.${ext}`, import.meta.url).href;
 };
 
 // top-up
@@ -195,20 +189,17 @@ const handlePayment = async () => {
                 return;
             }
 
-            const res = await fetch(
-                `${import.meta.env.VITE_SITE_URL}/create-checkout-session`,
-                {
-                    method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json',
-                        Authorization: `Bearer ${session.access_token}`,
-                    },
-                    body: JSON.stringify({
-                        price,
-                        quantity: topUpAmount.value,
-                    }),
+            const res = await fetch(`${import.meta.env.VITE_BASE_URL}/create-checkout-session`, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    Authorization: `Bearer ${session.access_token}`,
                 },
-            );
+                body: JSON.stringify({
+                    price,
+                    quantity: topUpAmount.value,
+                }),
+            });
 
             const contentType = res.headers.get('Content-Type');
 
@@ -246,25 +237,14 @@ onMounted(async () => {
         <section
             id="vault"
             class="flex flex-center"
-            style="
-                padding-top: 4.625em;
-                padding-bottom: 8.5em;
-                min-height: calc(100svh - 4.625em);
-            "
+            style="padding-top: 4.625em; padding-bottom: 8.5em; min-height: calc(100svh - 4.625em)"
         >
             <h1 class="sr-only">Vault</h1>
 
             <div class="bg"></div>
 
-            <q-dialog
-                v-model="balanceDialog"
-                backdrop-filter="blur(8px); brightness(60%)"
-            >
-                <q-card
-                    dark
-                    class="q-pa-md"
-                    style="max-width: 22.25rem; width: 100%"
-                >
+            <q-dialog v-model="balanceDialog" backdrop-filter="blur(8px); brightness(60%)">
+                <q-card dark class="q-pa-md" style="max-width: 22.25rem; width: 100%">
                     <q-card-section class="q-pt-none">
                         <div class="text-h6 text-primary">Add funds</div>
                     </q-card-section>
@@ -285,30 +265,16 @@ onMounted(async () => {
                                 input-class="text-primary"
                                 label="Currency of choice *"
                                 lazy-rules="ondemand"
-                                :rules="[
-                                    (val) =>
-                                        val.value !== '' || 'Choose currency',
-                                ]"
+                                :rules="[(val) => val.value !== '' || 'Choose currency']"
                                 @update:model-value="resetAmount"
                             />
                         </q-card-actions>
 
-                        <q-card-actions
-                            class="column q-gutter-x-sm"
-                            align="center"
-                        >
-                            <span class="text-secondary"
-                                >Cost: ${{ calculatedAmount }}</span
-                            >
-                            <div
-                                class="flex items-center q-mt-md"
-                                style="gap: 0.5rem"
-                            >
+                        <q-card-actions class="column q-gutter-x-sm" align="center">
+                            <span class="text-secondary">Cost: ${{ calculatedAmount }}</span>
+                            <div class="flex items-center q-mt-md" style="gap: 0.5rem">
                                 <q-btn
-                                    :disable="
-                                        topUpAmount <=
-                                        minAmounts[paymentType.value]
-                                    "
+                                    :disable="topUpAmount <= minAmounts[paymentType.value]"
                                     icon="remove"
                                     color="primary"
                                     flat
@@ -325,19 +291,13 @@ onMounted(async () => {
                                     lazy-rules="ondemand"
                                     :rules="[
                                         (val) =>
-                                            val >=
-                                                minAmounts[paymentType.value] ||
+                                            val >= minAmounts[paymentType.value] ||
                                             `Minimal: ${minAmounts[paymentType.value]}`,
                                     ]"
                                     @keypress="preventIncorrectChars"
                                     @paste="handlePaste"
                                 />
-                                <q-btn
-                                    icon="add"
-                                    color="primary"
-                                    flat
-                                    @click="increment"
-                                />
+                                <q-btn icon="add" color="primary" flat @click="increment" />
                             </div>
                         </q-card-actions>
 
@@ -373,27 +333,17 @@ onMounted(async () => {
                                         anchor="center start"
                                         self="bottom end"
                                     >
-                                        <span
-                                            class="text-caption text-negative"
-                                            >{{ determineFaction }}</span
-                                        >
+                                        <span class="text-caption text-negative">{{
+                                            determineFaction
+                                        }}</span>
                                     </q-tooltip>
                                 </div>
-                                <h2 class="text-center text-h6">
-                                    {{
-                                        storeAuth.session?.user_metadata
-                                            .first_name
-                                    }}'s Inventory
+                                <h2 class="text-center text-h6 vault-title">
+                                    {{ storeAuth.session?.user_metadata.first_name }}'s Inventory
                                 </h2>
                             </div>
 
-                            <q-btn
-                                icon="close"
-                                color="primary"
-                                flat
-                                dense
-                                @click="alert"
-                            ></q-btn>
+                            <q-btn icon="close" color="primary" flat dense @click="alert"></q-btn>
                         </div>
 
                         <div class="q-mt-lg vault__cells">
@@ -409,8 +359,7 @@ onMounted(async () => {
                                         >Boots of swiftness</span
                                     >
                                     <span>
-                                        Speedy boots for fast getaways. Run like
-                                        a goblin on fire!
+                                        Speedy boots for fast getaways. Run like a goblin on fire!
                                     </span>
                                 </q-tooltip>
 
@@ -436,10 +385,7 @@ onMounted(async () => {
                                 input-class="text-primary"
                             />
 
-                            <div
-                                class="flex q-mt-lg vault__gold-panel"
-                                style="gap: 0.75rem"
-                            >
+                            <div class="flex q-mt-lg vault__gold-panel" style="gap: 0.75rem">
                                 <q-btn
                                     style="border-radius: var(--rounded)"
                                     icon="add"
@@ -460,9 +406,7 @@ onMounted(async () => {
                                         self="center start"
                                         class="bg-primary text-center"
                                     >
-                                        <span class="text-caption text-negative"
-                                            >Gold</span
-                                        >
+                                        <span class="text-caption text-negative">Gold</span>
                                     </q-tooltip>
                                 </div>
                                 <div class="flex items-center q-gutter-x-sm">
@@ -538,10 +482,11 @@ onMounted(async () => {
     content: '';
     width: 100%;
     height: 100%;
-    background-image: url('/src/assets/vault/texture.avif');
+    background-image: url('/src/assets/vault/texture-vault.avif');
     background-size: cover;
     background-position: center;
-    opacity: 30%;
+    opacity: 40%;
+    filter: contrast(105%);
     border-radius: 0.75rem;
     border: 1px solid rgba(255, 255, 255, 0.125);
 }
@@ -581,7 +526,7 @@ onMounted(async () => {
 }
 
 .vault__cell:hover {
-    box-shadow: 0 8px 20px rgba(92, 90, 78, 0.5);
+    box-shadow: 0 8px 20px rgba(92, 90, 78, 0.6);
 }
 
 .vault__cell {
@@ -595,7 +540,7 @@ onMounted(async () => {
     height: 5.25rem;
     border-radius: var(--rounded);
     overflow: hidden;
-    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.5);
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.7);
 }
 
 .vault__cell-placeholder {
@@ -618,15 +563,9 @@ onMounted(async () => {
 .vault__cell-placeholder::before {
     content: '';
     position: absolute;
-    top: 0px;
-    left: 0px;
-    right: 0px;
-    bottom: 0px;
-    background: radial-gradient(
-        circle at top left,
-        rgba(255, 255, 255, 0.2),
-        transparent
-    );
+    inset-block: 0;
+    inset-inline: 0;
+    background: radial-gradient(circle at top left, rgba(255, 255, 255, 0.2), transparent);
     border-radius: 0.3125rem;
 }
 
@@ -644,10 +583,8 @@ onMounted(async () => {
 .vault__cell-image::before {
     content: '';
     position: absolute;
-    top: 0px;
-    left: 0px;
-    right: 0px;
-    bottom: 0px;
+    inset-block: 0;
+    inset-inline: 0;
     border: 2px solid rgb(132, 132, 132);
     border-radius: var(--rounded);
     z-index: 3;

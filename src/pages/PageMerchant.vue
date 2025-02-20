@@ -8,7 +8,11 @@
             <section
                 id="black-market-access"
                 class="flex flex-center relative-position"
-                style="padding-top: 4.625em; padding-bottom: 8.5em; min-height: calc(100svh - 4.625em)"
+                style="
+                    padding-top: 4.625em;
+                    padding-bottom: 8.5em;
+                    min-height: calc(100svh - 4.625em);
+                "
             >
                 <div class="q-px-md">
                     <div
@@ -24,7 +28,9 @@
                         <div class="flex full-width x">
                             <div class="column q-mt-none">
                                 <h2 class="q-mt-none text-h5 text-secondary">
-                                    Get an invitation<span class="text-subtitle1">&nbsp;&nbsp;(1000 gold)</span>
+                                    Get an invitation<span class="text-subtitle1"
+                                        >&nbsp;&nbsp;(1000 gold)</span
+                                    >
                                 </h2>
                                 <span class="q-mt-sm">Are you ready to pay?</span>
                             </div>
@@ -48,7 +54,7 @@
 
 <style scoped>
 .bg {
-    background-image: url('src/assets/merchant/bg.avif');
+    background-image: url('src/assets/merchant/bg-merchant.avif');
     position: absolute;
     top: 0;
     left: 0;

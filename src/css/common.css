@@ -10,7 +10,7 @@
 }
 /* Divider */
 /* ------------------------------- */
-.divider {
+.separator {
     margin-inline: auto;
     content: '';
     width: 100%;
@@ -22,7 +22,7 @@
     z-index: 100;
 }
 
-.divider::before {
+.separator::before {
     content: '';
     position: absolute;
     top: 0.375rem;
@@ -30,7 +30,7 @@
     height: 1px;
     background-color: #1e1e1e;
 }
-.divider::after {
+.separator::after {
     content: '';
     position: absolute;
 }
@@ -52,10 +52,14 @@
     content: '';
     width: 100%;
     height: 100%;
-    background: radial-gradient(circle at top, rgba(53, 0, 0, 0.5), rgba(0, 79, 80, 0.4), rgba(30, 0, 0, 0.4));
+    background: radial-gradient(
+        circle at top,
+        rgba(53, 0, 0, 0.5),
+        rgba(0, 79, 80, 0.4),
+        rgba(30, 0, 0, 0.4)
+    );
     border-radius: 0.75rem;
     border: 1px solid rgba(255, 255, 255, 0.125);
-    z-index: 0;
 }
 .vault-form:after {
     position: absolute;
@@ -64,15 +68,18 @@
     content: '';
     width: 100%;
     height: 100%;
-    background-image: url('/src/assets/vault/texture.avif');
+    background-image: url('/src/assets/vault/texture-vault.avif');
     background-size: cover;
     background-position: center;
-    opacity: 10%;
+    background-repeat: no-repeat;
+    opacity: 40%;
     border-radius: 0.75rem;
     border: 1px solid rgba(255, 255, 255, 0.125);
-    z-index: 0;
 }
 .vault-form__inner {
     position: relative;
     z-index: 1;
+}
+.vault-title {
+    text-shadow: rgba(0, 0, 0, 0.3) 3px 3px 6px;
 }

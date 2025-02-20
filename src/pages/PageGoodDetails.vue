@@ -21,18 +21,11 @@ const { moveImage, resetImage } = useMoveImage(imgRef);
         <section
             id="good-details"
             class="relative-position"
-            style="
-                padding-top: 5.3em;
-                padding-bottom: 8.5em;
-                min-height: calc(100svh - 5.3em);
-            "
+            style="padding-top: 5.3em; padding-bottom: 8.5em; min-height: calc(100svh - 5.3em)"
         >
             <h1 class="sr-only">Item details</h1>
 
-            <div
-                class="bg"
-                :class="isAuth ? 'bg-black-market' : 'bg-workshop'"
-            ></div>
+            <div class="bg" :class="isAuth ? 'bg-black-market' : 'bg-workshop'"></div>
             <div
                 class="overlay"
                 :class="isAuth ? 'overlay-black-market' : 'overlay-workshop'"
@@ -44,7 +37,7 @@ const { moveImage, resetImage } = useMoveImage(imgRef);
                         <img
                             ref="imgRef"
                             class="image"
-                            src="~assets/index/image-2.avif"
+                            :src="store.selectedGood.image_url"
                             @mousemove="moveImage"
                             @mouseleave="resetImage"
                         />
@@ -62,16 +55,14 @@ const { moveImage, resetImage } = useMoveImage(imgRef);
                         <div class="column">
                             <div class="flex items-center justify-between">
                                 <h2 class="text-bold text-h4">
-                                    {{ store.selectedGood?.name }}
+                                    {{ store.selectedGood.name }}
                                 </h2>
 
                                 <q-btn
                                     class="q-px-md"
                                     dense
                                     :style="{
-                                        backgroundColor: isAuth
-                                            ? '#360101'
-                                            : '#132242',
+                                        backgroundColor: isAuth ? '#360101' : '#132242',
                                     }"
                                     text-color="primary"
                                     filled
@@ -80,22 +71,16 @@ const { moveImage, resetImage } = useMoveImage(imgRef);
                                 >
                             </div>
 
-                            <h3
-                                class="q-mt-md text-bold text-h6 text-secondary"
-                            >
-                                Category: {{ store.selectedGood?.category }}
+                            <h3 class="q-mt-md text-bold text-h6 text-secondary">
+                                Category: {{ store.selectedGood.category }}
                             </h3>
 
-                            <p
-                                class="q-mt-md text-body2"
-                                style="text-align: justify"
-                            >
-                                {{ store.selectedGood?.description }}
+                            <p class="q-mt-md text-body2" style="text-align: justify">
+                                {{ store.selectedGood.description }}
                             </p>
 
-                            <span class="q-mt-lg text-subtitle1"
-                                >Price:
-                                {{ store.selectedGood?.price }} gold</span
+                            <span class="q-mt-lg text-secondary text-subtitle1"
+                                >Price: {{ store.selectedGood.price }} gold</span
                             >
 
                             <q-btn
@@ -109,15 +94,10 @@ const { moveImage, resetImage } = useMoveImage(imgRef);
                         </div>
 
                         <div class="q-mt-lg">
-                            <h2 class="text-bold text-h6 text-secondary">
-                                More about this item
-                            </h2>
+                            <h2 class="text-bold text-h6 text-secondary">More about this item</h2>
 
-                            <p
-                                class="q-mt-md text-body2"
-                                style="text-align: justify"
-                            >
-                                {{ store.selectedGood?.source }}
+                            <p class="q-mt-md text-body2" style="text-align: justify">
+                                {{ store.selectedGood.source }}
                             </p>
                         </div>
                     </div>
@@ -141,17 +121,13 @@ const { moveImage, resetImage } = useMoveImage(imgRef);
     background-position: center;
     background-repeat: no-repeat;
     filter: brightness(50%);
-    mask-image: radial-gradient(
-        circle,
-        rgb(255, 255, 255) 50%,
-        rgba(255, 255, 255, 0) 100%
-    );
+    mask-image: radial-gradient(circle, rgb(255, 255, 255) 50%, rgba(255, 255, 255, 0) 100%);
 }
 .bg-workshop {
-    background-image: url('https://odbekmopggoikvquoypx.supabase.co/storage/v1/object/public/assets/good-details/bg_workshop_details.avif');
+    background-image: url('src/assets/good-details/bg-workshop-details.avif');
 }
 .bg-black-market {
-    background-image: url('https://odbekmopggoikvquoypx.supabase.co/storage/v1/object/public/assets/good-details/bg_black_market_details.avif');
+    background-image: url('src/assets/good-details/bg-black-market-details.avif');
 }
 
 .overlay {

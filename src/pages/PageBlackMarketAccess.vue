@@ -34,43 +34,31 @@ onMounted(async () => {
                         style="max-width: 40rem; width: 100%"
                     >
                         <template v-if="!store.session && !hasInvitation">
-                            <h2 class="text-h4 text-negative">
-                                INVITATION UNCONFIRMED
-                            </h2>
+                            <h2 class="text-h4 text-negative">INVITATION UNCONFIRMED</h2>
                             <h3 class="q-mt-xs text-info text-subtitle1">
                                 ACCESS VAULT TO VERIFY INVITATION
                             </h3>
 
                             <div class="flex flex-center q-mt-lg">
                                 <RouterLink :to="{ name: 'vault' }"
-                                    ><q-btn
-                                        class="q-mt-none"
-                                        outline
-                                        label="Go to vault"
+                                    ><q-btn class="q-mt-none" outline label="Go to vault"
                                 /></RouterLink>
                             </div>
                         </template>
 
                         <template v-if="store.session && !hasInvitation">
                             <h2 class="text-h4 text-negative">ACCESS DENIED</h2>
-                            <h3 class="q-mt-xs text-info text-subtitle1">
-                                NO INVITATION FOUND
-                            </h3>
+                            <h3 class="q-mt-xs text-info text-subtitle1">NO INVITATION FOUND</h3>
 
                             <div class="flex flex-center q-mt-lg">
                                 <RouterLink :to="{ name: 'merchant' }"
-                                    ><q-btn
-                                        class="q-mt-none"
-                                        outline
-                                        label="Get invitation"
+                                    ><q-btn class="q-mt-none" outline label="Get invitation"
                                 /></RouterLink>
                             </div>
                         </template>
 
                         <template v-if="store.session && hasInvitation">
-                            <h2 class="text-h4 text-positive">
-                                INVITATION DETECTED
-                            </h2>
+                            <h2 class="text-h4 text-positive">INVITATION DETECTED</h2>
                             <h3 class="q-mt-xs text-info text-subtitle1">
                                 INITIATING PROTOCOL... PROCEED
                             </h3>
@@ -106,7 +94,7 @@ onMounted(async () => {
 }
 
 .bg {
-    background-image: url('src/assets/black-market-access/bg.avif');
+    background-image: url('src/assets/black-market-access/bg-black-market-access.avif');
     position: absolute;
     top: 0;
     left: 0;

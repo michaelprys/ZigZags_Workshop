@@ -18,6 +18,11 @@ const formattedSuggestions = computed(() => {
 });
 
 const filterFn = (val, update) => {
+    if (val.length < 1) {
+        abort();
+        return;
+    }
+
     if (val === '') {
         update(() => {
             suggestions.value = formattedSuggestions.value;
@@ -57,14 +62,10 @@ onMounted(async () => {
         <h1 class="sr-only">Introduction</h1>
 
         <div class="flex flex-center q-px-md">
-            <div
-                class="relative-position section__wrapper shadow-8 text-center"
-            >
+            <div class="relative-position section__wrapper shadow-8 text-center">
                 <div class="column fit flex-center">
                     <div style="z-index: 1">
-                        <h2 class="text-glow-dark text-h3 text-primary">
-                            Time is money, friend!
-                        </h2>
+                        <h2 class="text-glow-dark text-h3 text-primary">Time is money, friend!</h2>
                         <h3 class="q-mt-lg text-h5 text-secondary">
                             I got the best deals anywhere
                         </h3>
@@ -108,28 +109,19 @@ onMounted(async () => {
                         </div>
                     </div>
                 </div>
-                <div
-                    class="absolute-top fit"
-                    style="border-radius: var(--rounded)"
-                >
+                <div class="absolute-top fit" style="border-radius: var(--rounded)">
                     <q-parallax class="fit">
                         <template #media>
                             <video
                                 width="1516"
                                 height="926"
-                                style="
-                                    object-fit: cover;
-                                    filter: brightness(150%);
-                                "
+                                style="object-fit: cover; filter: brightness(150%)"
                                 poster="~assets/index/poster.avif"
                                 loop
                                 muted
                                 autoplay
                             >
-                                <source
-                                    src="~assets/index/intro.mp4"
-                                    type="video/mp4"
-                                />
+                                <source src="~assets/index/intro.mp4" type="video/mp4" />
                             </video>
                         </template>
                     </q-parallax>
@@ -138,7 +130,7 @@ onMounted(async () => {
         </div>
     </section>
 
-    <div class="divider"></div>
+    <div class="separator"></div>
 </template>
 
 <style scoped>
