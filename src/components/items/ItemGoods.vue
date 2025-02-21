@@ -1,15 +1,17 @@
 <script setup lang="ts">
 import { useAddToStash } from 'src/use/useAddToStash';
 import { useStoreGoods } from 'src/stores/useStoreGoods';
+import type { Category } from 'src/types';
 
 const store = useStoreGoods();
 const { pending } = store;
 const { addToStash } = useAddToStash();
 
 defineProps<{
-    categories: string[];
-    imageUrl: string[];
+    categories: Category[];
+    requiresAuth: boolean;
     classCard: string;
+    loadPaginatedGoods: (categories: Category[]) => void;
 }>();
 </script>
 
@@ -17,12 +19,17 @@ defineProps<{
     <div class="column flex-center q-px-md relative-position">
         <ul class="flex flex-center q-mt-lg text-subtitle1" style="gap: 2rem; user-select: none">
             <li v-for="(category, idx) in categories" :key="idx">
-                <q-checkbox :label="category" size="md"></q-checkbox>
+                <q-checkbox
+                    v-model="category.state"
+                    :label="category.label"
+                    size="md"
+                    @click="loadPaginatedGoods(categories)"
+                ></q-checkbox>
             </li>
         </ul>
 
         <ul class="flex flex-center q-gutter-lg q-mt-none q-pl-none" style="max-width: 84.5rem">
-            <li v-for="(good, idx) in store.goods" :key="good.id" style="cursor: pointer">
+            <li v-for="good in store.goods" :key="good.id" style="cursor: pointer">
                 <q-card :class="classCard" flat dark>
                     <div>
                         <div class="card__image-wrapper">
@@ -33,7 +40,7 @@ defineProps<{
                                 square
                                 style="width: 100%; height: 13.125rem"
                             />
-                            <q-img v-else class="card__image" :src="imageUrl[idx]" />
+                            <q-img v-else class="card__image" :src="good.image_url" />
                         </div>
 
                         <q-card-section>

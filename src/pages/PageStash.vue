@@ -169,15 +169,15 @@ onMounted(async () => {
 
                     <div class="flex q-mt-xl">
                         <div dark class="panel q-mr-xl">
-                            <div class="layer"></div>
-
                             <div v-for="card in 4" :key="card" class="card shadow-1">
                                 <q-img class="card__image" src="~assets/guide/zigzag.avif" />
 
                                 <div class="flex justify-between q-pa-md" style="width: 100%">
                                     <div class="column">
-                                        <span class="text-bold">Sneaky Boots of Swift Exit</span>
-                                        <span class="text-bold">Enchantment: None</span>
+                                        <span class="text-body1 text-bold"
+                                            >Sneaky Boots of Swift Exit</span
+                                        >
+                                        <span class="text-bold text-info">Category: Mounts</span>
                                         <span class="q-mt-lg text-bold"
                                             ><span class="text-secondary">Price</span>: 250
                                             Gold</span
@@ -220,8 +220,6 @@ onMounted(async () => {
                         </div>
 
                         <div class="column price-panel q-pa-lg">
-                            <div class="layer"></div>
-
                             <span class="text-subtitle1"
                                 ><span class="text-secondary">💰 Base price:</span> 250 Gold</span
                             >
@@ -270,22 +268,22 @@ onMounted(async () => {
     z-index: 100;
 }
 
-.panel {
-    position: relative;
-    border-radius: var(--rounded);
-    width: 60rem;
-    height: 100%;
-    border: 1px solid rgba(255, 255, 255, 0.125);
-}
-
+.panel,
 .price-panel {
-    position: relative;
-    border-radius: var(--rounded);
+    box-shadow:
+        inset 0 0 10px rgba(255, 255, 255, 0.1),
+        0 0 10px rgba(0, 0, 0, 0.5);
+    background-color: #21110999;
     height: 100%;
-    padding: 2.5em;
-    box-shadow: rgba(0, 0, 0, 0.1) 0px 4px 12px;
+    border-radius: var(--rounded);
+    position: relative;
 }
-
+.panel {
+    width: 60rem;
+}
+.price-panel {
+    padding: 1.5rem;
+}
 .panel::after,
 .price-panel::after {
     position: absolute;
@@ -294,9 +292,12 @@ onMounted(async () => {
     inset-inline: 0;
     background-image: url('/src/assets/vault/texture-vault.avif');
     background-repeat: repeat;
-    opacity: 40%;
+    opacity: 30%;
     border-radius: var(--rounded);
     z-index: -2;
+}
+.panel::after {
+    background-position: 50% calc(0% - 275px);
 }
 .panel::before,
 .price-panel::before {
@@ -306,14 +307,6 @@ onMounted(async () => {
     inset-inline: 0;
     background-color: var(--q-dark-page);
     z-index: -3;
-}
-.layer {
-    position: absolute;
-    content: '';
-    inset-block: 0;
-    inset-inline: 0;
-    background-color: rgba(18, 9, 4, 0.5);
-    z-index: -1;
 }
 
 .toast {
@@ -340,7 +333,7 @@ onMounted(async () => {
     justify-content: space-between;
     border-bottom: 1px solid rgba(255, 255, 255, 0.125);
     padding-block: 0.6rem;
-    padding-left: 0.6rem;
+    padding-left: 1rem;
 }
 
 .card:last-child {

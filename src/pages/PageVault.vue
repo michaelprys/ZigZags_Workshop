@@ -347,7 +347,7 @@ onMounted(async () => {
                         </div>
 
                         <div class="q-mt-lg vault__cells">
-                            <div v-for="i in 50" :key="i" class="vault__cell">
+                            <div v-for="i in 55" :key="i" class="vault__cell">
                                 <q-tooltip
                                     :delay="500"
                                     anchor="bottom right"
@@ -364,13 +364,13 @@ onMounted(async () => {
                                 </q-tooltip>
 
                                 <div class="vault__cell-placeholder"></div>
-                                <!-- <q-img
+                                <q-img
                                     class="vault__cell-image"
-                                    src="~assets/index/image-7.avif"
+                                    src="https://unsplash.it/id/220/200"
                                     width="1024px"
                                     height="1024px"
                                     style="width: 100%; height: 100%"
-                                /> -->
+                                />
                             </div>
                         </div>
 
@@ -483,9 +483,13 @@ onMounted(async () => {
     width: 100%;
     height: 100%;
     background-image: url('/src/assets/vault/texture-vault.avif');
+    box-shadow:
+        inset 0 0 10px rgba(255, 255, 255, 0.1),
+        0 0 10px rgba(0, 0, 0, 0.5);
+    background-color: #211109;
     background-size: cover;
     background-position: center;
-    opacity: 40%;
+    opacity: 20%;
     filter: contrast(105%);
     border-radius: 0.75rem;
     border: 1px solid rgba(255, 255, 255, 0.125);
@@ -518,7 +522,7 @@ onMounted(async () => {
 
 .vault__cells {
     display: grid;
-    grid-template-columns: repeat(10, 1fr);
+    grid-template-columns: repeat(11, 1fr);
     grid-template-rows: repeat(4, 1fr);
     gap: 1rem;
     width: 100%;

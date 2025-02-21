@@ -1,10 +1,17 @@
 <script setup lang="ts">
+import { ref } from 'vue';
 import ItemGoods from 'src/components/items/ItemGoods.vue';
 import { usePaginatedGoods } from 'src/use/usePaginatedGoods';
 
-const { totalPages, currentPage, loadPaginatedGoods, imageUrl } = usePaginatedGoods(false);
+const { totalPages, currentPage, loadPaginatedGoods } = usePaginatedGoods(false);
 
-const categories = ['All', 'Gadgets', 'Trinkets', 'Weapons', 'Companions', 'Mounts'];
+const categories = ref([
+    { label: 'gadgets', state: false },
+    { label: 'trinkets', state: false },
+    { label: 'weapons', state: false },
+    { label: 'companions', state: false },
+    { label: 'mounts', state: false },
+]);
 </script>
 
 <template>
@@ -16,9 +23,9 @@ const categories = ['All', 'Gadgets', 'Trinkets', 'Weapons', 'Companions', 'Moun
                 :categories="categories"
                 :totalPages="totalPages"
                 :currentPage="currentPage"
-                :loadPaginatedGoods="loadPaginatedGoods"
-                :imageUrl="imageUrl"
+                :requiresAuth="false"
                 classCard="card"
+                :loadPaginatedGoods="loadPaginatedGoods"
             >
                 <template #pagination>
                     <div class="flex flex-center q-pa-lg">
@@ -30,7 +37,7 @@ const categories = ['All', 'Gadgets', 'Trinkets', 'Weapons', 'Companions', 'Moun
                             size="lg"
                             :boundary-numbers="false"
                             :max="totalPages"
-                            @update:model-value="loadPaginatedGoods"
+                            @update:model-value="loadPaginatedGoods(categories)"
                         />
                     </div>
                 </template>

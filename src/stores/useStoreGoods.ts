@@ -1,7 +1,7 @@
 import { defineStore, acceptHMRUpdate } from 'pinia';
 import { useStoreAuth } from 'src/stores/useStoreAuth';
 import supabase from 'src/utils/supabase';
-import { delay } from 'src/utils/delay';
+import type { Category } from 'src/types';
 
 interface Good {
     id: number;
@@ -24,12 +24,12 @@ type FeaturedGood = {
 
 export const useStoreGoods = defineStore('goods', {
     state: () => ({
-        goods: [] as Good[],
-        suggestedGoods: [] as Good[],
+        pending: false,
         totalGoods: 0,
+        goods: [] as Good[],
         selectedGood: null as Good | null,
         featuredGoods: [] as FeaturedGood[],
-        pending: false,
+        suggestedGoods: [] as Good[],
     }),
 
     persist: {
@@ -37,30 +37,43 @@ export const useStoreGoods = defineStore('goods', {
     },
 
     actions: {
-        async loadGoods(start: number, end: number, requiresAuth: boolean) {
+        async loadGoods(
+            start: number,
+            end: number,
+            requiresAuth: boolean,
+            selectedCategories?: Category[],
+        ) {
             this.pending = true;
 
             try {
-                // await delay(2500);
-
-                const { data, error, count } = await supabase
+                let query = supabase
                     .from('goods')
                     .select('*', { count: 'exact' })
-                    .range(start, end)
                     .eq('requires_auth', requiresAuth)
+                    .range(start, end)
                     .order('id');
+
+                if (selectedCategories.length > 0) {
+                    query = query.in('category', selectedCategories);
+                }
+
+                const { data, error, count } = await query;
 
                 if (error) {
                     throw new Error(error.message);
+                } else {
+                    this.goods = data;
+                    this.totalGoods = count;
                 }
-
-                this.goods = data;
-                this.totalGoods = count;
             } catch (error) {
                 console.error(error);
             } finally {
                 this.pending = false;
             }
+        },
+
+        selectGood(good: Good) {
+            this.selectedGood = good;
         },
 
         async loadSuggestedGoods() {
@@ -100,7 +113,7 @@ export const useStoreGoods = defineStore('goods', {
                 const { data, error } = await supabase
                     .from('goods')
                     .select('name, image_url')
-                    .filter('is_featured', 'eq', true);
+                    .eq('is_featured', true);
 
                 if (error) {
                     throw new Error(error.message);
@@ -112,10 +125,6 @@ export const useStoreGoods = defineStore('goods', {
             } finally {
                 this.pending = false;
             }
-        },
-
-        selectGood(good: Good) {
-            this.selectedGood = good;
         },
     },
 });

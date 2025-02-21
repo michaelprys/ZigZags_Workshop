@@ -1,11 +1,18 @@
 <script setup lang="ts">
+import { ref } from 'vue';
 import IconDebuff from 'src/components/icons/IconDebuff.vue';
 import ItemGoods from 'src/components/items/ItemGoods.vue';
 import { usePaginatedGoods } from 'src/use/usePaginatedGoods';
 
-const { totalPages, currentPage, loadPaginatedGoods, imageUrl } = usePaginatedGoods(true);
+const { totalPages, currentPage, loadPaginatedGoods } = usePaginatedGoods(true);
 
-const categories = ['All', 'Consumables', 'Scrolls', 'Weapons', 'Companions', 'Mounts'];
+const categories = ref([
+    { label: 'consumables', state: false },
+    { label: 'trinkets', state: false },
+    { label: 'weapons', state: false },
+    { label: 'companions', state: false },
+    { label: 'mounts', state: false },
+]);
 </script>
 
 <template>
@@ -20,7 +27,7 @@ const categories = ['All', 'Consumables', 'Scrolls', 'Weapons', 'Companions', 'M
                 :totalPages="totalPages"
                 :currentPage="currentPage"
                 :loadPaginatedGoods="loadPaginatedGoods"
-                :imageUrl="imageUrl"
+                :requiresAuth="false"
                 classCard="card"
             >
                 <template #debuff>
@@ -55,7 +62,7 @@ const categories = ['All', 'Consumables', 'Scrolls', 'Weapons', 'Companions', 'M
                             size="lg"
                             :boundary-numbers="false"
                             :max="totalPages"
-                            @update:model-value="loadPaginatedGoods"
+                            @update:model-value="loadPaginatedGoods(categories)"
                         />
                     </div>
                 </template>
