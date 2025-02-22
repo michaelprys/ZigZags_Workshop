@@ -56,10 +56,7 @@
 .bg {
     background-image: url('src/assets/merchant/bg-merchant.avif');
     position: absolute;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
+    inset: 0;
     background-position: center;
     background-size: cover;
     background-repeat: no-repeat;

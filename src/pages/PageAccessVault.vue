@@ -63,7 +63,7 @@ const accessVault = async () => {
                 >
                     <div class="q-gutter-y-md q-pa-lg vault-form__inner">
                         <div class="column q-mt-none">
-                            <h2 class="text-h5 text-secondary vault-title">Access vault</h2>
+                            <h2 class="text-h5 text-secondary vault-form__title">Access vault</h2>
                             <span class="q-mt-sm">Hey there, stranger!</span>
                         </div>
                         <div style="width: 100%; gap: 1rem">

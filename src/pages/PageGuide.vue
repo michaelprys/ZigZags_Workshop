@@ -206,14 +206,11 @@
 .map-texture {
     position: absolute;
     background-image: url('src/assets/guide/entrance.avif');
-    width: 100%;
-    height: 100%;
-    top: 0;
-    left: 0;
+    inset: 0;
     background-size: cover;
-    background-position: center;
+    background-position: bottom;
     background-repeat: no-repeat;
-    opacity: 60%;
+    filter: brightness(85%);
     mask-image: radial-gradient(circle, rgb(255, 255, 255) 60%, rgba(255, 255, 255, 0) 100%);
 }
 </style>

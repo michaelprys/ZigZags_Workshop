@@ -316,10 +316,10 @@ onMounted(async () => {
             </q-dialog>
 
             <div class="q-px-md">
-                <div class="q-pa-lg vault">
-                    <div class="vault__inner">
-                        <div class="vault__header">
-                            <div class="vault__title-wrapper">
+                <div class="q-pa-lg vault-form">
+                    <div class="vault-form__inner">
+                        <div class="vault-form__header">
+                            <div class="vault-form__title-wrapper">
                                 <div class="q-ma-none" style="cursor: pointer">
                                     <q-img
                                         :src="`${imgSrc('avif')}`"
@@ -338,7 +338,7 @@ onMounted(async () => {
                                         }}</span>
                                     </q-tooltip>
                                 </div>
-                                <h2 class="text-center text-h6 vault-title">
+                                <h2 class="text-center text-h6 vault-form__title">
                                     {{ storeAuth.session?.user_metadata.first_name }}'s Inventory
                                 </h2>
                             </div>
@@ -346,8 +346,8 @@ onMounted(async () => {
                             <q-btn icon="close" color="primary" flat dense @click="alert"></q-btn>
                         </div>
 
-                        <div class="q-mt-lg vault__cells">
-                            <div v-for="i in 55" :key="i" class="vault__cell">
+                        <div class="q-mt-lg vault-form__cells">
+                            <div v-for="i in 55" :key="i" class="vault-form__cell">
                                 <q-tooltip
                                     :delay="500"
                                     anchor="bottom right"
@@ -363,10 +363,10 @@ onMounted(async () => {
                                     </span>
                                 </q-tooltip>
 
-                                <div class="vault__cell-placeholder"></div>
+                                <div class="vault-form__cell-placeholder"></div>
                                 <q-img
-                                    class="vault__cell-image"
-                                    src="https://unsplash.it/id/220/200"
+                                    class="vault-form__cell-image"
+                                    src=""
                                     width="1024px"
                                     height="1024px"
                                     style="width: 100%; height: 100%"
@@ -374,10 +374,10 @@ onMounted(async () => {
                             </div>
                         </div>
 
-                        <div class="vault__footer">
+                        <div class="vault-form__footer">
                             <q-pagination
                                 v-model="currentPage"
-                                class="q-mt-lg vault__nav"
+                                class="q-mt-lg vault-form__nav"
                                 :max="3"
                                 direction-links
                                 flat
@@ -385,7 +385,7 @@ onMounted(async () => {
                                 input-class="text-primary"
                             />
 
-                            <div class="flex q-mt-lg vault__gold-panel" style="gap: 0.75rem">
+                            <div class="flex q-mt-lg vault-form__gold-panel" style="gap: 0.75rem">
                                 <q-btn
                                     style="border-radius: var(--rounded)"
                                     icon="add"
@@ -455,72 +455,32 @@ onMounted(async () => {
 </template>
 
 <style scoped>
-.vault {
-    position: relative;
-    background-color: var(--q-dark-page);
-    border-radius: 0.75rem;
-    box-shadow:
-        rgba(0, 0, 0, 0.15) 0px 13px 27px -5px,
-        rgba(0, 0, 0, 0.3) 0px 8px 16px -8px;
-}
-
-.vault:before {
-    position: absolute;
-    top: 0;
-    left: 0;
-    content: '';
-    width: 100%;
-    height: 100%;
-    border-radius: 0.75rem;
-    border: 1px solid rgba(255, 255, 255, 0.125);
-}
-
-.vault:after {
-    position: absolute;
-    top: 0;
-    left: 0;
-    content: '';
-    width: 100%;
-    height: 100%;
-    background-image: url('/src/assets/vault/texture-vault.avif');
-    box-shadow:
-        inset 0 0 10px rgba(255, 255, 255, 0.1),
-        0 0 10px rgba(0, 0, 0, 0.5);
-    background-color: #211109;
-    background-size: cover;
-    background-position: center;
-    opacity: 20%;
-    filter: contrast(105%);
-    border-radius: 0.75rem;
-    border: 1px solid rgba(255, 255, 255, 0.125);
-}
-
-.vault__inner {
+.vault-form__inner {
     position: relative;
     z-index: 1;
 }
 
-.vault__header {
+.vault-form__header {
     display: grid;
     place-items: center;
     grid-template-columns: 1fr auto 1fr;
 }
-.vault__header h2 {
+.vault-form__header h2 {
     grid-column-start: 2;
 }
-.vault__header .q-btn {
+.vault-form__header .q-btn {
     justify-self: end;
     grid-column-start: 3;
 }
 
-.vault__title-wrapper {
+.vault-form__title-wrapper {
     grid-column-start: 2;
     display: flex;
     align-items: center;
     gap: 16px;
 }
 
-.vault__cells {
+.vault-form__cells {
     display: grid;
     grid-template-columns: repeat(11, 1fr);
     grid-template-rows: repeat(4, 1fr);
@@ -529,11 +489,11 @@ onMounted(async () => {
     place-items: center;
 }
 
-.vault__cell:hover {
+.vault-form__cell:hover {
     box-shadow: 0 8px 20px rgba(92, 90, 78, 0.6);
 }
 
-.vault__cell {
+.vault-form__cell {
     position: relative;
     cursor: pointer;
     display: flex;
@@ -547,7 +507,7 @@ onMounted(async () => {
     box-shadow: 0 4px 10px rgba(0, 0, 0, 0.7);
 }
 
-.vault__cell-placeholder {
+.vault-form__cell-placeholder {
     position: absolute;
     top: 50%;
     left: 50%;
@@ -564,16 +524,15 @@ onMounted(async () => {
     border-radius: var(--rounded);
 }
 
-.vault__cell-placeholder::before {
+.vault-form__cell-placeholder::before {
     content: '';
     position: absolute;
-    inset-block: 0;
-    inset-inline: 0;
+    inset: 0;
     background: radial-gradient(circle at top left, rgba(255, 255, 255, 0.2), transparent);
     border-radius: 0.3125rem;
 }
 
-.vault__cell-image {
+.vault-form__cell-image {
     position: absolute;
     top: 50%;
     left: 50%;
@@ -584,17 +543,16 @@ onMounted(async () => {
     border-radius: var(--rounded);
     filter: grayscale(20%) contrast(90%) brightness(90%);
 }
-.vault__cell-image::before {
+.vault-form__cell-image::before {
     content: '';
     position: absolute;
-    inset-block: 0;
-    inset-inline: 0;
+    inset: 0;
     border: 2px solid rgb(132, 132, 132);
     border-radius: var(--rounded);
     z-index: 3;
 }
 
-.vault__footer {
+.vault-form__footer {
     display: grid;
     place-items: center;
     grid-template-columns: repeat(3, 1fr);
@@ -602,34 +560,34 @@ onMounted(async () => {
     width: 100%;
 }
 
-.vault__nav {
+.vault-form__nav {
     grid-column-start: 2;
     justify-self: center;
 }
 
-:deep(.vault__nav button:last-child),
-:deep(.vault__nav button:first-child) {
+:deep(.vault-form__nav button:last-child),
+:deep(.vault-form__nav button:first-child) {
     display: none;
 }
-:deep(.vault__nav .q-btn[disabled]) {
+:deep(.vault-form__nav .q-btn[disabled]) {
     cursor: default !important;
     pointer-events: none !important;
 }
-:deep(.vault__nav .q-btn),
-:deep(.vault__nav .q-btn .q-icon) {
+:deep(.vault-form__nav .q-btn),
+:deep(.vault-form__nav .q-btn .q-icon) {
     cursor: pointer !important;
 }
-:deep(.vault__nav .q-btn[disabled] .q-icon),
-:deep(.vault__nav .q-icon),
-:deep(.vault__nav span) {
+:deep(.vault-form__nav .q-btn[disabled] .q-icon),
+:deep(.vault-form__nav .q-icon),
+:deep(.vault-form__nav span) {
     cursor: default !important;
 }
-:deep(.vault__nav label) {
+:deep(.vault-form__nav label) {
     pointer-events: none !important;
     user-select: none !important;
 }
 
-.vault__gold-panel {
+.vault-form__gold-panel {
     display: flex;
     justify-content: space-between;
     align-items: center;

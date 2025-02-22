@@ -1,17 +1,49 @@
 <script setup lang="ts">
-import { ref } from 'vue';
+import { ref, watch } from 'vue';
 import ItemGoods from 'src/components/items/ItemGoods.vue';
 import { usePaginatedGoods } from 'src/use/usePaginatedGoods';
+import { useRouter, useRoute } from 'vue-router';
+import { useStoreGoods } from 'src/stores/useStoreGoods';
 
-const { totalPages, currentPage, loadPaginatedGoods } = usePaginatedGoods(false);
+const store = useStoreGoods();
+const route = useRoute();
+const router = useRouter();
+
+const { totalPages, currentPage, loadPaginatedGoods } = usePaginatedGoods(false, router);
 
 const categories = ref([
-    { label: 'gadgets', state: false },
-    { label: 'trinkets', state: false },
-    { label: 'weapons', state: false },
-    { label: 'companions', state: false },
-    { label: 'mounts', state: false },
+    { label: 'gadgets', active: false },
+    { label: 'trinkets', active: false },
+    { label: 'weapons', active: false },
+    { label: 'companions', active: false },
+    { label: 'mounts', active: false },
 ]);
+
+const selectCategories = async (selected: string[]) => {
+    if (selected.length === 0) {
+        await router.push({ query: {} });
+        selected = [];
+    } else {
+        categories.value.forEach((cat) => (cat.active = selected.includes(cat.label)));
+        await router.push({ query: { categories: selected.join(',') } });
+    }
+    await loadPaginatedGoods();
+};
+
+const resetFilters = async () => {
+    categories.value.forEach((cat) => (cat.active = false));
+    await selectCategories([]);
+};
+
+watch(
+    () => route.query.categories,
+    (newValue) => {
+        store.selectedCategories = newValue ? newValue.split(',') : [];
+    },
+    {
+        immediate: true,
+    },
+);
 </script>
 
 <template>
@@ -20,12 +52,14 @@ const categories = ref([
             <h1 class="text-center text-h3">Explore goods</h1>
 
             <ItemGoods
+                :resetFilters="resetFilters"
                 :categories="categories"
                 :totalPages="totalPages"
                 :currentPage="currentPage"
                 :requiresAuth="false"
                 classCard="card"
                 :loadPaginatedGoods="loadPaginatedGoods"
+                @update:selected-categories="selectCategories"
             >
                 <template #pagination>
                     <div class="flex flex-center q-pa-lg">

@@ -1,7 +1,6 @@
 import { defineStore, acceptHMRUpdate } from 'pinia';
 import { useStoreAuth } from 'src/stores/useStoreAuth';
 import supabase from 'src/utils/supabase';
-import type { Category } from 'src/types';
 
 interface Good {
     id: number;
@@ -25,24 +24,20 @@ type FeaturedGood = {
 export const useStoreGoods = defineStore('goods', {
     state: () => ({
         pending: false,
-        totalGoods: 0,
         goods: [] as Good[],
-        selectedGood: null as Good | null,
+        totalGoods: 0,
         featuredGoods: [] as FeaturedGood[],
         suggestedGoods: [] as Good[],
+        selectedGood: null as Good | null,
+        selectedCategories: [] as string[],
     }),
 
     persist: {
-        pick: ['selectedGood'],
+        pick: ['selectedGood', 'selectedCategories'],
     },
 
     actions: {
-        async loadGoods(
-            start: number,
-            end: number,
-            requiresAuth: boolean,
-            selectedCategories?: Category[],
-        ) {
+        async loadGoods(start: number, end: number, requiresAuth: boolean) {
             this.pending = true;
 
             try {
@@ -53,8 +48,8 @@ export const useStoreGoods = defineStore('goods', {
                     .range(start, end)
                     .order('id');
 
-                if (selectedCategories.length > 0) {
-                    query = query.in('category', selectedCategories);
+                if (this.selectedCategories?.length > 0) {
+                    query = query.in('category', this.selectedCategories);
                 }
 
                 const { data, error, count } = await query;

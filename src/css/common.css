@@ -41,45 +41,47 @@
 }
 /* Vault form */
 /* ------------------------------- */
+.auth-form,
 .vault-form {
-    position: relative;
-    border-radius: 0.75rem;
-}
-.vault-form:before {
-    position: absolute;
-    top: 0;
-    left: 0;
-    content: '';
-    width: 100%;
+    box-shadow:
+        inset 0 0 10px rgba(255, 255, 255, 0.1),
+        0 0 10px rgba(0, 0, 0, 0.5);
+    background-color: rgba(37, 19, 10, 0.5);
     height: 100%;
-    background: radial-gradient(
-        circle at top,
-        rgba(53, 0, 0, 0.5),
-        rgba(0, 79, 80, 0.4),
-        rgba(30, 0, 0, 0.4)
-    );
+    border-radius: var(--rounded);
+    position: relative;
+}
+.auth-form::before,
+.vault-form::before {
+    position: absolute;
+    inset: 0;
+    inset-inline: 0;
+    content: '';
     border-radius: 0.75rem;
     border: 1px solid rgba(255, 255, 255, 0.125);
+    border-radius: var(--rounded);
 }
-.vault-form:after {
+.auth-form::after,
+.vault-form::after {
     position: absolute;
-    top: 0;
-    left: 0;
+    inset: 0;
     content: '';
-    width: 100%;
-    height: 100%;
-    background-image: url('/src/assets/vault/texture-vault.avif');
-    background-size: cover;
     background-position: center;
     background-repeat: no-repeat;
-    opacity: 40%;
+    opacity: 30%;
     border-radius: 0.75rem;
     border: 1px solid rgba(255, 255, 255, 0.125);
+    background-image: url('/src/assets/common/bg-jungle.avif');
+    filter: grayscale(30%);
+    background-size: cover;
+    border-radius: var(--rounded);
 }
+.auth-form__inner,
 .vault-form__inner {
     position: relative;
     z-index: 1;
 }
-.vault-title {
+.auth-form__title,
+.vault-form__title {
     text-shadow: rgba(0, 0, 0, 0.3) 3px 3px 6px;
 }

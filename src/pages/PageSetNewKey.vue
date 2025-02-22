@@ -25,7 +25,11 @@ const setNewKey = async () => {
             });
 
             if (error) {
-                callToast(error ? "Couldn't set a new vault key" : 'Something went wrong', false, 'bottom');
+                callToast(
+                    error ? "Couldn't set a new vault key" : 'Something went wrong',
+                    false,
+                    'bottom',
+                );
             } else {
                 callToast('The new vault key has been set', true, 'bottom');
                 await router.push({ name: 'access-vault' });
@@ -52,14 +56,23 @@ const setNewKey = async () => {
                 <q-form
                     ref="setNewKeyForm"
                     class="shadow-10 vault-form"
-                    style="background-color: var(--q-bg-modal); width: 100%; max-width: 40rem; margin-inline: auto"
+                    style="
+                        background-color: var(--q-bg-modal);
+                        width: 100%;
+                        max-width: 40rem;
+                        margin-inline: auto;
+                    "
                     @keydown.enter.prevent="setNewKey"
                     @submit.prevent="setNewKey"
                 >
                     <div class="q-gutter-y-md q-pa-lg vault-form__inner">
                         <div class="column q-mt-none">
-                            <h2 class="text-h5 text-secondary">Set a new vault key</h2>
-                            <span class="q-mt-sm">Almost there, come up with a new key and you're set.</span>
+                            <h2 class="text-h5 text-secondary vault-form__title">
+                                Set a new vault key
+                            </h2>
+                            <span class="q-mt-sm"
+                                >Almost there, come up with a new key and you're set.</span
+                            >
                         </div>
                         <div style="width: 100%; gap: 1rem">
                             <q-input
@@ -72,7 +85,9 @@ const setNewKey = async () => {
                                 label="New vault key *"
                                 lazy-rules="ondemand"
                                 :rules="[
-                                    (val) => (val && val.length >= 6) || 'Too easy! Must be 6 characters at least.',
+                                    (val) =>
+                                        (val && val.length >= 6) ||
+                                        'Too easy! Must be 6 characters at least.',
                                 ]"
                             >
                                 <template #append>
@@ -102,7 +117,11 @@ const setNewKey = async () => {
                             </q-btn>
 
                             <RouterLink :to="{ name: 'access-vault' }">
-                                <q-btn class="q-mt-none q-px-sm" flat label="Access vault" text-color="secondary"
+                                <q-btn
+                                    class="q-mt-none q-px-sm"
+                                    flat
+                                    label="Access vault"
+                                    text-color="secondary"
                             /></RouterLink>
                         </div>
                     </div>

@@ -7,26 +7,45 @@ const store = useStoreGoods();
 const { pending } = store;
 const { addToStash } = useAddToStash();
 
-defineProps<{
+const props = defineProps<{
     categories: Category[];
     requiresAuth: boolean;
-    classCard: string;
     loadPaginatedGoods: (categories: Category[]) => void;
+    resetFilters: () => void;
+    classCard: string;
 }>();
+
+const emit = defineEmits(['update:selected-categories']);
+
+const updateSelectedCategories = () => {
+    const selectedCategories = props.categories.filter((cat) => cat.active).map((cat) => cat.label);
+
+    emit('update:selected-categories', selectedCategories);
+};
 </script>
 
 <template>
     <div class="column flex-center q-px-md relative-position">
-        <ul class="flex flex-center q-mt-lg text-subtitle1" style="gap: 2rem; user-select: none">
-            <li v-for="(category, idx) in categories" :key="idx">
-                <q-checkbox
-                    v-model="category.state"
-                    :label="category.label"
-                    size="md"
-                    @click="loadPaginatedGoods(categories)"
-                ></q-checkbox>
-            </li>
-        </ul>
+        <div class="flex items-center q-mt-lg" style="gap: 1.6rem">
+            <q-btn
+                flat
+                class="text-primary text-subtitle1"
+                color="primary"
+                label="All"
+                @click="resetFilters"
+            ></q-btn>
+            <ul class="flex flex-center text-subtitle1" style="gap: 2rem; user-select: none">
+                <li v-for="(category, idx) in categories" :key="idx">
+                    <q-checkbox
+                        v-model="category.active"
+                        :label="category.label"
+                        size="md"
+                        left-label
+                        @click="updateSelectedCategories"
+                    ></q-checkbox>
+                </li>
+            </ul>
+        </div>
 
         <ul class="flex flex-center q-gutter-lg q-mt-none q-pl-none" style="max-width: 84.5rem">
             <li v-for="good in store.goods" :key="good.id" style="cursor: pointer">

@@ -4,15 +4,22 @@ import IconDebuff from 'src/components/icons/IconDebuff.vue';
 import ItemGoods from 'src/components/items/ItemGoods.vue';
 import { usePaginatedGoods } from 'src/use/usePaginatedGoods';
 
-const { totalPages, currentPage, loadPaginatedGoods } = usePaginatedGoods(true);
+const { totalPages, currentPage, loadPaginatedGoods } = usePaginatedGoods(true, router);
 
 const categories = ref([
-    { label: 'consumables', state: false },
-    { label: 'trinkets', state: false },
-    { label: 'weapons', state: false },
-    { label: 'companions', state: false },
-    { label: 'mounts', state: false },
+    { label: 'consumables', active: false },
+    { label: 'trinkets', active: false },
+    { label: 'weapons', active: false },
+    { label: 'companions', active: false },
+    { label: 'mounts', active: false },
 ]);
+
+const resetFilters = async () => {
+    categories.value.forEach((category) => {
+        category.active = false;
+    });
+    await loadPaginatedGoods(categories.value);
+};
 </script>
 
 <template>
@@ -23,6 +30,7 @@ const categories = ref([
             <h1 class="text-center text-h3 title">Find treasures</h1>
 
             <ItemGoods
+                :resetFilters="resetFilters"
                 :categories="categories"
                 :totalPages="totalPages"
                 :currentPage="currentPage"
@@ -84,10 +92,7 @@ const categories = ref([
 
 .overlay {
     position: absolute;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
+    inset: 0;
     overflow: hidden;
     background-position: center;
     background-size: cover;

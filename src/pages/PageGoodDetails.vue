@@ -132,10 +132,7 @@ const { moveImage, resetImage } = useMoveImage(imgRef);
 
 .overlay {
     position: absolute;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
+    inset: 0;
     overflow: hidden;
     background-position: center;
     background-size: cover;
@@ -180,11 +177,8 @@ const { moveImage, resetImage } = useMoveImage(imgRef);
 }
 .content__overlay {
     position: absolute;
-    width: 100%;
-    height: 100%;
+    inset: 0;
     z-index: -1;
-    top: 0;
-    left: 0;
     backdrop-filter: blur(16px) saturate(180%);
     -webkit-backdrop-filter: blur(16px) saturate(180%);
     filter: brightness(60%);

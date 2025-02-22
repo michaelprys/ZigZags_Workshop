@@ -68,9 +68,11 @@ const orderKey = async () => {
                     @keydown.enter.prevent="orderKey"
                     @submit.prevent="orderKey"
                 >
-                    <div class="q-gutter-y-md q-pa-lg vault-form__inner">
+                    <div class="auth-form__inner q-gutter-y-md q-pa-lg">
                         <div class="column q-mt-none">
-                            <h2 class="text-h5 text-secondary">Order a vault key</h2>
+                            <h2 class="text-h5 text-secondary vault-form__title">
+                                Order a vault key
+                            </h2>
                             <span class="q-mt-sm"
                                 >Forgot your key? No worries, we'll get you a new one!</span
                             >

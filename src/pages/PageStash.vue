@@ -169,7 +169,7 @@ onMounted(async () => {
 
                     <div class="flex q-mt-xl">
                         <div dark class="panel q-mr-xl">
-                            <div v-for="card in 4" :key="card" class="card shadow-1">
+                            <div v-for="card in 14" :key="card" class="card shadow-1">
                                 <q-img class="card__image" src="~assets/guide/zigzag.avif" />
 
                                 <div class="flex justify-between q-pa-md" style="width: 100%">
@@ -260,8 +260,8 @@ onMounted(async () => {
     margin-inline: auto;
     content: '';
     width: 100%;
-    height: 1px;
     top: 0;
+    height: 1px;
     background-color: rgba(255, 255, 255, 0.125);
     position: relative;
     display: block;
@@ -273,7 +273,7 @@ onMounted(async () => {
     box-shadow:
         inset 0 0 10px rgba(255, 255, 255, 0.1),
         0 0 10px rgba(0, 0, 0, 0.5);
-    background-color: #21110999;
+    background-color: rgba(37, 19, 10, 0.5);
     height: 100%;
     border-radius: var(--rounded);
     position: relative;
@@ -288,25 +288,34 @@ onMounted(async () => {
 .price-panel::after {
     position: absolute;
     content: '';
-    inset-block: 0;
-    inset-inline: 0;
-    background-image: url('/src/assets/vault/texture-vault.avif');
+    inset: 0;
     background-repeat: repeat;
-    opacity: 30%;
     border-radius: var(--rounded);
     z-index: -2;
+    opacity: 30%;
 }
 .panel::after {
-    background-position: 50% calc(0% - 275px);
+    background-image: url('/src/assets/common/bg-jungle.avif');
+    background-position: 50% calc(0% - 106px);
+    mask-image: radial-gradient(
+        circle at 70% 30%,
+        rgb(255, 255, 255) 40%,
+        rgba(255, 255, 255, 0) 55%
+    );
 }
+.price-panel::after {
+    background-image: url('/src/assets/stash/texture-panel-price.avif');
+}
+
 .panel::before,
 .price-panel::before {
     position: absolute;
     content: '';
-    inset-block: 0;
-    inset-inline: 0;
-    background-color: var(--q-dark-page);
+    inset: 0;
     z-index: -3;
+}
+.panel::before {
+    background-color: #131211;
 }
 
 .toast {

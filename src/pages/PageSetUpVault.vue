@@ -70,9 +70,9 @@ const setupVault = async () => {
                     @keydown.enter.prevent="setupVault"
                     @submit.prevent="setupVault"
                 >
-                    <div class="q-gutter-y-md q-pa-lg vault-form__inner">
+                    <div class="auth-form__inner q-gutter-y-md q-pa-lg">
                         <div class="column q-mt-none">
-                            <h2 class="text-h5 text-secondary vault-title">Set up vault</h2>
+                            <h2 class="text-h5 text-secondary vault-form__title">Set up vault</h2>
                             <span class="q-mt-sm">Let's set up your vault for safe keeping.</span>
                         </div>
 
