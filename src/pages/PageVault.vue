@@ -7,6 +7,10 @@ import { loadStripe } from '@stripe/stripe-js';
 import { callToast } from 'src/utils/callToast';
 import { useStoreAuth } from 'src/stores/useStoreAuth';
 import { useStoreGoods } from 'src/stores/useStoreGoods';
+import { type UseDraggableReturn, VueDraggable } from 'vue-draggable-plus';
+
+const draggableRef = ref<UseDraggableReturn>();
+const list = ref([1, 2, 3]);
 
 const storeAuth = useStoreAuth();
 const storeGoods = useStoreGoods();
@@ -346,7 +350,12 @@ onMounted(async () => {
                             <q-btn icon="close" color="primary" flat dense @click="alert"></q-btn>
                         </div>
 
-                        <div class="q-mt-lg vault-form__cells">
+                        <VueDraggable
+                            ref="draggableRef"
+                            v-model="list"
+                            class="q-mt-lg vault-form__cells"
+                            :animation="150"
+                        >
                             <div v-for="i in 55" :key="i" class="vault-form__cell">
                                 <q-tooltip
                                     :delay="500"
@@ -372,7 +381,7 @@ onMounted(async () => {
                                     style="width: 100%; height: 100%"
                                 />
                             </div>
-                        </div>
+                        </VueDraggable>
 
                         <div class="vault-form__footer">
                             <q-pagination

@@ -1,15 +1,12 @@
 <script setup lang="ts">
-import { ref, watch } from 'vue';
+import { ref } from 'vue';
 import ItemGoods from 'src/components/items/ItemGoods.vue';
 import { usePaginatedGoods } from 'src/use/usePaginatedGoods';
 import { useRouter, useRoute } from 'vue-router';
-import { useStoreGoods } from 'src/stores/useStoreGoods';
+import { useFilters } from 'src/use/useFilters';
 
-const store = useStoreGoods();
 const route = useRoute();
 const router = useRouter();
-
-const { totalPages, currentPage, loadPaginatedGoods } = usePaginatedGoods(false, router);
 
 const categories = ref([
     { label: 'gadgets', active: false },
@@ -19,30 +16,12 @@ const categories = ref([
     { label: 'mounts', active: false },
 ]);
 
-const selectCategories = async (selected: string[]) => {
-    if (selected.length === 0) {
-        await router.push({ query: {} });
-        selected = [];
-    } else {
-        categories.value.forEach((cat) => (cat.active = selected.includes(cat.label)));
-        await router.push({ query: { categories: selected.join(',') } });
-    }
-    await loadPaginatedGoods();
-};
-
-const resetFilters = async () => {
-    categories.value.forEach((cat) => (cat.active = false));
-    await selectCategories([]);
-};
-
-watch(
-    () => route.query.categories,
-    (newValue) => {
-        store.selectedCategories = newValue ? newValue.split(',') : [];
-    },
-    {
-        immediate: true,
-    },
+const { totalPages, currentPage, loadPaginatedGoods } = usePaginatedGoods(false, router);
+const { selectCategories, resetCategories } = useFilters(
+    categories,
+    loadPaginatedGoods,
+    route,
+    router,
 );
 </script>
 
@@ -52,7 +31,7 @@ watch(
             <h1 class="text-center text-h3">Explore goods</h1>
 
             <ItemGoods
-                :resetFilters="resetFilters"
+                :resetCategories="resetCategories"
                 :categories="categories"
                 :totalPages="totalPages"
                 :currentPage="currentPage"

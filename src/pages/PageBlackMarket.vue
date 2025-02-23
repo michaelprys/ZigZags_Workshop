@@ -2,9 +2,13 @@
 import { ref } from 'vue';
 import IconDebuff from 'src/components/icons/IconDebuff.vue';
 import ItemGoods from 'src/components/items/ItemGoods.vue';
+import { useRouter, useRoute } from 'vue-router';
 import { usePaginatedGoods } from 'src/use/usePaginatedGoods';
 
-const { totalPages, currentPage, loadPaginatedGoods } = usePaginatedGoods(true, router);
+import { useFilters } from 'src/use/useFilters';
+
+const route = useRoute();
+const router = useRouter();
 
 const categories = ref([
     { label: 'consumables', active: false },
@@ -14,12 +18,13 @@ const categories = ref([
     { label: 'mounts', active: false },
 ]);
 
-const resetFilters = async () => {
-    categories.value.forEach((category) => {
-        category.active = false;
-    });
-    await loadPaginatedGoods(categories.value);
-};
+const { totalPages, currentPage, loadPaginatedGoods } = usePaginatedGoods(true, router);
+const { selectCategories, resetCategories } = useFilters(
+    categories,
+    loadPaginatedGoods,
+    route,
+    router,
+);
 </script>
 
 <template>
@@ -30,13 +35,14 @@ const resetFilters = async () => {
             <h1 class="text-center text-h3 title">Find treasures</h1>
 
             <ItemGoods
-                :resetFilters="resetFilters"
+                :resetCategories="resetCategories"
                 :categories="categories"
                 :totalPages="totalPages"
                 :currentPage="currentPage"
-                :loadPaginatedGoods="loadPaginatedGoods"
                 :requiresAuth="false"
                 classCard="card"
+                :loadPaginatedGoods="loadPaginatedGoods"
+                @update:selected-categories="selectCategories"
             >
                 <template #debuff>
                     <IconDebuff class="debuff">

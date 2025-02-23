@@ -11,7 +11,7 @@ const props = defineProps<{
     categories: Category[];
     requiresAuth: boolean;
     loadPaginatedGoods: (categories: Category[]) => void;
-    resetFilters: () => void;
+    resetCategories: () => void;
     classCard: string;
 }>();
 
@@ -32,7 +32,7 @@ const updateSelectedCategories = () => {
                 class="text-primary text-subtitle1"
                 color="primary"
                 label="All"
-                @click="resetFilters"
+                @click="resetCategories"
             ></q-btn>
             <ul class="flex flex-center text-subtitle1" style="gap: 2rem; user-select: none">
                 <li v-for="(category, idx) in categories" :key="idx">
