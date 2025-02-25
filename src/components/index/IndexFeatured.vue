@@ -2,11 +2,11 @@
 import { ref, onMounted, computed } from 'vue';
 import { useStoreGoods } from 'src/stores/useStoreGoods';
 
-const store = useStoreGoods();
+const storeGoods = useStoreGoods();
 const activeSlide = ref(1);
 
 const slideGroup = computed(() => {
-    const img = store.featuredGoods;
+    const img = storeGoods.featuredGoods;
 
     return [
         [img[4], img[3], img[8]],
@@ -16,7 +16,7 @@ const slideGroup = computed(() => {
 });
 
 onMounted(async () => {
-    await store.loadFeaturedGoods();
+    await storeGoods.loadFeaturedGoods();
 });
 </script>
 

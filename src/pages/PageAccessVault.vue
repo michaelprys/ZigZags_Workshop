@@ -52,25 +52,19 @@ const accessVault = async () => {
                 <q-form
                     ref="accessVaultForm"
                     class="shadow-10 vault-form"
-                    style="
-                        background-color: var(--q-bg-modal);
-                        width: 100%;
-                        max-width: 40rem;
-                        margin-inline: auto;
-                    "
                     @keydown.enter.prevent="accessVault"
                     @submit.prevent="accessVault"
                 >
                     <div class="q-gutter-y-md q-pa-lg vault-form__inner">
-                        <div class="column q-mt-none">
+                        <div class="column">
                             <h2 class="text-h5 text-secondary vault-form__title">Access vault</h2>
                             <span class="q-mt-sm">Hey there, stranger!</span>
                         </div>
                         <div style="width: 100%; gap: 1rem">
                             <q-input
                                 v-model="mailbox"
+                                dark
                                 filled
-                                bg-color="dark"
                                 label-color="info"
                                 input-class="text-primary"
                                 label="Mailbox *"
@@ -84,8 +78,8 @@ const accessVault = async () => {
                             <q-input
                                 v-model="vaultKey"
                                 :type="isPwd ? 'password' : 'text'"
+                                dark
                                 filled
-                                bg-color="dark"
                                 label-color="info"
                                 input-class="text-primary"
                                 label="Vault key *"
@@ -131,9 +125,3 @@ const accessVault = async () => {
             </div></section
     ></q-page>
 </template>
-
-<style scoped>
-.vault-form:after {
-    background-position: 50% calc(0% - 230px);
-}
-</style>

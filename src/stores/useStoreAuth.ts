@@ -1,11 +1,11 @@
 import { defineStore, acceptHMRUpdate } from 'pinia';
 import supabase from 'src/utils/supabase';
 
-interface User {
+type User = {
     id: number;
     first_name: string;
     email: string;
-}
+};
 
 export const useStoreAuth = defineStore('auth', {
     state: () => ({

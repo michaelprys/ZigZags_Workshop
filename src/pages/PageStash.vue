@@ -3,23 +3,16 @@ import { ref, onMounted } from 'vue';
 import { useQuasar } from 'quasar';
 import { useRouter } from 'vue-router';
 import { useStoreAuth } from 'src/stores/useStoreAuth';
+import { useStoreGoods } from 'src/stores/useStoreGoods';
+import { useManageStash } from 'src/use/useManageStash';
+import { useTransition } from 'src/use/useTransition';
+
+const { transitionName, applyTransition } = useTransition();
+
+const storeGoods = useStoreGoods();
+const { removeFromStash, increaseGoodQuantity, decreaseGoodQuantity } = useManageStash();
 
 const myForm = ref(null);
-
-const stashItems = ref([
-    [
-        { name: 'image-7', src: 'https://placehold.co/150' },
-        { name: 'image-8', src: 'https://placehold.co/150' },
-    ],
-    [
-        { name: 'image-2', src: 'https://placehold.co/150' },
-        { name: 'image-1', src: 'https://placehold.co/150' },
-    ],
-    [
-        { name: 'image-4', src: 'https://placehold.co/150' },
-        { name: 'image-5', src: 'https://placehold.co/150' },
-    ],
-]);
 
 const dialog = ref(false);
 
@@ -51,6 +44,7 @@ const onSubmit = async () => {
                 message: "Something went wrong. Where's my gold?!",
                 position: 'bottom-right',
                 classes: 'toast',
+                actions: [{ icon: 'close', color: 'dark', dense: true, size: 'xs' }],
             });
             return;
         }
@@ -62,7 +56,7 @@ const onSubmit = async () => {
             dialog.value = false;
             trade.value = true;
 
-            stashItems.value = [];
+            storeAuth.stashGoods.value = [];
 
             router.push({ name: 'workshop' });
 
@@ -72,6 +66,7 @@ const onSubmit = async () => {
                 message: "Pleasure doin' business!",
                 position: 'bottom-right',
                 classes: 'toast',
+                actions: [{ icon: 'close', color: 'dark', dense: true, size: 'xs' }],
             });
         }, 3000);
     } catch (err) {
@@ -79,17 +74,19 @@ const onSubmit = async () => {
     }
 };
 
-const quantity = ref(1);
 const vaultAccessed = ref(false);
 
-const store = useStoreAuth();
+const storeAuth = useStoreAuth();
+
+const isAnimating = ref(false);
 
 onMounted(async () => {
-    if (!store.session) {
-        await store.checkSession();
+    if (!storeAuth.session) {
+        await storeAuth.checkSession();
     }
 
-    vaultAccessed.value = !!store.session;
+    vaultAccessed.value = !!storeAuth.session;
+    isAnimating.value = true;
 });
 </script>
 
@@ -116,7 +113,6 @@ onMounted(async () => {
                                         :options="paymentTypes"
                                         filled
                                         dark
-                                        bg-color="dark"
                                         label-color="info"
                                         input-class="text-primary"
                                         label="Currency of Choice *"
@@ -159,100 +155,137 @@ onMounted(async () => {
                 </q-dialog>
             </Teleport>
 
-            <section
-                v-if="stashItems.length > 0"
-                class="column flex-center relative-position"
-                style="padding-top: 2em; padding-bottom: 7.5em"
-            >
-                <div class="q-pa-md">
-                    <h1 class="block text-center text-h3">Your stash</h1>
+            <Transition name="fade">
+                <section
+                    v-if="storeGoods.stashGoods.length > 0"
+                    id="stash"
+                    class="column flex-center relative-position"
+                >
+                    <div class="q-pa-md">
+                        <h1 class="block text-center text-h3">Your stash</h1>
 
-                    <div class="flex q-mt-xl">
-                        <div dark class="panel q-mr-xl">
-                            <div v-for="card in 14" :key="card" class="card shadow-1">
-                                <q-img class="card__image" src="~assets/guide/zigzag.avif" />
-
-                                <div class="flex justify-between q-pa-md" style="width: 100%">
-                                    <div class="column">
-                                        <span class="text-body1 text-bold"
-                                            >Sneaky Boots of Swift Exit</span
-                                        >
-                                        <span class="text-bold text-info">Category: Mounts</span>
-                                        <span class="q-mt-lg text-bold"
-                                            ><span class="text-secondary">Price</span>: 250
-                                            Gold</span
-                                        >
-                                    </div>
-
-                                    <div
-                                        class="column justify-between"
-                                        style="align-items: flex-end"
+                        <div class="flex q-mt-xl">
+                            <div dark class="panel q-mr-xl">
+                                <TransitionGroup :name="transitionName" tag="ul">
+                                    <li
+                                        v-for="(good, goodIdx) in storeGoods.stashGoods"
+                                        :key="good.id"
+                                        class="card"
                                     >
-                                        <q-btn
-                                            v-model="quantity"
-                                            outline
-                                            color="primary"
-                                            size="sm"
-                                            dense
-                                            icon="close"
-                                        />
+                                        <q-img class="card__image shadow-1" :src="good.image_url" />
 
-                                        <div class="flex items-center q-gutter-x-md">
-                                            <q-btn
-                                                v-model="quantity"
-                                                dense
-                                                icon="remove"
-                                                flat
-                                                @click="quantity > 1 ? quantity-- : 0"
-                                            />
-                                            <span>{{ quantity }}</span>
-                                            <q-btn
-                                                v-model="quantity"
-                                                dense
-                                                icon="add"
-                                                flat
-                                                @click="quantity < 5 ? quantity++ : 5"
-                                            />
+                                        <div
+                                            class="flex justify-between q-pa-md"
+                                            style="width: 100%"
+                                        >
+                                            <div class="card__info column">
+                                                <span class="text-body1 text-bold">{{
+                                                    good.name
+                                                }}</span>
+                                                <span class="text-bold text-info"
+                                                    >Category: {{ good.category }}</span
+                                                >
+                                                <span class="q-mt-lg text-bold"
+                                                    ><span class="text-secondary">Price</span>:
+                                                    {{ good.price }} Gold</span
+                                                >
+                                            </div>
+
+                                            <div
+                                                class="column justify-between"
+                                                style="align-items: flex-end"
+                                            >
+                                                <q-btn
+                                                    outline
+                                                    color="primary"
+                                                    size="sm"
+                                                    dense
+                                                    icon="close"
+                                                    @click="
+                                                        removeFromStash(goodIdx);
+                                                        applyTransition('list', 400);
+                                                    "
+                                                />
+
+                                                <div class="flex items-center q-gutter-x-md">
+                                                    <q-btn
+                                                        dense
+                                                        icon="remove"
+                                                        flat
+                                                        @click="decreaseGoodQuantity(good)"
+                                                    />
+                                                    <span>{{ good.quantity }}</span>
+                                                    <q-btn
+                                                        dense
+                                                        icon="add"
+                                                        flat
+                                                        @click="increaseGoodQuantity(good)"
+                                                    />
+                                                </div>
+                                            </div>
                                         </div>
-                                    </div>
-                                </div>
+                                    </li>
+                                </TransitionGroup>
+                            </div>
+
+                            <div class="column panel-price q-pa-lg">
+                                <span class="text-subtitle1"
+                                    ><span class="text-secondary">💰 Base price:</span> 250
+                                    Gold</span
+                                >
+                                <span class="q-mt-xs text-subtitle1"
+                                    ><span class="text-secondary">💎 Goblin Tax:</span> +50
+                                    Gold</span
+                                >
+
+                                <div class="q-my-md separator-single"></div>
+
+                                <span class="q-mt-xs text-subtitle1"
+                                    ><span class="text-secondary">Final Price: </span>300 Gold</span
+                                >
+
+                                <q-btn
+                                    class="q-mt-md"
+                                    outline
+                                    color="primary"
+                                    :disable="!vaultAccessed"
+                                    :label="vaultAccessed ? 'Begin trade' : 'Access vault to pay'"
+                                    @click="dialog = true"
+                                />
                             </div>
                         </div>
+                    </div>
+                </section>
 
-                        <div class="column price-panel q-pa-lg">
-                            <span class="text-subtitle1"
-                                ><span class="text-secondary">💰 Base price:</span> 250 Gold</span
-                            >
-                            <span class="q-mt-xs text-subtitle1"
-                                ><span class="text-secondary">💎 Goblin Tax:</span> +50 Gold</span
-                            >
-
-                            <div class="q-my-md separator-single"></div>
-
-                            <span class="q-mt-xs text-subtitle1"
-                                ><span class="text-secondary">Final Price: </span>300 Gold</span
-                            >
-
+                <section v-else id="empty-stash" class="column flex-center relative-position">
+                    <div class="column flex-center" style="max-width: 34rem; width: 100%">
+                        <q-img
+                            src="~assets/stash/empty-stash.avif"
+                            width="522px"
+                            height="457px"
+                            style="filter: grayscale(0.2); width: 12.5rem; height: 100%"
+                        />
+                        <div class="flex flex-center q-mt-xl">
+                            <span class="text-h4 text-secondary">Your stash is dry</span>
+                            <p class="q-mt-md text-center text-primary text-subtitle1">
+                                Hey, what gives?! Go fetch some treasures so we ain't walkin' around
+                                with nothin'!
+                            </p>
                             <q-btn
-                                class="q-mt-md"
-                                outline
-                                color="primary"
-                                :disable="!vaultAccessed"
-                                :label="vaultAccessed ? 'Begin trade' : 'Access vault to pay'"
-                                @click="dialog = true"
+                                class="q-mt-lg"
+                                color="secondary"
+                                text-color="dark"
+                                unelevated
+                                :to="{ name: 'workshop' }"
+                                label="Explore goods"
+                                no-caps
                             />
                         </div>
                     </div>
-                </div>
-            </section>
-
-            <section v-else class="column flex-center relative-position" style="padding-top: 19em">
-                <div class="column flex-center">
-                    <span class="text-h3 text-secondary">The stash is bone dry, mate!</span>
-                </div>
-            </section>
-        </div></q-page
-    >
+                </section>
+            </Transition>
+        </div>
+    </q-page>
 </template>
 
 <style scoped>
@@ -267,55 +300,17 @@ onMounted(async () => {
     display: block;
     z-index: 100;
 }
-
 .panel,
-.price-panel {
-    box-shadow:
-        inset 0 0 10px rgba(255, 255, 255, 0.1),
-        0 0 10px rgba(0, 0, 0, 0.5);
-    background-color: rgba(37, 19, 10, 0.5);
+.panel-price {
     height: 100%;
     border-radius: var(--rounded);
     position: relative;
+    background-color: var(--q-dark);
+    border: 1px solid rgba(255, 255, 255, 0.125);
 }
 .panel {
     width: 60rem;
-}
-.price-panel {
-    padding: 1.5rem;
-}
-.panel::after,
-.price-panel::after {
-    position: absolute;
-    content: '';
-    inset: 0;
-    background-repeat: repeat;
-    border-radius: var(--rounded);
-    z-index: -2;
-    opacity: 30%;
-}
-.panel::after {
-    background-image: url('/src/assets/common/bg-jungle.avif');
-    background-position: 50% calc(0% - 106px);
-    mask-image: radial-gradient(
-        circle at 70% 30%,
-        rgb(255, 255, 255) 40%,
-        rgba(255, 255, 255, 0) 55%
-    );
-}
-.price-panel::after {
-    background-image: url('/src/assets/stash/texture-panel-price.avif');
-}
-
-.panel::before,
-.price-panel::before {
-    position: absolute;
-    content: '';
-    inset: 0;
-    z-index: -3;
-}
-.panel::before {
-    background-color: #131211;
+    min-height: 35.6688rem;
 }
 
 .toast {
@@ -329,7 +324,7 @@ onMounted(async () => {
 }
 
 .modal {
-    background-color: var(--q-bg-modal);
+    background-color: var(--q-dark);
     max-width: 40.25rem;
     width: 100%;
     padding: 1.25em;
@@ -338,22 +333,38 @@ onMounted(async () => {
 }
 
 .card {
+    position: relative;
     display: flex;
     justify-content: space-between;
-    border-bottom: 1px solid rgba(255, 255, 255, 0.125);
-    padding-block: 0.6rem;
+    padding-block: 0.8rem;
     padding-left: 1rem;
+    z-index: 1;
 }
-
-.card:last-child {
-    border-bottom: 0;
+.card::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.125);
+    mask-image: linear-gradient(to right, transparent, white 5%, white 95%, transparent);
+    z-index: -1;
 }
-
+.card:nth-child(n + 3):last-child::before {
+    content: none;
+}
 .card__image {
     width: 200px;
     background-size: cover;
-}
-.card__image:first-child {
     border-radius: var(--rounded);
+}
+
+#stash,
+#empty-stash {
+    padding-bottom: 19em;
+}
+#stash {
+    padding-top: 2em;
+}
+#empty-stash {
+    padding-top: 10.5rem;
 }
 </style>

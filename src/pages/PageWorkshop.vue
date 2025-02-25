@@ -16,12 +16,14 @@ const categories = ref([
     { label: 'mounts', active: false },
 ]);
 
-const { totalPages, currentPage, loadPaginatedGoods } = usePaginatedGoods(false, router);
+const { currentPage, totalPages, loadPaginatedGoods } = usePaginatedGoods(false, router);
 const { selectCategories, resetCategories } = useFilters(
     categories,
     loadPaginatedGoods,
     route,
     router,
+    currentPage,
+    totalPages,
 );
 </script>
 
@@ -35,7 +37,7 @@ const { selectCategories, resetCategories } = useFilters(
                 :categories="categories"
                 :totalPages="totalPages"
                 :currentPage="currentPage"
-                :requiresAuth="false"
+                :requiresAccess="false"
                 classCard="card"
                 :loadPaginatedGoods="loadPaginatedGoods"
                 @update:selected-categories="selectCategories"
@@ -50,7 +52,7 @@ const { selectCategories, resetCategories } = useFilters(
                             size="lg"
                             :boundary-numbers="false"
                             :max="totalPages"
-                            @update:model-value="loadPaginatedGoods(categories)"
+                            @update:model-value="loadPaginatedGoods"
                         />
                     </div>
                 </template>

@@ -5,12 +5,12 @@ import { useRouter } from 'vue-router';
 
 const router = useRouter();
 
-const store = useStoreGoods();
+const storeGoods = useStoreGoods();
 const model = ref(null);
 const suggestions = ref([]);
 
 const formattedSuggestions = computed(() => {
-    return store.suggestedGoods.map((good) => ({
+    return storeGoods.suggestedGoods.map((good) => ({
         label: good.name,
         value: good.slug,
         link: `/goods/${good.category}/${good.slug}`,
@@ -39,21 +39,18 @@ const filterFn = (val, update) => {
 };
 
 const goToLink = async (option) => {
-    const foundSuggestion = store.suggestedGoods.find(
+    const foundSuggestion = storeGoods.suggestedGoods.find(
         (suggestion) => suggestion.slug === option.value,
     );
 
     if (foundSuggestion) {
-        store.selectGood(foundSuggestion);
+        storeGoods.selectGood(foundSuggestion);
         await router.push(option.link);
     }
-
-    console.log('Found suggestion:', foundSuggestion);
-    console.log('Selected good:', store.selectedGood);
 };
 
 onMounted(async () => {
-    await store.loadSuggestedGoods();
+    await storeGoods.loadSuggestedGoods();
 });
 </script>
 
@@ -62,7 +59,7 @@ onMounted(async () => {
         <h1 class="sr-only">Introduction</h1>
 
         <div class="flex flex-center q-px-md">
-            <div class="relative-position section__wrapper shadow-8 text-center">
+            <div class="relative-position shadow-8 text-center wrapper">
                 <div class="column fit flex-center">
                     <div style="z-index: 1">
                         <h2 class="text-glow-dark text-h3 text-primary">Time is money, friend!</h2>
@@ -113,9 +110,9 @@ onMounted(async () => {
                     <q-parallax class="fit">
                         <template #media>
                             <video
+                                class="wrapper__intro-video"
                                 width="1516"
                                 height="926"
-                                style="object-fit: cover; filter: brightness(150%)"
                                 poster="~assets/index/poster.avif"
                                 loop
                                 muted
@@ -123,6 +120,7 @@ onMounted(async () => {
                             >
                                 <source src="~assets/index/intro.mp4" type="video/mp4" />
                             </video>
+                            <div class="layer"></div>
                         </template>
                     </q-parallax>
                 </div>
@@ -134,9 +132,10 @@ onMounted(async () => {
 </template>
 
 <style scoped>
-.section__wrapper {
-    width: 100%;
+.wrapper {
+    position: relative;
     max-width: 92.5rem;
+    width: 100%;
     height: 40rem;
 }
 </style>

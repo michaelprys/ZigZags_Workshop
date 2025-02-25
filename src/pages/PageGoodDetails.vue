@@ -1,16 +1,16 @@
 <script setup lang="ts">
 import { ref } from 'vue';
 import { useRouter } from 'vue-router';
-import { useAddToStash } from 'src/use/useAddToStash';
+import { useManageStash } from 'src/use/useManageStash';
 import { useStoreGoods } from 'src/stores/useStoreGoods';
 import { useMoveImage } from 'src/use/useMoveImage';
 
 const router = useRouter();
-const store = useStoreGoods();
+const storeGoods = useStoreGoods();
 
-const isAuth = store.selectedGood?.requires_auth;
+const isAuth = storeGoods.selectedGood?.requires_access;
 
-const { addToStash } = useAddToStash();
+const { addToStash } = useManageStash();
 
 const imgRef = ref<HTMLImageElement | null>(null);
 const { moveImage, resetImage } = useMoveImage(imgRef);
@@ -26,10 +26,6 @@ const { moveImage, resetImage } = useMoveImage(imgRef);
             <h1 class="sr-only">Item details</h1>
 
             <div class="bg" :class="isAuth ? 'bg-black-market' : 'bg-workshop'"></div>
-            <div
-                class="overlay"
-                :class="isAuth ? 'overlay-black-market' : 'overlay-workshop'"
-            ></div>
 
             <div class="flex flex-center">
                 <div class="wrapper">
@@ -37,7 +33,7 @@ const { moveImage, resetImage } = useMoveImage(imgRef);
                         <img
                             ref="imgRef"
                             class="image"
-                            :src="store.selectedGood.image_url"
+                            :src="storeGoods.selectedGood.image_url"
                             @mousemove="moveImage"
                             @mouseleave="resetImage"
                         />
@@ -55,32 +51,29 @@ const { moveImage, resetImage } = useMoveImage(imgRef);
                         <div class="column">
                             <div class="flex items-center justify-between">
                                 <h2 class="text-bold text-h4">
-                                    {{ store.selectedGood.name }}
+                                    {{ storeGoods.selectedGood.name }}
                                 </h2>
 
                                 <q-btn
-                                    class="q-px-md"
+                                    class="back-button q-px-md"
                                     dense
-                                    :style="{
-                                        backgroundColor: isAuth ? '#360101' : '#132242',
-                                    }"
+                                    outline
                                     text-color="primary"
-                                    filled
                                     @click="router.back()"
                                     >Back</q-btn
                                 >
                             </div>
 
                             <h3 class="q-mt-md text-bold text-h6 text-secondary">
-                                Category: {{ store.selectedGood.category }}
+                                Category: {{ storeGoods.selectedGood.category }}
                             </h3>
 
                             <p class="q-mt-md text-body2" style="text-align: justify">
-                                {{ store.selectedGood.description }}
+                                {{ storeGoods.selectedGood.description }}
                             </p>
 
                             <span class="q-mt-lg text-secondary text-subtitle1"
-                                >Price: {{ store.selectedGood.price }} gold</span
+                                >Price: {{ storeGoods.selectedGood.price }} gold</span
                             >
 
                             <q-btn
@@ -88,7 +81,7 @@ const { moveImage, resetImage } = useMoveImage(imgRef);
                                 outline
                                 color="primary"
                                 style="max-width: 6rem"
-                                @click="addToStash"
+                                @click="addToStash(storeGoods.selectedGood)"
                                 >Purchase</q-btn
                             >
                         </div>
@@ -97,7 +90,7 @@ const { moveImage, resetImage } = useMoveImage(imgRef);
                             <h2 class="text-bold text-h6 text-secondary">More about this item</h2>
 
                             <p class="q-mt-md text-body2" style="text-align: justify">
-                                {{ store.selectedGood.source }}
+                                {{ storeGoods.selectedGood.source }}
                             </p>
                         </div>
                     </div>
@@ -120,41 +113,17 @@ const { moveImage, resetImage } = useMoveImage(imgRef);
     margin-block: 2.5rem;
     background-position: center;
     background-repeat: no-repeat;
-    filter: brightness(50%);
     mask-image: radial-gradient(circle, rgb(255, 255, 255) 50%, rgba(255, 255, 255, 0) 100%);
+    border-radius: 0.3125rem;
+    /* opacity: 50%; */
 }
 .bg-workshop {
+    filter: brightness(50%);
     background-image: url('src/assets/good-details/bg-workshop-details.avif');
 }
 .bg-black-market {
+    filter: brightness(80%);
     background-image: url('src/assets/good-details/bg-black-market-details.avif');
-}
-
-.overlay {
-    position: absolute;
-    inset: 0;
-    overflow: hidden;
-    background-position: center;
-    background-size: cover;
-    background-repeat: no-repeat;
-    opacity: 50%;
-    z-index: -1;
-}
-.overlay-workshop {
-    background: linear-gradient(
-        to bottom,
-        rgba(10, 0, 50, 0.4) 0%,
-        rgba(50, 0, 0, 0.2) 50%,
-        rgba(0, 0, 0, 0) 80%
-    );
-}
-.overlay-black-market {
-    background: linear-gradient(
-        to bottom,
-        rgba(30, 0, 0, 0.3) 0%,
-        rgba(60, 0, 0, 0.15) 50%,
-        rgba(0, 0, 0, 0) 80%
-    );
 }
 
 .wrapper {
@@ -168,7 +137,7 @@ const { moveImage, resetImage } = useMoveImage(imgRef);
     border: 1px solid color-mix(in srgb, var(--q-primary) 40%, black 90%);
     border-radius: var(--rounded);
     max-width: 40rem;
-    min-height: 43.625rem;
+    min-height: 42rem;
     border-radius: 0.3125rem;
     border: 1px solid rgba(255, 255, 255, 0.125);
     box-shadow:
@@ -180,14 +149,13 @@ const { moveImage, resetImage } = useMoveImage(imgRef);
     inset: 0;
     z-index: -1;
     backdrop-filter: blur(16px) saturate(180%);
-    -webkit-backdrop-filter: blur(16px) saturate(180%);
     filter: brightness(60%);
 }
 .content__overlay-workshop {
-    background-color: rgba(17, 25, 40, 0.75);
+    background-color: rgba(21, 36, 44, 0.9);
 }
 .content__overlay-black-market {
-    background-color: rgba(35, 0, 0, 0.75);
+    background-color: rgba(15, 22, 32, 0.9);
 }
 
 .image-wrapper {

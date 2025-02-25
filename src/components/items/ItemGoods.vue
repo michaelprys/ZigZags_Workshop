@@ -1,16 +1,16 @@
 <script setup lang="ts">
-import { useAddToStash } from 'src/use/useAddToStash';
+import { useManageStash } from 'src/use/useManageStash';
 import { useStoreGoods } from 'src/stores/useStoreGoods';
-import type { Category } from 'src/types';
+import { useTransition } from 'src/use/useTransition';
 
-const store = useStoreGoods();
-const { pending } = store;
-const { addToStash } = useAddToStash();
+const { transitionName, applyTransition } = useTransition();
+
+const storeGoods = useStoreGoods();
+const { pending } = storeGoods;
+const { addToStash } = useManageStash();
 
 const props = defineProps<{
-    categories: Category[];
-    requiresAuth: boolean;
-    loadPaginatedGoods: (categories: Category[]) => void;
+    categories;
     resetCategories: () => void;
     classCard: string;
 }>();
@@ -32,7 +32,10 @@ const updateSelectedCategories = () => {
                 class="text-primary text-subtitle1"
                 color="primary"
                 label="All"
-                @click="resetCategories"
+                @click="
+                    resetCategories();
+                    applyTransition('list', 400);
+                "
             ></q-btn>
             <ul class="flex flex-center text-subtitle1" style="gap: 2rem; user-select: none">
                 <li v-for="(category, idx) in categories" :key="idx">
@@ -41,14 +44,22 @@ const updateSelectedCategories = () => {
                         :label="category.label"
                         size="md"
                         left-label
-                        @click="updateSelectedCategories"
+                        @click="
+                            updateSelectedCategories();
+                            applyTransition('list', 400);
+                        "
                     ></q-checkbox>
                 </li>
             </ul>
         </div>
 
-        <ul class="flex flex-center q-gutter-lg q-mt-none q-pl-none" style="max-width: 84.5rem">
-            <li v-for="good in store.goods" :key="good.id" style="cursor: pointer">
+        <TransitionGroup
+            :name="transitionName"
+            tag="ul"
+            class="flex flex-center q-gutter-lg q-mt-none q-pl-none"
+            style="max-width: 84.5rem"
+        >
+            <li v-for="good in storeGoods.goods" :key="good.id" style="cursor: pointer">
                 <q-card :class="classCard" flat dark>
                     <div>
                         <div class="card__image-wrapper">
@@ -112,7 +123,7 @@ const updateSelectedCategories = () => {
                                 type="QBtn"
                                 style="width: 9.3448rem; margin-left: 0.5rem"
                             />
-                            <q-btn v-else flat color="primary" @click="addToStash">
+                            <q-btn v-else flat color="primary" @click="addToStash(good)">
                                 💰 &nbsp; Add to stash
                             </q-btn>
                         </div>
@@ -125,7 +136,7 @@ const updateSelectedCategories = () => {
                                 type="QBtn"
                                 style="width: 4.6019rem; margin-right: 0.5rem"
                             />
-                            <q-btn v-else flat color="info">
+                            <q-btn v-else flat color="primary">
                                 <RouterLink
                                     :to="{
                                         name: 'good-details',
@@ -134,7 +145,7 @@ const updateSelectedCategories = () => {
                                             slug: good?.slug,
                                         },
                                     }"
-                                    @click="store.selectGood(good)"
+                                    @click="storeGoods.selectGood(good)"
                                 >
                                     Details
                                 </RouterLink>
@@ -143,9 +154,11 @@ const updateSelectedCategories = () => {
                     </q-card-actions>
                 </q-card>
             </li>
-        </ul>
+        </TransitionGroup>
 
-        <slot name="pagination"></slot>
+        <div @click="applyTransition('pagination', 150)">
+            <slot name="pagination"></slot>
+        </div>
     </div>
 </template>
 

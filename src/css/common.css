@@ -1,13 +1,43 @@
 /* Transitions */
 .fade-enter-active,
 .fade-leave-active {
-    transition: opacity 150ms ease;
+    transition: opacity 150ms ease-in-out;
 }
-
 .fade-enter-from,
 .fade-leave-to {
     opacity: 0;
 }
+
+.list-move,
+.list-enter-active,
+.list-leave-active {
+    transition:
+        transform 400ms ease-in-out,
+        opacity 400ms ease-in-out;
+}
+.list-enter-from,
+.list-leave-to {
+    opacity: 0;
+    transform: translateX(30px);
+}
+.list-leave-active {
+    opacity: 0;
+    position: absolute;
+}
+
+/* .pagination-enter-from,
+.pagination-leave-to {
+    opacity: 0;
+} */
+.pagination-enter-active,
+.pagination-leave-active {
+    transition: opacity 300ms ease-in-out;
+}
+.pagination-leave-active {
+    display: none;
+    position: absolute;
+}
+
 /* Divider */
 /* ------------------------------- */
 .separator {
@@ -41,17 +71,14 @@
 }
 /* Vault form */
 /* ------------------------------- */
-.auth-form,
 .vault-form {
-    box-shadow:
-        inset 0 0 10px rgba(255, 255, 255, 0.1),
-        0 0 10px rgba(0, 0, 0, 0.5);
-    background-color: rgba(37, 19, 10, 0.5);
+    width: 100%;
     height: 100%;
     border-radius: var(--rounded);
     position: relative;
+    background-color: var(--q-dark);
+    border: 1px solid rgba(255, 255, 255, 0.125);
 }
-.auth-form::before,
 .vault-form::before {
     position: absolute;
     inset: 0;
@@ -60,28 +87,13 @@
     border-radius: 0.75rem;
     border: 1px solid rgba(255, 255, 255, 0.125);
     border-radius: var(--rounded);
+    box-shadow: rgba(0, 0, 0, 0.24) 0px 3px 8px;
+    z-index: -2;
+    background-color: rgb(8, 8, 8);
 }
-.auth-form::after,
-.vault-form::after {
-    position: absolute;
-    inset: 0;
-    content: '';
-    background-position: center;
-    background-repeat: no-repeat;
-    opacity: 30%;
-    border-radius: 0.75rem;
-    border: 1px solid rgba(255, 255, 255, 0.125);
-    background-image: url('/src/assets/common/bg-jungle.avif');
-    filter: grayscale(30%);
-    background-size: cover;
-    border-radius: var(--rounded);
-}
-.auth-form__inner,
 .vault-form__inner {
     position: relative;
-    z-index: 1;
 }
-.auth-form__title,
 .vault-form__title {
     text-shadow: rgba(0, 0, 0, 0.3) 3px 3px 6px;
 }

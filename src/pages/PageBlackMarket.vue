@@ -32,14 +32,14 @@ const { selectCategories, resetCategories } = useFilters(
         <div class="overlay"></div>
 
         <section id="workshop" style="padding-top: 4.625em; padding-bottom: 8.5em">
-            <h1 class="text-center text-h3 title">Find treasures</h1>
+            <h1 class="text-center text-h3 title">Hunt treasures</h1>
 
             <ItemGoods
                 :resetCategories="resetCategories"
                 :categories="categories"
                 :totalPages="totalPages"
                 :currentPage="currentPage"
-                :requiresAuth="false"
+                :requiresAccess="false"
                 classCard="card"
                 :loadPaginatedGoods="loadPaginatedGoods"
                 @update:selected-categories="selectCategories"
@@ -107,7 +107,7 @@ const { selectCategories, resetCategories } = useFilters(
     z-index: -1;
 }
 
-.overlay::before {
+/* .overlay::before {
     content: '';
     position: absolute;
     top: 13%;
@@ -123,7 +123,7 @@ const { selectCategories, resetCategories } = useFilters(
     transform: translateX(-50%) scaleY(1.2);
     filter: blur(50px);
     z-index: -1;
-}
+} */
 
 :deep(.card) {
     width: 19.625rem;

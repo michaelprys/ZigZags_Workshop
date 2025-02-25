@@ -7,9 +7,8 @@ import { loadStripe } from '@stripe/stripe-js';
 import { callToast } from 'src/utils/callToast';
 import { useStoreAuth } from 'src/stores/useStoreAuth';
 import { useStoreGoods } from 'src/stores/useStoreGoods';
-import { type UseDraggableReturn, VueDraggable } from 'vue-draggable-plus';
+import { vDraggable } from 'vue-draggable-plus';
 
-const draggableRef = ref<UseDraggableReturn>();
 const list = ref([1, 2, 3]);
 
 const storeAuth = useStoreAuth();
@@ -22,7 +21,7 @@ const leaveVault = async () => {
         callToast(error ? 'Unable to leave the vault' : 'Something went wrong', false);
     } else {
         await storeAuth.checkSession();
-        if (storeGoods.goods.find((good) => good.requires_auth === true)) {
+        if (storeGoods.goods.find((good) => good.requires_access === true)) {
             localStorage.removeItem('goods');
         }
         callToast('Safe travels!', true);
@@ -244,7 +243,6 @@ onMounted(async () => {
             style="padding-top: 4.625em; padding-bottom: 8.5em; min-height: calc(100svh - 4.625em)"
         >
             <h1 class="sr-only">Vault</h1>
-
             <div class="bg"></div>
 
             <q-dialog v-model="balanceDialog" backdrop-filter="blur(8px); brightness(60%)">
@@ -350,13 +348,16 @@ onMounted(async () => {
                             <q-btn icon="close" color="primary" flat dense @click="alert"></q-btn>
                         </div>
 
-                        <VueDraggable
-                            ref="draggableRef"
-                            v-model="list"
-                            class="q-mt-lg vault-form__cells"
-                            :animation="150"
+                        <ul
+                            v-draggable="[
+                                list,
+                                {
+                                    animation: 150,
+                                },
+                            ]"
+                            class="q-mt-lg vault-form__slots"
                         >
-                            <div v-for="i in 55" :key="i" class="vault-form__cell">
+                            <li v-for="i in 55" :key="i" class="vault-form__slot">
                                 <q-tooltip
                                     :delay="500"
                                     anchor="bottom right"
@@ -372,16 +373,16 @@ onMounted(async () => {
                                     </span>
                                 </q-tooltip>
 
-                                <div class="vault-form__cell-placeholder"></div>
-                                <q-img
-                                    class="vault-form__cell-image"
-                                    src=""
+                                <div class="vault-form__slot-placeholder"></div>
+                                <!-- <q-img
+                                    class="vault-form__slot-image"
+                                    src="https://placehold.co/500"
                                     width="1024px"
                                     height="1024px"
                                     style="width: 100%; height: 100%"
-                                />
-                            </div>
-                        </VueDraggable>
+                                /> -->
+                            </li>
+                        </ul>
 
                         <div class="vault-form__footer">
                             <q-pagination
@@ -464,6 +465,27 @@ onMounted(async () => {
 </template>
 
 <style scoped>
+.vault-form {
+    position: relative;
+    background: linear-gradient(180deg, #25211f 0%, #100f0d 100%);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    border-radius: 8px;
+    padding: 1.5rem;
+    box-shadow:
+        inset 0 0 10px rgba(0, 0, 0, 0.1),
+        0 4px 12px rgba(0, 0, 0, 0.1);
+}
+
+.vault-form::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background-color: rgba(255, 255, 255, 0.03);
+    backdrop-filter: blur(3px);
+    border-radius: 8px;
+    z-index: -1;
+}
+
 .vault-form__inner {
     position: relative;
     z-index: 1;
@@ -473,7 +495,25 @@ onMounted(async () => {
     display: grid;
     place-items: center;
     grid-template-columns: 1fr auto 1fr;
+    color: var(--q-primary);
+    font-size: 1.2rem;
+    text-align: center;
+    position: relative;
+    /* padding-bottom: 1em; */
 }
+/* .vault-form__header::after {
+    content: '';
+    position: absolute;
+    inset-block: 0;
+    left: 50%;
+    transform: translateX(-50%);
+    padding-block: 1rem;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+    mask-image: linear-gradient(to right, transparent, white 1%, white 99%, transparent);
+    width: 100.5%;
+    z-index: -1;
+} */
+
 .vault-form__header h2 {
     grid-column-start: 2;
 }
@@ -489,7 +529,7 @@ onMounted(async () => {
     gap: 16px;
 }
 
-.vault-form__cells {
+.vault-form__slots {
     display: grid;
     grid-template-columns: repeat(11, 1fr);
     grid-template-rows: repeat(4, 1fr);
@@ -498,11 +538,11 @@ onMounted(async () => {
     place-items: center;
 }
 
-.vault-form__cell:hover {
-    box-shadow: 0 8px 20px rgba(92, 90, 78, 0.6);
+.vault-form__slot:hover {
+    box-shadow: 0 1px 12px rgba(92, 90, 78, 0.6);
 }
 
-.vault-form__cell {
+.vault-form__slot {
     position: relative;
     cursor: pointer;
     display: flex;
@@ -511,29 +551,23 @@ onMounted(async () => {
     padding: 0.25em;
     width: 5.25rem;
     height: 5.25rem;
-    border-radius: var(--rounded);
+    border-radius: 0.25rem;
     overflow: hidden;
     box-shadow: 0 4px 10px rgba(0, 0, 0, 0.7);
 }
 
-.vault-form__cell-placeholder {
+.vault-form__slot-placeholder {
     position: absolute;
-    top: 50%;
-    left: 50%;
-    transform: translateX(-50%) translateY(-50%);
     width: 100%;
     height: 100%;
-    border: 2px solid rgb(117, 117, 117);
-    background: linear-gradient(145deg, #444, #222);
-    box-shadow:
-        0 0 10px rgba(255, 255, 255, 0.1),
-        0 2px 4px rgba(0, 0, 0, 0.5),
-        inset 0 0 12px rgba(255, 255, 255, 0.2),
-        inset 0 -2px 6px rgba(0, 0, 0, 0.6);
-    border-radius: var(--rounded);
+    background: linear-gradient(145deg, rgba(45, 45, 45, 0.7), rgba(25, 25, 25, 0.9));
+    /* background: linear-gradient(145deg, rgba(82, 82, 82, 0.5), rgba(20, 20, 20, 0.9)); */
+    border: 2px solid rgba(255, 255, 255, 0.1);
+    border-radius: 0.25rem;
+    box-shadow: inset 0 0 8px rgba(0, 0, 0, 0.5);
 }
 
-.vault-form__cell-placeholder::before {
+.vault-form__slot-placeholder::before {
     content: '';
     position: absolute;
     inset: 0;
@@ -541,7 +575,7 @@ onMounted(async () => {
     border-radius: 0.3125rem;
 }
 
-.vault-form__cell-image {
+.vault-form__slot-image {
     position: absolute;
     top: 50%;
     left: 50%;
@@ -552,11 +586,11 @@ onMounted(async () => {
     border-radius: var(--rounded);
     filter: grayscale(20%) contrast(90%) brightness(90%);
 }
-.vault-form__cell-image::before {
+.vault-form__slot-image::before {
     content: '';
     position: absolute;
     inset: 0;
-    border: 2px solid rgb(132, 132, 132);
+    border: 2px solid rgb(120, 120, 120);
     border-radius: var(--rounded);
     z-index: 3;
 }

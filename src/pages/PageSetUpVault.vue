@@ -66,12 +66,11 @@ const setupVault = async () => {
                 <q-form
                     ref="setupVaultForm"
                     class="shadow-10 vault-form"
-                    style="background-color: var(--q-bg-modal)"
                     @keydown.enter.prevent="setupVault"
                     @submit.prevent="setupVault"
                 >
-                    <div class="auth-form__inner q-gutter-y-md q-pa-lg">
-                        <div class="column q-mt-none">
+                    <div class="q-gutter-y-md q-pa-lg vault-form__inner">
+                        <div class="column">
                             <h2 class="text-h5 text-secondary vault-form__title">Set up vault</h2>
                             <span class="q-mt-sm">Let's set up your vault for safe keeping.</span>
                         </div>
@@ -79,8 +78,8 @@ const setupVault = async () => {
                         <div>
                             <q-input
                                 v-model="name"
+                                dark
                                 filled
-                                bg-color="dark"
                                 label-color="info"
                                 input-class="text-primary"
                                 label="True name *"
@@ -91,8 +90,8 @@ const setupVault = async () => {
                             />
                             <q-input
                                 v-model="mailbox"
+                                dark
                                 filled
-                                bg-color="dark"
                                 label-color="info"
                                 input-class="text-primary"
                                 label="Mailbox *"
@@ -107,8 +106,8 @@ const setupVault = async () => {
                             <q-input
                                 v-model="vaultKey"
                                 :type="isPwd ? 'password' : 'text'"
+                                dark
                                 filled
-                                bg-color="dark"
                                 label-color="info"
                                 input-class="text-primary"
                                 label="Vault key *"
@@ -131,8 +130,8 @@ const setupVault = async () => {
                             <q-input
                                 v-model="vaultConfirmKey"
                                 :type="isPwdConfirm ? 'password' : 'text'"
+                                dark
                                 filled
-                                bg-color="dark"
                                 label-color="info"
                                 input-class="text-primary"
                                 label="Confirm vault key *"
@@ -154,7 +153,6 @@ const setupVault = async () => {
                                 :options="factions"
                                 filled
                                 dark
-                                bg-color="dark"
                                 label-color="info"
                                 input-class="text-primary"
                                 label="Your faction *"
@@ -193,5 +191,3 @@ const setupVault = async () => {
             </div></section
     ></q-page>
 </template>
-
-<style scoped></style>

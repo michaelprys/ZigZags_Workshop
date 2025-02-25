@@ -5,12 +5,12 @@ import { useStoreAuth } from 'src/stores/useStoreAuth';
 const hasInvitation = ref(false);
 
 const pending = ref(false);
-const store = useStoreAuth();
+const storeAuth = useStoreAuth();
 
 const enterMarket = async () => {};
 
 onMounted(async () => {
-    await store.checkSession();
+    await storeAuth.checkSession();
 });
 </script>
 
@@ -19,21 +19,13 @@ onMounted(async () => {
         <div class="relative-position">
             <div class="bg"></div>
 
-            <section
-                id="black-market-access"
-                class="flex flex-center relative-position"
-                style="
-                    padding-top: 4.625em;
-                    padding-bottom: 8.5em;
-                    min-height: calc(100svh - 4.625em);
-                "
-            >
+            <section id="black-market-access" class="flex flex-center relative-position">
                 <div class="flex flex-center q-px-md" style="width: 100%">
                     <div
-                        class="bg-dark message q-px-xl q-py-lg shadow-10 text-center"
+                        class="bg-dark message q-px-xl q-py-lg text-center"
                         style="max-width: 40rem; width: 100%"
                     >
-                        <template v-if="!store.session && !hasInvitation">
+                        <template v-if="!storeAuth.session && !hasInvitation">
                             <h2 class="text-h4 text-negative">INVITATION UNCONFIRMED</h2>
                             <h3 class="q-mt-xs text-info text-subtitle1">
                                 ACCESS VAULT TO VERIFY INVITATION
@@ -46,7 +38,7 @@ onMounted(async () => {
                             </div>
                         </template>
 
-                        <template v-if="store.session && !hasInvitation">
+                        <template v-if="storeAuth.session && !hasInvitation">
                             <h2 class="text-h4 text-negative">ACCESS DENIED</h2>
                             <h3 class="q-mt-xs text-info text-subtitle1">NO INVITATION FOUND</h3>
 
@@ -57,7 +49,7 @@ onMounted(async () => {
                             </div>
                         </template>
 
-                        <template v-if="store.session && hasInvitation">
+                        <template v-if="storeAuth.session && hasInvitation">
                             <h2 class="text-h4 text-positive">INVITATION DETECTED</h2>
                             <h3 class="q-mt-xs text-info text-subtitle1">
                                 INITIATING PROTOCOL... PROCEED
@@ -88,20 +80,13 @@ onMounted(async () => {
 </template>
 
 <style scoped>
+#black-market-access {
+    padding-top: 17rem;
+    padding-bottom: 19em;
+}
+
 .message {
     border: 1px solid color-mix(in srgb, var(--q-primary) 20%, black 90%);
     border-radius: var(--rounded);
-}
-
-.bg {
-    background-image: url('src/assets/black-market-access/bg-black-market-access.avif');
-    position: absolute;
-    inset: 0;
-    background-position: center;
-    background-size: cover;
-    background-repeat: no-repeat;
-    z-index: -1;
-    filter: blur(4px) grayscale(40%) brightness(30%);
-    mask-image: linear-gradient(to bottom, black 85%, transparent 100%);
 }
 </style>

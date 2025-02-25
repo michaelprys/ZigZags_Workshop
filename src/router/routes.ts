@@ -79,9 +79,6 @@ const routes: RouteRecordRaw[] = [
         ],
     },
 
-    // Always leave this as last one,
-    // but you can also remove it
-
     {
         path: '/:catchAll(.*)*',
         name: 'not-found',

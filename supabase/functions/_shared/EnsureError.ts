@@ -1,6 +1,6 @@
-export interface ErrorResponse {
+export type ErrorResponse = {
     message?: string;
-}
+};
 
 export const ensureError = (err: unknown): Error => {
     if (err instanceof Error) {

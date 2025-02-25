@@ -59,17 +59,11 @@ const orderKey = async () => {
                 <q-form
                     ref="orderKeyForm"
                     class="shadow-10 vault-form"
-                    style="
-                        background-color: var(--q-bg-modal);
-                        width: 100%;
-                        max-width: 40rem;
-                        margin-inline: auto;
-                    "
                     @keydown.enter.prevent="orderKey"
                     @submit.prevent="orderKey"
                 >
-                    <div class="auth-form__inner q-gutter-y-md q-pa-lg">
-                        <div class="column q-mt-none">
+                    <div class="q-gutter-y-md q-pa-lg vault-form__inner">
+                        <div class="column">
                             <h2 class="text-h5 text-secondary vault-form__title">
                                 Order a vault key
                             </h2>
@@ -81,7 +75,7 @@ const orderKey = async () => {
                             <q-input
                                 v-model="mailbox"
                                 filled
-                                bg-color="dark"
+                                dark
                                 label-color="info"
                                 input-class="text-primary"
                                 label="Mailbox *"
@@ -123,5 +117,3 @@ const orderKey = async () => {
             </div></section
     ></q-page>
 </template>
-
-<style scoped></style>

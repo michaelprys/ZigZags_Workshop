@@ -3,6 +3,7 @@ import IconLoot from 'src/components/icons/IconLoot.vue';
 import ItemScrollTop from 'src/components/items/ItemScrollTop.vue';
 import { ref, onMounted, watch } from 'vue';
 import { useRoute } from 'vue-router';
+
 const footerImageRef = ref<HTMLImageElement | null>(null);
 const isVideoLoaded = ref(false);
 const onLoaded = () => {
@@ -200,7 +201,6 @@ watch(
         ),
         linear-gradient(0deg, rgba(0, 0, 0, 0.25) 0%, rgba(0, 0, 0, 0.25) 100%),
         url('/src/assets/common/header-common.webp');
-    /* mask-image: linear-gradient(to bottom, black 95%, transparent 100%); */
     width: 100%;
     height: 100%;
     filter: brightness(125%);

@@ -2,7 +2,7 @@ import { defineStore, acceptHMRUpdate } from 'pinia';
 import { useStoreAuth } from 'src/stores/useStoreAuth';
 import supabase from 'src/utils/supabase';
 
-interface Good {
+export type Good = {
     id: number;
     name: string;
     slug: string;
@@ -12,9 +12,10 @@ interface Good {
     description: string;
     source: string;
     image_url: string;
-    requires_auth: boolean;
+    requires_access: boolean;
     debuff?: string;
-}
+    quantity?: number;
+};
 
 type FeaturedGood = {
     name: string;
@@ -30,21 +31,22 @@ export const useStoreGoods = defineStore('goods', {
         suggestedGoods: [] as Good[],
         selectedGood: null as Good | null,
         selectedCategories: [] as string[],
+        stashGoods: [] as Good[],
     }),
 
     persist: {
-        pick: ['selectedGood', 'selectedCategories'],
+        pick: ['selectedGood', 'selectedCategories', 'stashGoods'],
     },
 
     actions: {
-        async loadGoods(start: number, end: number, requiresAuth: boolean) {
+        async loadGoods(start: number, end: number, requiresAccess: boolean) {
             this.pending = true;
 
             try {
                 let query = supabase
                     .from('goods')
                     .select('*', { count: 'exact' })
-                    .eq('requires_auth', requiresAuth)
+                    .eq('requires_access', requiresAccess)
                     .range(start, end)
                     .order('id');
 
@@ -82,7 +84,7 @@ export const useStoreGoods = defineStore('goods', {
                 let filteredData = [];
 
                 if (!storeAuth.session) {
-                    filteredData = await query.eq('requires_auth', false);
+                    filteredData = await query.eq('requires_access', false);
                 } else {
                     filteredData = await query;
                 }

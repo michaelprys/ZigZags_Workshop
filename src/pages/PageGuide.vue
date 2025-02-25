@@ -169,24 +169,16 @@
 
                                 <p class="q-mt-lg text-subtitle1">
                                     Attention! ZigZag here. So listen up, if you want to get into
-                                    the Black Market, there's just one thing you need —
-                                    <strong
-                                        >An
-                                        <RouterLink
-                                            class="text-primary"
-                                            style="text-decoration: underline"
-                                            :to="{ name: 'merchant' }"
-                                            >invitation
-                                        </RouterLink></strong
-                                    >, and I can sell you one. Why waste time and energy getting the
-                                    access when all you need is right here with me? To get in,
-                                    you'll need to find the old sewers near the Rat's Tail Tavern.
-                                    It's a bit of a maze down there, traps and all, plus you've got
-                                    to deal with "Biggie" at the door. You wanna know how I get
-                                    these invitations? Well, you better don't. Anyways, once you're
-                                    in, it's all yours to discover — but be careful! After that, who
-                                    knows what you'll find? By the way, Biggie is the giant
-                                    shredder, in case you're wondering.
+                                    the Black Market, there's just one thing you need — An
+                                    <strong>invitation </strong>, and I can sell you one. Why waste
+                                    time and energy getting the access when all you need is right
+                                    here with me? To get in, you'll need to find the old sewers near
+                                    the Rat's Tail Tavern. It's a bit of a maze down there, traps
+                                    and all, plus you've got to deal with "Biggie" at the door. You
+                                    wanna know how I get these invitations? Well, you better don't.
+                                    Anyways, once you're in, it's all yours to discover — but be
+                                    careful! After that, who knows what you'll find? By the way,
+                                    Biggie is the giant shredder, in case you're wondering.
                                 </p>
                             </div>
                         </div>

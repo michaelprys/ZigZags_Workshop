@@ -56,17 +56,11 @@ const setNewKey = async () => {
                 <q-form
                     ref="setNewKeyForm"
                     class="shadow-10 vault-form"
-                    style="
-                        background-color: var(--q-bg-modal);
-                        width: 100%;
-                        max-width: 40rem;
-                        margin-inline: auto;
-                    "
                     @keydown.enter.prevent="setNewKey"
                     @submit.prevent="setNewKey"
                 >
                     <div class="q-gutter-y-md q-pa-lg vault-form__inner">
-                        <div class="column q-mt-none">
+                        <div class="column">
                             <h2 class="text-h5 text-secondary vault-form__title">
                                 Set a new vault key
                             </h2>
@@ -79,7 +73,7 @@ const setNewKey = async () => {
                                 v-model="vaultKey"
                                 :type="isPwd ? 'password' : 'text'"
                                 filled
-                                bg-color="dark"
+                                dark
                                 label-color="info"
                                 input-class="text-primary"
                                 label="New vault key *"
@@ -129,5 +123,3 @@ const setNewKey = async () => {
             </div></section
     ></q-page>
 </template>
-
-<style scoped></style>

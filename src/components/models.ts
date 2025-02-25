@@ -1,8 +1,8 @@
-export interface Todo {
+export type Todo = {
     id: number;
     content: string;
-}
+};
 
-export interface Meta {
+export type Meta = {
     totalCount: number;
-}
+};
