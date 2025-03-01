@@ -1,4 +1,4 @@
-import { defineStore, acceptHMRUpdate } from 'pinia';
+import { acceptHMRUpdate, defineStore } from 'pinia';
 import { useStoreAuth } from 'src/stores/useStoreAuth';
 import supabase from 'src/utils/supabase';
 
@@ -27,6 +27,7 @@ export const useStoreGoods = defineStore('goods', {
         pending: false,
         goods: [] as Good[],
         totalGoods: 0,
+        totalPages: 0,
         featuredGoods: [] as FeaturedGood[],
         suggestedGoods: [] as Good[],
         selectedGood: null as Good | null,
@@ -35,14 +36,39 @@ export const useStoreGoods = defineStore('goods', {
     }),
 
     persist: {
+        storage: sessionStorage,
         pick: ['selectedGood', 'selectedCategories', 'stashGoods'],
     },
 
+    getters: {
+        totalPages: (state) => Math.ceil(state.totalGoods / 8),
+    },
+
     actions: {
-        async loadGoods(start: number, end: number, requiresAccess: boolean) {
+        async loadGoods(currentPage: number, goodsPerPage: number, requiresAccess: boolean) {
             this.pending = true;
 
             try {
+                let countQuery = supabase
+                    .from('goods')
+                    .select('*', { count: 'exact' })
+                    .eq('requires_access', requiresAccess);
+
+                if (this.selectedCategories?.length > 0) {
+                    countQuery = countQuery.in('category', this.selectedCategories);
+                }
+
+                const { count } = await countQuery;
+
+                this.totalGoods = count;
+
+                if (currentPage > this.totalPages) {
+                    currentPage = 1;
+                }
+
+                const start = (currentPage - 1) * goodsPerPage;
+                const end = Math.min(start + goodsPerPage - 1, count - 1);
+
                 let query = supabase
                     .from('goods')
                     .select('*', { count: 'exact' })
@@ -54,13 +80,11 @@ export const useStoreGoods = defineStore('goods', {
                     query = query.in('category', this.selectedCategories);
                 }
 
-                const { data, error, count } = await query;
-
+                const { data, error } = await query;
                 if (error) {
                     throw new Error(error.message);
                 } else {
-                    this.goods = data;
-                    this.totalGoods = count;
+                    this.goods = data || [];
                 }
             } catch (error) {
                 console.error(error);

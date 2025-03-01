@@ -1,10 +1,12 @@
 <script setup lang="ts">
-import { ref } from 'vue';
 import ItemGoods from 'src/components/items/ItemGoods.vue';
-import { usePaginatedGoods } from 'src/use/usePaginatedGoods';
-import { useRouter, useRoute } from 'vue-router';
+import { useStoreGoods } from 'src/stores/useStoreGoods';
 import { useFilters } from 'src/use/useFilters';
+import { usePaginatedGoods } from 'src/use/usePaginatedGoods';
+import { ref } from 'vue';
+import { useRoute, useRouter } from 'vue-router';
 
+const storeGoods = useStoreGoods();
 const route = useRoute();
 const router = useRouter();
 
@@ -16,14 +18,13 @@ const categories = ref([
     { label: 'mounts', active: false },
 ]);
 
-const { currentPage, totalPages, loadPaginatedGoods } = usePaginatedGoods(false, router);
+const { currentPage, loadPaginatedGoods } = usePaginatedGoods(false, router);
 const { selectCategories, resetCategories } = useFilters(
     categories,
     loadPaginatedGoods,
     route,
     router,
     currentPage,
-    totalPages,
 );
 </script>
 
@@ -35,11 +36,7 @@ const { selectCategories, resetCategories } = useFilters(
             <ItemGoods
                 :resetCategories="resetCategories"
                 :categories="categories"
-                :totalPages="totalPages"
-                :currentPage="currentPage"
-                :requiresAccess="false"
                 classCard="card"
-                :loadPaginatedGoods="loadPaginatedGoods"
                 @update:selected-categories="selectCategories"
             >
                 <template #pagination>
@@ -51,7 +48,7 @@ const { selectCategories, resetCategories } = useFilters(
                             active-text-color="dark"
                             size="lg"
                             :boundary-numbers="false"
-                            :max="totalPages"
+                            :max="storeGoods.totalPages"
                             @update:model-value="loadPaginatedGoods"
                         />
                     </div>

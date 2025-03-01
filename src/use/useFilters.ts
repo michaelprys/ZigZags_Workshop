@@ -1,15 +1,7 @@
-import { watch, watchEffect } from 'vue';
 import { useStoreGoods } from 'src/stores/useStoreGoods';
-import type { Category } from 'src/types';
+import { watch, watchEffect } from 'vue';
 
-export const useFilters = (
-    categories: Category[],
-    loadPaginatedGoods,
-    route,
-    router,
-    currentPage,
-    totalPages,
-) => {
+export const useFilters = (categories, loadPaginatedGoods, route, router, currentPage) => {
     const storeGoods = useStoreGoods();
 
     const selectCategories = async (selected: string[]) => {
@@ -17,16 +9,12 @@ export const useFilters = (
             await router.push({ query: { page: 1 } });
             selected = [];
         } else {
-            const newPage = Math.min(currentPage.value, totalPages.value || 1);
-
             await router.push({
                 query: {
                     categories: selected.join(','),
-                    page: newPage,
+                    page: currentPage.value,
                 },
             });
-
-            currentPage.value = newPage;
         }
 
         await loadPaginatedGoods();
@@ -41,9 +29,6 @@ export const useFilters = (
         () => route.query.categories,
         (newValue) => {
             storeGoods.selectedCategories = newValue ? newValue.split(',') : [];
-        },
-        {
-            immediate: true,
         },
     );
 

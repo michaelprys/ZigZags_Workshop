@@ -1,7 +1,7 @@
 import { defineRouter } from '#q-app/wrappers';
-import { createWebHistory, createRouter } from 'vue-router';
-import routes from './routes';
 import { useStoreAuth } from 'src/stores/useStoreAuth';
+import { createRouter, createWebHistory } from 'vue-router';
+import routes from './routes';
 
 export default defineRouter(function () {
     const createHistory = createWebHistory;

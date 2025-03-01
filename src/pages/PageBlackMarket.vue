@@ -1,12 +1,13 @@
 <script setup lang="ts">
-import { ref } from 'vue';
 import IconDebuff from 'src/components/icons/IconDebuff.vue';
 import ItemGoods from 'src/components/items/ItemGoods.vue';
-import { useRouter, useRoute } from 'vue-router';
-import { usePaginatedGoods } from 'src/use/usePaginatedGoods';
-
+import { useStoreGoods } from 'src/stores/useStoreGoods';
 import { useFilters } from 'src/use/useFilters';
+import { usePaginatedGoods } from 'src/use/usePaginatedGoods';
+import { ref } from 'vue';
+import { useRoute, useRouter } from 'vue-router';
 
+const storeGoods = useStoreGoods();
 const route = useRoute();
 const router = useRouter();
 
@@ -18,12 +19,13 @@ const categories = ref([
     { label: 'mounts', active: false },
 ]);
 
-const { totalPages, currentPage, loadPaginatedGoods } = usePaginatedGoods(true, router);
+const { currentPage, loadPaginatedGoods } = usePaginatedGoods(true, router);
 const { selectCategories, resetCategories } = useFilters(
     categories,
     loadPaginatedGoods,
     route,
     router,
+    currentPage,
 );
 </script>
 
@@ -37,11 +39,7 @@ const { selectCategories, resetCategories } = useFilters(
             <ItemGoods
                 :resetCategories="resetCategories"
                 :categories="categories"
-                :totalPages="totalPages"
-                :currentPage="currentPage"
-                :requiresAccess="false"
                 classCard="card"
-                :loadPaginatedGoods="loadPaginatedGoods"
                 @update:selected-categories="selectCategories"
             >
                 <template #debuff>
@@ -75,7 +73,7 @@ const { selectCategories, resetCategories } = useFilters(
                             active-text-color="dark"
                             size="lg"
                             :boundary-numbers="false"
-                            :max="totalPages"
+                            :max="storeGoods.totalPages"
                             @update:model-value="loadPaginatedGoods(categories)"
                         />
                     </div>

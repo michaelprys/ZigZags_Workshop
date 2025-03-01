@@ -1,9 +1,8 @@
 import js from '@eslint/js';
-import globals from 'globals';
-import pluginVue from 'eslint-plugin-vue';
 import pluginQuasar from '@quasar/app-vite/eslint';
-import vueTsEslintConfig from '@vue/eslint-config-typescript';
 import prettierSkipFormatting from '@vue/eslint-config-prettier/skip-formatting';
+import pluginVue from 'eslint-plugin-vue';
+import globals from 'globals';
 
 export default [
     {},

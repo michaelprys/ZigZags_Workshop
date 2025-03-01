@@ -1,6 +1,6 @@
 <script setup lang="ts">
-import { useManageStash } from 'src/use/useManageStash';
 import { useStoreGoods } from 'src/stores/useStoreGoods';
+import { useManageStash } from 'src/use/useManageStash';
 import { useTransition } from 'src/use/useTransition';
 
 const { transitionName, applyTransition } = useTransition();
@@ -10,7 +10,7 @@ const { pending } = storeGoods;
 const { addToStash } = useManageStash();
 
 const props = defineProps<{
-    categories;
+    categories: string[];
     resetCategories: () => void;
     classCard: string;
 }>();

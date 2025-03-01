@@ -1,5 +1,5 @@
-import { ref, computed, watch, onMounted } from 'vue';
 import { useStoreGoods } from 'src/stores/useStoreGoods';
+import { computed, onMounted, ref, watch } from 'vue';
 import { useRoute, useRouter } from 'vue-router';
 
 export const usePaginatedGoods = (requiresAccess: boolean) => {
@@ -7,30 +7,15 @@ export const usePaginatedGoods = (requiresAccess: boolean) => {
     const route = useRoute();
     const router = useRouter();
 
+    const currentPage = ref(parseInt(route.query.page) || 1);
     const goodsPerPage = 8;
 
-    const currentPage = ref(parseInt(route.query.page) || 1);
-
-    const totalPages = computed(() => {
-        return Math.ceil(storeGoods.totalGoods / goodsPerPage);
-    });
-
     const loadPaginatedGoods = async () => {
-        if (currentPage.value > totalPages.value) {
-            currentPage.value = 1;
+        await storeGoods.loadGoods(currentPage.value, goodsPerPage, requiresAccess);
+
+        if (currentPage.value > storeGoods.totalPages) {
             await router.replace({ query: { ...route.query, page: 1 } });
         }
-
-        const start = (currentPage.value - 1) * goodsPerPage;
-        const end = start + goodsPerPage - 1;
-
-        if (start < 0 || currentPage.value > totalPages.value) {
-            currentPage.value = 1;
-        }
-
-        await router.push({ query: { ...route.query, page: currentPage.value } });
-
-        await storeGoods.loadGoods(start, end, requiresAccess);
     };
 
     watch(
@@ -43,7 +28,6 @@ export const usePaginatedGoods = (requiresAccess: boolean) => {
                 await loadPaginatedGoods();
             }
         },
-        { immediate: true },
     );
 
     watch(currentPage, async (newPage) => {
@@ -58,7 +42,6 @@ export const usePaginatedGoods = (requiresAccess: boolean) => {
 
     return {
         currentPage,
-        totalPages,
         loadPaginatedGoods,
     };
 };

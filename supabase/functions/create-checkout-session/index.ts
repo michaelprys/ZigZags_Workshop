@@ -1,8 +1,8 @@
-import 'jsr:@supabase/functions-js/edge-runtime.d.ts';
 import Stripe from 'https://esm.sh/stripe@12.0.0';
+import 'jsr:@supabase/functions-js/edge-runtime.d.ts';
+import { createClient } from 'jsr:@supabase/supabase-js@2';
 import { corsHeaders } from '../_shared/cors.ts';
 import { ensureError, type ErrorResponse } from '../_shared/ensureError.ts';
-import { createClient } from 'jsr:@supabase/supabase-js@2';
 
 Deno.serve(async (req: Request) => {
     if (req.method === 'OPTIONS') {
@@ -57,6 +57,7 @@ Deno.serve(async (req: Request) => {
         }
 
         const stripe = new Stripe(Deno.env.get('STRIPE_SECRET_KEY'));
+
         const session = await stripe.checkout.sessions.create({
             success_url: `${Deno.env.get('SITE_URL')}/vault`,
             cancel_url: `${Deno.env.get('SITE_URL')}/vault`,
