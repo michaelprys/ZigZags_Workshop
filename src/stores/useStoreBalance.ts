@@ -5,7 +5,6 @@ import supabase from 'src/utils/supabase';
 export const useStoreBalance = defineStore('balance', {
     state: () => ({
         pending: false,
-        status: '',
         balance: {
             gold: 0,
             emberheart_rubies: 0,
@@ -45,9 +44,7 @@ export const useStoreBalance = defineStore('balance', {
                     throw new Error(transactionError.message);
                 }
 
-                this.status = status;
-
-                if (this.status === 'success') {
+                if (status === 'success') {
                     const { error: balanceError } = await supabase.rpc('increment_balance', {
                         user_id: storeAuth.session?.id,
                         amount: amount,
@@ -56,20 +53,45 @@ export const useStoreBalance = defineStore('balance', {
 
                     if (balanceError) {
                         throw new Error(balanceError.message);
-                    } else {
-                        this.balance[currency] += amount;
-                    }
-
-                    if (balanceError) {
-                        throw new Error(balanceError.message);
-                    } else {
-                        this.balance[currency] += amount;
                     }
                 }
 
                 this.sessionId = sessionId;
             } catch (error) {
                 console.error('Error updating balance: ', error);
+            } finally {
+                this.pending = false;
+            }
+        },
+
+        async displayBalance() {
+            this.pending = true;
+            const storeAuth = useStoreAuth();
+
+            try {
+                if (!storeAuth.session) {
+                    await storeAuth.checkSession();
+                }
+
+                const { data: retrievedBalance, error: retrievedBalanceError } = await supabase
+                    .from('user_balances')
+                    .select('*')
+                    .eq('user_id', storeAuth.session?.id);
+
+                if (retrievedBalanceError) {
+                    throw new Error(retrievedBalanceError.message);
+                }
+
+                if (retrievedBalance && retrievedBalance.length > 0) {
+                    const balance = retrievedBalance[0];
+                    for (const currency in balance) {
+                        if (balance.hasOwnProperty(currency)) {
+                            this.balance[currency] = balance[currency];
+                        }
+                    }
+                }
+            } catch (error) {
+                console.error(error);
             } finally {
                 this.pending = false;
             }

@@ -81,7 +81,7 @@ const list = [1, 2, 3];
     position: absolute;
     inset: 0;
     background: radial-gradient(circle at top left, rgba(255, 255, 255, 0.2), transparent);
-    border-radius: 0.3125rem;
+    border-radius: 0.18rem;
 }
 
 .slots__item-image {

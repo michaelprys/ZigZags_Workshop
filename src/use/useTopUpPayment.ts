@@ -52,8 +52,6 @@ export const useTopUpPayment = (paymentType, topUpAmount, minAmounts) => {
                     },
                 };
 
-                console.log('Sending sessionData:', sessionData);
-
                 const res = await fetch(
                     `${import.meta.env.VITE_BASE_URL}/create-checkout-session`,
                     {
@@ -74,8 +72,6 @@ export const useTopUpPayment = (paymentType, topUpAmount, minAmounts) => {
                     const { sessionID } = jsonResponse;
 
                     if (sessionID) {
-                        console.log('Redirecting to Stripe Checkout with session ID:', sessionID);
-
                         const { error } = stripe.redirectToCheckout({
                             sessionId: sessionID,
                         });

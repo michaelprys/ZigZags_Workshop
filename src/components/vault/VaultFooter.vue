@@ -2,7 +2,7 @@
 import { useStoreBalance } from 'src/stores/useStoreBalance';
 import { useTopUpPayment } from 'src/use/useTopUpPayment';
 import { useTopUpState } from 'src/use/useTopUpState';
-import { onMounted, ref } from 'vue';
+import { onMounted, ref, watchEffect } from 'vue';
 import { useRoute } from 'vue-router';
 
 const storeBalance = useStoreBalance();
@@ -43,8 +43,15 @@ onMounted(async () => {
     const { session_id, status, amount, currency } = route.query;
 
     if (!session_id && !status && !amount && !currency) return;
-
     await storeBalance.updateBalance(session_id, status, amount, currency);
+});
+
+watchEffect(async () => {
+    for (const currency in storeBalance.balance) {
+        if (storeBalance.balance.hasOwnProperty(currency)) {
+            await storeBalance.displayBalance();
+        }
+    }
 });
 </script>
 
@@ -143,7 +150,7 @@ onMounted(async () => {
                 dense
             ></q-btn>
             <div class="flex items-center q-gutter-x-sm">
-                <span>0</span>
+                <span>{{ storeBalance.balance['gold'] }}</span>
                 <q-img src="~assets/vault/gold.avif" width="18px" height="18px" />
                 <q-tooltip
                     :delay="500"
@@ -155,7 +162,7 @@ onMounted(async () => {
                 </q-tooltip>
             </div>
             <div class="flex items-center q-gutter-x-sm">
-                <span>0</span>
+                <span>{{ storeBalance.balance['emberheart_rubies'] }}</span>
                 <q-img src="~assets/vault/emberheart-rubies.avif" width="26px" height="26px" />
                 <q-tooltip
                     :delay="500"
@@ -167,7 +174,7 @@ onMounted(async () => {
                 </q-tooltip>
             </div>
             <div class="flex items-center q-gutter-x-sm">
-                <span>0</span>
+                <span>{{ storeBalance.balance['gamblers_lootbox'] }}</span>
                 <q-img src="~assets/vault/gamblers-lootbox.avif" width="23px" height="23px" />
                 <q-tooltip
                     :delay="500"
