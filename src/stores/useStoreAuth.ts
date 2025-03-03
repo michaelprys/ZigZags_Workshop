@@ -1,15 +1,19 @@
-import { defineStore, acceptHMRUpdate } from 'pinia';
+import { acceptHMRUpdate, defineStore } from 'pinia';
 import supabase from 'src/utils/supabase';
 
 type User = {
-    id: number;
+    id: string;
     first_name: string;
     email: string;
 };
 
+type AuthSession = {
+    user: User | null;
+};
+
 export const useStoreAuth = defineStore('auth', {
     state: () => ({
-        session: null as User,
+        session: null as AuthSession | null,
     }),
 
     actions: {

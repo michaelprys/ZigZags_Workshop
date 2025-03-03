@@ -1,6 +1,6 @@
 <script setup lang="ts">
-import { ref, onMounted, computed } from 'vue';
 import { useStoreGoods } from 'src/stores/useStoreGoods';
+import { computed, onMounted, ref } from 'vue';
 
 const storeGoods = useStoreGoods();
 const activeSlide = ref(1);

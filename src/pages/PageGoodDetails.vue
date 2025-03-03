@@ -115,7 +115,6 @@ const { moveImage, resetImage } = useMoveImage(imgRef);
     background-repeat: no-repeat;
     mask-image: radial-gradient(circle, rgb(255, 255, 255) 50%, rgba(255, 255, 255, 0) 100%);
     border-radius: 0.3125rem;
-    /* opacity: 50%; */
 }
 .bg-workshop {
     filter: brightness(50%);

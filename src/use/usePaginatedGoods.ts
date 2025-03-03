@@ -1,5 +1,5 @@
 import { useStoreGoods } from 'src/stores/useStoreGoods';
-import { computed, onMounted, ref, watch } from 'vue';
+import { computed, nextTick, onMounted, ref, watch } from 'vue';
 import { useRoute, useRouter } from 'vue-router';
 
 export const usePaginatedGoods = (requiresAccess: boolean) => {
@@ -11,6 +11,7 @@ export const usePaginatedGoods = (requiresAccess: boolean) => {
     const goodsPerPage = 8;
 
     const loadPaginatedGoods = async () => {
+        await nextTick();
         await storeGoods.loadGoods(currentPage.value, goodsPerPage, requiresAccess);
 
         if (currentPage.value > storeGoods.totalPages) {

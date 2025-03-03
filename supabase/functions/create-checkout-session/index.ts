@@ -47,9 +47,10 @@ Deno.serve(async (req: Request) => {
             });
         }
 
-        const { price, quantity }: { price: string; quantity: number } = await req.json();
+        const { sessionData } = await req.json();
+        const { price, quantity, currency } = sessionData;
 
-        if (!price || !quantity) {
+        if (!price || !quantity || !currency) {
             return new Response(JSON.stringify({ error: 'Missing price or quantity' }), {
                 status: 400,
                 headers: { ...corsHeaders, 'Content-Type': 'application/json' },
@@ -59,9 +60,9 @@ Deno.serve(async (req: Request) => {
         const stripe = new Stripe(Deno.env.get('STRIPE_SECRET_KEY'));
 
         const session = await stripe.checkout.sessions.create({
-            success_url: `${Deno.env.get('SITE_URL')}/vault`,
-            cancel_url: `${Deno.env.get('SITE_URL')}/vault`,
-            line_items: [{ price, quantity }],
+            success_url: `${Deno.env.get('SITE_URL')}/vault?session_id={CHECKOUT_SESSION_ID}&status=success&amount=${quantity}&currency=${currency}`,
+            cancel_url: `${Deno.env.get('SITE_URL')}/vault?status=cancel`,
+            line_items: [{ price: price, quantity: quantity }],
             mode: 'payment',
         });
 

@@ -1,8 +1,8 @@
 <script setup lang="ts">
-import { ref } from 'vue';
-import { useRouter } from 'vue-router';
 import { callToast } from 'src/utils/callToast';
 import supabase from 'src/utils/supabase';
+import { ref } from 'vue';
+import { useRouter } from 'vue-router';
 
 const router = useRouter();
 
@@ -41,7 +41,7 @@ const setupVault = async () => {
             if (error) {
                 callToast(error ? 'This vault is already claimed' : 'Something went wrong', false);
             } else {
-                callToast('Vault has been successfully set up', true);
+                callToast('Success! Please, check your mailbox', true);
                 await router.push({ name: 'access-vault' });
             }
         } else {
@@ -178,13 +178,14 @@ const setupVault = async () => {
                                     In progress...
                                 </template>
                             </q-btn>
-                            <RouterLink :to="{ name: 'access-vault' }"
-                                ><q-btn
+                            <RouterLink :to="{ name: 'access-vault' }">
+                                <q-btn
                                     class="q-mt-none q-px-sm"
                                     flat
                                     label="Access vault"
                                     text-color="secondary"
-                            /></RouterLink>
+                                />
+                            </RouterLink>
                         </div>
                     </div>
                 </q-form>
