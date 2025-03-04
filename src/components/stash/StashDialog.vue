@@ -19,21 +19,38 @@ const storeBalance = useStoreBalance();
 defineProps(['modelValue']);
 const emit = defineEmits(['update:modelValue', 'trade']);
 
-const paymentType = ref(null);
-const paymentTypes = computed(() => {
-    return [
-        { label: `Gold: ${finalPrice.value}`, value: 'gold' },
-        { label: `Emberheart Rubies: ${emberheartRubies.value}`, value: 'emberheart_rubies' },
-        { label: `Gambler's Lootbox: ${gamblersLootbox.value}`, value: 'gamblers-lootbox' },
-    ];
-});
-
 const emberheartRubies = computed(() => {
     return Math.floor(finalPrice.value * 0.01);
 });
 const gamblersLootbox = computed(() => {
     return Math.ceil(finalPrice.value * 0.001);
 });
+
+const paymentType = ref(null);
+const paymentTypes = computed(() => {
+    return [
+        { label: `Gold: ${finalPrice.value}`, value: 'gold' },
+        { label: `Emberheart Rubies: ${emberheartRubies.value}`, value: 'emberheart_rubies' },
+        { label: `Gambler's Lootbox: ${gamblersLootbox.value}`, value: 'gamblers_lootbox' },
+    ];
+});
+
+const validateFunds = (value, currency) => {
+    let price = 0;
+
+    if (currency === 'gold') {
+        price = finalPrice.value;
+    } else if (currency === 'emberheart_rubies') {
+        price = emberheartRubies.value;
+    } else if (currency === 'gamblers_lootbox') {
+        price = gamblersLootbox.value;
+    }
+
+    if (price > storeBalance.balance[currency]) {
+        return `Not enough ${currency.replace('_', ' ')}`;
+    }
+    return true;
+};
 
 const onSubmit = async () => {
     if (!myForm.value) return;
@@ -106,6 +123,7 @@ const onSubmit = async () => {
                                         val && val.value
                                             ? true
                                             : 'Please select currency of choice',
+                                    (val) => validateFunds(val.value, val.value),
                                 ]"
                             ></q-select>
                         </div>
