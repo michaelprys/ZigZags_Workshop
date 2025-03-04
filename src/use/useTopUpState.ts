@@ -38,7 +38,7 @@ export const useTopUpState = () => {
     };
 
     const calculatedAmount = computed(() => {
-        let goldEquivalent: number = topUpAmount.value;
+        let goldEquivalent = topUpAmount.value;
 
         if (paymentType.value.value === 'emberheart_rubies') {
             goldEquivalent = topUpAmount.value * 100;
@@ -46,7 +46,7 @@ export const useTopUpState = () => {
             goldEquivalent = topUpAmount.value * 1000;
         }
 
-        const goldToUsd: number = 0.01;
+        const goldToUsd = 0.01;
         return (goldEquivalent * goldToUsd).toFixed(2);
     });
 

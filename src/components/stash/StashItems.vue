@@ -1,11 +1,13 @@
 <script setup lang="ts">
+import gsap from 'gsap';
 import { useStoreAuth } from 'src/stores/useStoreAuth';
 import { useStoreGoods } from 'src/stores/useStoreGoods';
 import { useManageStash } from 'src/use/useManageStash';
 import { useTransition } from 'src/use/useTransition';
-import { onMounted, ref } from 'vue';
+import { onMounted, reactive, ref, watch, watchEffect } from 'vue';
 
-const { removeFromStash, increaseGoodQuantity, decreaseGoodQuantity } = useManageStash();
+const { basePrice, goblinTax, removeFromStash, increaseGoodQuantity, decreaseGoodQuantity } =
+    useManageStash();
 const storeAuth = useStoreAuth();
 const storeGoods = useStoreGoods();
 
@@ -22,13 +24,39 @@ onMounted(async () => {
     }
     vaultAccessed.value = !!storeAuth.session;
 });
+
+const tweened = reactive({
+    tweenedBasePrice: basePrice.value,
+    tweenedGoblinTax: goblinTax.value,
+    tweenedFinalPrice: basePrice.value + goblinTax.value,
+});
+
+watch([basePrice, goblinTax], ([newBasePrice, newGoblinTax]) => {
+    gsap.to(tweened, {
+        duration: 0.5,
+        tweenedBasePrice: newBasePrice,
+        tweenedGoblinTax: newGoblinTax,
+        tweenedFinalPrice: newBasePrice + newGoblinTax,
+    });
+});
 </script>
 
 <template>
     <section id="stash" class="column flex-center relative-position">
         <div class="q-pa-md">
-            <h1 class="block text-center text-h3">Your stash</h1>
-
+            <h1 class="text-center text-h3">Your stash</h1>
+            <!-- <div>
+                    <q-btn
+                        class="q-pa-sm"
+                        color="secondary"
+                        text-color="primary"
+                        size="md"
+                        flat
+                        icon="delete"
+                        dense
+                        @click="storeGoods.stashGoods = []"
+                    />
+                </div> -->
             <div class="flex q-mt-xl">
                 <div dark class="panel q-mr-xl">
                     <TransitionGroup :name="transitionName" tag="ul">
@@ -85,28 +113,35 @@ onMounted(async () => {
                     </TransitionGroup>
                 </div>
 
-                <div class="column panel-price q-pa-lg">
-                    <span class="text-subtitle1"
-                        ><span class="text-secondary">💰 Base price:</span> 250 Gold</span
-                    >
-                    <span class="q-mt-xs text-subtitle1"
-                        ><span class="text-secondary">💎 Goblin Tax:</span> +50 Gold</span
-                    >
+                <div class="column panel-price">
+                    <div class="q-pa-lg panel-price__inner">
+                        <div class="text-subtitle1 flex" style="gap: 0.3125rem">
+                            <span class="text-secondary">💰 Base price:</span>
 
-                    <div class="q-my-md separator-single"></div>
+                            <span>{{ tweened.tweenedBasePrice.toFixed(0) }} Gold</span>
+                        </div>
 
-                    <span class="q-mt-xs text-subtitle1"
-                        ><span class="text-secondary">Final Price: </span>300 Gold</span
-                    >
+                        <div class="q-mt-xs text-subtitle1 flex" style="gap: 0.3125rem">
+                            <span class="text-secondary">💎 Goblin Tax:</span>
+                            <span>{{ tweened.tweenedGoblinTax.toFixed(0) }} Gold</span>
+                        </div>
 
-                    <q-btn
-                        class="q-mt-md"
-                        outline
-                        color="primary"
-                        :disable="!vaultAccessed"
-                        :label="vaultAccessed ? 'Begin trade' : 'Access vault to pay'"
-                        @click="emit('openDialog')"
-                    />
+                        <div class="q-my-md separator-single"></div>
+
+                        <div class="text-subtitle1 flex" style="gap: 0.3125rem">
+                            <span class="text-secondary">Final Price: </span>
+                            <span>{{ tweened.tweenedFinalPrice.toFixed(0) }} Gold</span>
+                        </div>
+
+                        <q-btn
+                            class="full-width q-mt-md"
+                            outline
+                            color="primary"
+                            :disable="!vaultAccessed"
+                            :label="vaultAccessed ? 'Begin trade' : 'Access vault to pay'"
+                            @click="emit('openDialog')"
+                        />
+                    </div>
                 </div>
             </div>
         </div>
@@ -146,6 +181,17 @@ onMounted(async () => {
 .panel {
     width: 60rem;
     min-height: 35.6688rem;
+}
+
+.panel-price {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    width: 17rem;
+}
+
+.panel-price__inner {
+    width: 16.6875rem;
 }
 
 .card {

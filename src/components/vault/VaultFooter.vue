@@ -1,4 +1,5 @@
 <script setup lang="ts">
+import ItemBalance from 'src/components/items/ItemBalance.vue';
 import { useStoreBalance } from 'src/stores/useStoreBalance';
 import { useTopUpPayment } from 'src/use/useTopUpPayment';
 import { useTopUpState } from 'src/use/useTopUpState';
@@ -56,7 +57,7 @@ watchEffect(async () => {
 </script>
 
 <template>
-    <div class="footer">
+    <div class="footer q-mt-lg">
         <Teleport to="body">
             <q-dialog v-model="isOpen" backdrop-filter="blur(8px); brightness(60%)">
                 <q-card dark class="q-pa-md" style="max-width: 22.25rem; width: 100%">
@@ -133,7 +134,7 @@ watchEffect(async () => {
 
         <q-pagination
             v-model="currentPage"
-            class="q-mt-lg footer__nav"
+            class="footer__nav"
             :max="3"
             direction-links
             flat
@@ -141,51 +142,17 @@ watchEffect(async () => {
             input-class="text-primary"
         />
 
-        <div class="flex q-mt-lg footer__gold-panel" style="gap: 0.75rem">
-            <q-btn
-                @click="isOpen = true"
-                style="border-radius: var(--rounded)"
-                icon="add"
-                flat
-                dense
-            ></q-btn>
-            <div class="flex items-center q-gutter-x-sm">
-                <span>{{ storeBalance.balance['gold'] }}</span>
-                <q-img src="~assets/vault/gold.avif" width="18px" height="18px" />
-                <q-tooltip
-                    :delay="500"
-                    anchor="bottom right"
-                    self="center start"
-                    class="bg-primary text-center"
-                >
-                    <span class="text-caption text-negative">Gold</span>
-                </q-tooltip>
-            </div>
-            <div class="flex items-center q-gutter-x-sm">
-                <span>{{ storeBalance.balance['emberheart_rubies'] }}</span>
-                <q-img src="~assets/vault/emberheart-rubies.avif" width="26px" height="26px" />
-                <q-tooltip
-                    :delay="500"
-                    anchor="bottom right"
-                    self="center start"
-                    class="bg-primary text-center text-dark"
-                >
-                    <span class="text-caption text-negative">Emberheart rubies</span>
-                </q-tooltip>
-            </div>
-            <div class="flex items-center q-gutter-x-sm">
-                <span>{{ storeBalance.balance['gamblers_lootbox'] }}</span>
-                <q-img src="~assets/vault/gamblers-lootbox.avif" width="23px" height="23px" />
-                <q-tooltip
-                    :delay="500"
-                    anchor="bottom right"
-                    self="center start"
-                    class="bg-primary text-center text-dark"
-                >
-                    <span class="text-caption text-negative">Gambler's lootbox</span>
-                </q-tooltip>
-            </div>
-        </div>
+        <ItemBalance>
+            <template>
+                <q-btn
+                    @click="isOpen = true"
+                    style="border-radius: var(--rounded)"
+                    icon="add"
+                    flat
+                    dense
+                ></q-btn>
+            </template>
+        </ItemBalance>
     </div>
 </template>
 
@@ -196,18 +163,6 @@ watchEffect(async () => {
     grid-template-columns: repeat(3, 1fr);
     gap: 0px 0px;
     width: 100%;
-}
-.footer__gold-panel {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    background-color: var(--q-medium);
-    border: 1px solid var(--q-gold-frame);
-    border-radius: var(--rounded);
-    grid-column-start: 3;
-    justify-self: end;
-    padding-right: 0.285em;
-    z-index: 0;
 }
 .footer__nav {
     grid-column-start: 2;

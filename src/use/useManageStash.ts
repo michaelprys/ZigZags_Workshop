@@ -1,12 +1,33 @@
 import { Dialog, Notify } from 'quasar';
-import { useRoute } from 'vue-router';
 import { useStoreAuth } from 'src/stores/useStoreAuth';
 import { type Good, useStoreGoods } from 'src/stores/useStoreGoods';
+import { computed } from 'vue';
+import { useRoute } from 'vue-router';
 
 export const useManageStash = () => {
     const route = useRoute();
     const storeAuth = useStoreAuth();
     const storeGoods = useStoreGoods();
+
+    const showToast = (message: string, color: 'positive' | 'negative') => {
+        Notify.create({
+            timeout: 2000,
+            message,
+            color,
+            textColor: color === 'positive' ? 'dark' : 'primary',
+            position: 'bottom-right',
+            progress: true,
+            progressClass: 'progress',
+            actions: [
+                {
+                    icon: 'close',
+                    color: color === 'positive' ? 'dark' : 'primary',
+                    dense: true,
+                    size: 'xs',
+                },
+            ],
+        });
+    };
 
     const addToStash = async (selected: Good[]) => {
         if (!storeAuth.session) {
@@ -43,30 +64,14 @@ export const useManageStash = () => {
                     price: selected.price,
                 };
                 storeGoods.stashGoods.push(existingGood);
+
+                showToast('Item added to stash', 'positive');
             } else {
                 if (existingGood.quantity < 5) {
                     existingGood.quantity++;
-                    Notify.create({
-                        timeout: 2000,
-                        message: 'Item added to stash',
-                        color: 'positive',
-                        textColor: 'dark',
-                        position: 'bottom-right',
-                        progress: true,
-                        progressClass: 'progress',
-                        actions: [{ icon: 'close', color: 'dark', dense: true, size: 'xs' }],
-                    });
+                    showToast('Item added to stash', 'positive');
                 } else {
-                    Notify.create({
-                        timeout: 2000,
-                        message: 'Limit per item reached (max 5)',
-                        color: 'negative',
-                        textColor: 'primary',
-                        position: 'bottom-right',
-                        progress: true,
-                        progressClass: 'progress',
-                        actions: [{ icon: 'close', color: 'primary', dense: true, size: 'xs' }],
-                    });
+                    showToast('Limit per item reached (max 5)', 'negative');
                 }
             }
         }
@@ -75,6 +80,21 @@ export const useManageStash = () => {
     const removeFromStash = (goodIdx: number) => {
         storeGoods.stashGoods.splice(goodIdx, 1);
     };
+
+    const basePrice = computed(() => {
+        return (basePrice.value = storeGoods.stashGoods.reduce(
+            (total, currentGood) => total + currentGood.price * currentGood.quantity,
+            0,
+        ));
+    });
+
+    const goblinTax = computed(() => {
+        return Math.floor(basePrice.value * 0.05);
+    });
+
+    const finalPrice = computed(() => {
+        return basePrice.value + goblinTax.value;
+    });
 
     const decreaseGoodQuantity = (good: Good) => {
         if (good.quantity > 1) {
@@ -89,6 +109,9 @@ export const useManageStash = () => {
     };
 
     return {
+        basePrice,
+        goblinTax,
+        finalPrice,
         addToStash,
         removeFromStash,
         decreaseGoodQuantity,

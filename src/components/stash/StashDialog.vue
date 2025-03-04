@@ -1,26 +1,39 @@
 <script setup lang="ts">
 import { useQuasar } from 'quasar';
-import { ref } from 'vue';
+import IconLoot from 'src/components/icons/IconLoot.vue';
+import ItemBalance from 'src/components/items/ItemBalance.vue';
+import { useStoreBalance } from 'src/stores/useStoreBalance';
+import { useStoreGoods } from 'src/stores/useStoreGoods';
+import { useManageStash } from 'src/use/useManageStash';
+import { computed, ref } from 'vue';
 import { useRouter } from 'vue-router';
 
 const $q = useQuasar();
 const myForm = ref(null);
 const pending = ref(false);
 const router = useRouter();
+const { finalPrice } = useManageStash();
+const storeGoods = useStoreGoods();
+const storeBalance = useStoreBalance();
 
 defineProps(['modelValue']);
-const emit = defineEmits('update:modelValue');
+const emit = defineEmits(['update:modelValue', 'trade']);
 
 const paymentType = ref(null);
-const paymentTypes = [
-    { label: 'Gold', value: 'gold', conversionRate: 1 },
-    { label: 'Crimson gems', value: 'emberheart_rubies', conversionRate: 250 },
-    {
-        label: "Gambler's lootbox",
-        value: 'gamblers-lootbox',
-        conversionRate: 100,
-    },
-];
+const paymentTypes = computed(() => {
+    return [
+        { label: `Gold: ${finalPrice.value}`, value: 'gold' },
+        { label: `Emberheart Rubies: ${emberheartRubies.value}`, value: 'emberheart_rubies' },
+        { label: `Gambler's Lootbox: ${gamblersLootbox.value}`, value: 'gamblers-lootbox' },
+    ];
+});
+
+const emberheartRubies = computed(() => {
+    return Math.floor(finalPrice.value * 0.01);
+});
+const gamblersLootbox = computed(() => {
+    return Math.ceil(finalPrice.value * 0.001);
+});
 
 const onSubmit = async () => {
     if (!myForm.value) return;
@@ -41,12 +54,8 @@ const onSubmit = async () => {
 
         setTimeout(() => {
             pending.value = false;
-            dialog.value = false;
-            trade.value = true;
-
-            storeAuth.stashGoods.value = [];
-
-            router.push({ name: 'workshop' });
+            storeGoods.stashGoods = [];
+            emit('trade');
 
             $q.notify({
                 type: 'positive',
@@ -56,6 +65,8 @@ const onSubmit = async () => {
                 classes: 'toast',
                 actions: [{ icon: 'close', color: 'dark', dense: true, size: 'xs' }],
             });
+
+            emit('update:modelValue', false);
         }, 3000);
     } catch (err) {
         console.error('Validation error:', err);
@@ -71,8 +82,10 @@ const onSubmit = async () => {
             backdrop-filter="blur(8px); brightness(60%)"
         >
             <div class="modal">
-                <div class="column q-pb-none">
+                <div class="flex items-center justify-between q-pb-none">
                     <span class="text-h5 text-secondary">Complete trade</span>
+
+                    <ItemBalance />
                 </div>
 
                 <div>
@@ -94,7 +107,7 @@ const onSubmit = async () => {
                                             ? true
                                             : 'Please select currency of choice',
                                 ]"
-                            />
+                            ></q-select>
                         </div>
 
                         <div class="flex justify-between q-mt-md">
