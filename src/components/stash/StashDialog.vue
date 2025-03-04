@@ -5,54 +5,52 @@ import ItemBalance from 'src/components/items/ItemBalance.vue';
 import { useStoreBalance } from 'src/stores/useStoreBalance';
 import { useStoreGoods } from 'src/stores/useStoreGoods';
 import { useManageStash } from 'src/use/useManageStash';
-import { computed, ref } from 'vue';
+import { delay } from 'src/utils/delay';
+import { computed, reactive, ref, watchEffect } from 'vue';
 import { useRouter } from 'vue-router';
 
 const $q = useQuasar();
 const myForm = ref(null);
 const pending = ref(false);
 const router = useRouter();
-const { finalPrice } = useManageStash();
 const storeGoods = useStoreGoods();
 const storeBalance = useStoreBalance();
 
 defineProps(['modelValue']);
 const emit = defineEmits(['update:modelValue', 'trade']);
 
-const emberheartRubies = computed(() => {
-    return Math.floor(finalPrice.value * 0.01);
-});
-const gamblersLootbox = computed(() => {
-    return Math.ceil(finalPrice.value * 0.001);
-});
+const { finalPrice } = useManageStash();
+const emberheartRubies = computed(() => Math.floor(finalPrice.value * 0.01));
+const gamblersLootbox = computed(() => Math.ceil(finalPrice.value * 0.001));
 
 const paymentType = ref(null);
 const paymentTypes = computed(() => {
     return [
-        { label: `Gold: ${finalPrice.value}`, value: 'gold' },
-        { label: `Emberheart Rubies: ${emberheartRubies.value}`, value: 'emberheart_rubies' },
-        { label: `Gambler's Lootbox: ${gamblersLootbox.value}`, value: 'gamblers_lootbox' },
+        { label: `Gold (${finalPrice.value})`, value: 'gold' },
+        { label: `Emberheart Rubies (${emberheartRubies.value})`, value: 'emberheart_rubies' },
+        { label: `Gambler's Lootbox (${gamblersLootbox.value})`, value: 'gamblers_lootbox' },
     ];
 });
 
-const validateFunds = (value, currency) => {
-    let price = 0;
+const paymentData = reactive({
+    gold: finalPrice.value,
+    emberheart_rubies: emberheartRubies,
+    gamblers_lootbox: gamblersLootbox,
+});
 
-    if (currency === 'gold') {
-        price = finalPrice.value;
-    } else if (currency === 'emberheart_rubies') {
-        price = emberheartRubies.value;
-    } else if (currency === 'gamblers_lootbox') {
-        price = gamblersLootbox.value;
-    }
+const validateFunds = (selectedPaymentType) => {
+    const amount = paymentData[selectedPaymentType];
+    const balance = storeBalance.balance[selectedPaymentType];
 
-    if (price > storeBalance.balance[currency]) {
-        return `Not enough ${currency.replace('_', ' ')}`;
+    if (amount > balance) {
+        return `Not enough ${selectedPaymentType.replace('_', ' ')}, top up balance`;
     }
     return true;
 };
 
 const onSubmit = async () => {
+    pending.value = true;
+
     if (!myForm.value) return;
     try {
         const success = await myForm.value.validate();
@@ -64,29 +62,35 @@ const onSubmit = async () => {
                 classes: 'toast',
                 actions: [{ icon: 'close', color: 'dark', dense: true, size: 'xs' }],
             });
+            pending.value = false;
             return;
         }
 
-        pending.value = true;
+        emit('trade');
 
-        setTimeout(() => {
-            pending.value = false;
-            storeGoods.stashGoods = [];
-            emit('trade');
+        const selectedPaymentType = paymentType.value?.value;
 
-            $q.notify({
-                type: 'positive',
-                textColor: 'dark',
-                message: "Pleasure doin' business!",
-                position: 'bottom-right',
-                classes: 'toast',
-                actions: [{ icon: 'close', color: 'dark', dense: true, size: 'xs' }],
-            });
+        await Promise.all([
+            delay(3000),
+            storeBalance.updateBalance(selectedPaymentType, paymentData[selectedPaymentType]),
+        ]);
 
-            emit('update:modelValue', false);
-        }, 3000);
+        storeGoods.stashGoods = [];
+
+        $q.notify({
+            type: 'positive',
+            textColor: 'dark',
+            message: "Pleasure doin' business!",
+            position: 'bottom-right',
+            classes: 'toast',
+            actions: [{ icon: 'close', color: 'dark', dense: true, size: 'xs' }],
+        });
+
+        emit('update:modelValue', false);
     } catch (err) {
         console.error('Validation error:', err);
+    } finally {
+        pending.value = false;
     }
 };
 </script>
@@ -110,20 +114,20 @@ const onSubmit = async () => {
                         <div class="flex" style="gap: 1rem">
                             <q-select
                                 v-model="paymentType"
-                                style="width: 100%"
                                 :options="paymentTypes"
+                                style="width: 100%"
                                 filled
                                 dark
                                 label-color="info"
                                 input-class="text-primary"
-                                label="Currency of Choice *"
+                                label="paymentType of Choice *"
                                 lazy-rules="ondemand"
                                 :rules="[
                                     (val) =>
                                         val && val.value
                                             ? true
-                                            : 'Please select currency of choice',
-                                    (val) => validateFunds(val.value, val.value),
+                                            : 'Please select paymentType of choice',
+                                    (val) => validateFunds(val.value),
                                 ]"
                             ></q-select>
                         </div>

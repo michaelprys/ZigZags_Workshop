@@ -97,6 +97,7 @@ watch([basePrice, goblinTax], ([newBasePrice, newGoblinTax]) => {
                                             dense
                                             icon="remove"
                                             flat
+                                            :disable="good.quantity <= 1"
                                             @click="decreaseGoodQuantity(good)"
                                         />
                                         <span>{{ good.quantity }}</span>
@@ -104,6 +105,7 @@ watch([basePrice, goblinTax], ([newBasePrice, newGoblinTax]) => {
                                             dense
                                             icon="add"
                                             flat
+                                            :disable="good.quantity >= 5"
                                             @click="increaseGoodQuantity(good)"
                                         />
                                     </div>

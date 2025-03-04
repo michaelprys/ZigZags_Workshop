@@ -41,15 +41,15 @@ const { pending, handlePayment } = useTopUpPayment(paymentType, topUpAmount, min
 const isOpen = ref(false);
 
 onMounted(async () => {
-    const { session_id, status, amount, currency } = route.query;
+    const { session_id, status, amount, paymentType } = route.query;
 
-    if (!session_id && !status && !amount && !currency) return;
-    await storeBalance.updateBalance(session_id, status, amount, currency);
+    if (!session_id && !status && !amount && !paymentType) return;
+    await storeBalance.topUpBalance(session_id, status, amount, paymentType);
 });
 
 watchEffect(async () => {
-    for (const currency in storeBalance.balance) {
-        if (storeBalance.balance.hasOwnProperty(currency)) {
+    for (const paymentType in storeBalance.balance) {
+        if (storeBalance.balance.hasOwnProperty(paymentType)) {
             await storeBalance.displayBalance();
         }
     }
@@ -79,9 +79,9 @@ watchEffect(async () => {
                                 dark
                                 label-color="info"
                                 input-class="text-primary"
-                                label="Currency of choice *"
+                                label="paymentType of choice *"
                                 lazy-rules="ondemand"
-                                :rules="[(val) => val.value !== '' || 'Choose currency']"
+                                :rules="[(val) => val.value !== '' || 'Choose paymentType']"
                                 @update:model-value="resetAmount"
                             />
                         </q-card-actions>
@@ -142,21 +142,29 @@ watchEffect(async () => {
             input-class="text-primary"
         />
 
-        <ItemBalance>
-            <template>
-                <q-btn
-                    @click="isOpen = true"
-                    style="border-radius: var(--rounded)"
-                    icon="add"
-                    flat
-                    dense
-                ></q-btn>
-            </template>
+        <ItemBalance class="balance-panel">
+            <q-btn
+                class="balance-panel__btn"
+                @click="isOpen = true"
+                style="border-radius: var(--rounded)"
+                icon="add"
+                flat
+                dense
+            ></q-btn>
         </ItemBalance>
     </div>
 </template>
 
 <style scoped>
+.balance-panel {
+    padding-left: 0em;
+    padding-right: 0.5em;
+    padding-block: 0;
+}
+.balance-panel__btn {
+    height: 100%;
+}
+
 .footer {
     display: grid;
     place-items: center;

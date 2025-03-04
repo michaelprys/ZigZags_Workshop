@@ -17,8 +17,18 @@ export const useStoreBalance = defineStore('balance', {
         pick: ['sessionId'],
     },
 
+    getters: {
+        balanceAfterTrade: (state) => (paymentType, amount) => {
+            const balance = state.balance[paymentType];
+
+            if (balance > 0 && balance > amount) {
+                return balance - amount;
+            }
+        },
+    },
+
     actions: {
-        async updateBalance(sessionId, status, amount, currency) {
+        async topUpBalance(sessionId, status, amount, paymentType) {
             if (this.sessionId === sessionId) return;
 
             this.pending = true;
@@ -35,7 +45,7 @@ export const useStoreBalance = defineStore('balance', {
                         session_id: sessionId,
                         status: status,
                         amount: amount,
-                        currency: currency,
+                        payment_type: paymentType,
                     },
                     { onConflict: ['session_id'] },
                 );
@@ -48,7 +58,7 @@ export const useStoreBalance = defineStore('balance', {
                     const { error: balanceError } = await supabase.rpc('increment_balance', {
                         user_id: storeAuth.session?.id,
                         amount: amount,
-                        currency: currency,
+                        payment_type: paymentType,
                     });
 
                     if (balanceError) {
@@ -84,14 +94,59 @@ export const useStoreBalance = defineStore('balance', {
 
                 if (retrievedBalance && retrievedBalance.length > 0) {
                     const balance = retrievedBalance[0];
-                    for (const currency in balance) {
-                        if (balance.hasOwnProperty(currency)) {
-                            this.balance[currency] = balance[currency];
+                    for (const paymentType in balance) {
+                        if (balance.hasOwnProperty(paymentType)) {
+                            this.balance[paymentType] = balance[paymentType];
                         }
                     }
                 }
             } catch (error) {
                 console.error(error);
+            } finally {
+                this.pending = false;
+            }
+        },
+
+        async updateBalance(paymentType, amount) {
+            this.pending = true;
+            const storeAuth = useStoreAuth();
+
+            try {
+                const { data: userBalance, error: fetchError } = await supabase
+                    .from('user_balances')
+                    .select('*')
+                    .eq('user_id', storeAuth.session?.id)
+                    .single();
+
+                if (fetchError) {
+                    throw new Error(fetchError.message);
+                }
+
+                if (userBalance) {
+                    const newBalance = this.balanceAfterTrade(paymentType, amount);
+
+                    const { error: updateError } = await supabase
+                        .from('user_balances')
+                        .update({ [paymentType]: newBalance })
+                        .eq('user_id', storeAuth.session?.id);
+
+                    if (updateError) {
+                        throw new Error(updateError.message);
+                    }
+                } else {
+                    const { error: insertError } = await supabase.from('user_balances').insert([
+                        {
+                            user_id: storeAuth.session?.id,
+                            [paymentType]: amount,
+                        },
+                    ]);
+
+                    if (insertError) {
+                        throw new Error(insertError.message);
+                    }
+                }
+            } catch (error) {
+                console.error('Error during balance update:', error);
             } finally {
                 this.pending = false;
             }

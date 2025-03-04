@@ -48,7 +48,7 @@ export const useTopUpPayment = (paymentType, topUpAmount, minAmounts) => {
                     sessionData: {
                         price: paymentType.value?.price,
                         quantity: topUpAmount.value,
-                        currency: paymentType.value.value,
+                        paymentType: paymentType.value.value,
                     },
                 };
 
