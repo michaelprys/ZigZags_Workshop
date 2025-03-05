@@ -56,7 +56,7 @@ onMounted(async () => {
                 <div class="slots__item-placeholder"></div>
 
                 <Transition name="remove">
-                    <div v-if="inventoryGoods[idx]">
+                    <div v-if="inventoryGoods[idx] && inventoryGoods[idx].goods">
                         <q-tooltip
                             :delay="500"
                             anchor="bottom right"

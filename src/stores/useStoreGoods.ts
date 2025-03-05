@@ -168,15 +168,18 @@ export const useStoreGoods = defineStore('goods', {
                     const goodsToInsert = this.stashGoods.map((good) => ({
                         good_id: good.id,
                         user_id: storeAuth.session?.id,
-                        quantity: good.quantity || 1,
+                        quantity: good.quantity,
                         status: 'purchased',
                     }));
 
-                    const { error } = await supabase.from('user_goods').upsert(goodsToInsert);
+                    const { data, error } = await supabase.rpc('update_goods', {
+                        goods: goodsToInsert,
+                    });
 
                     if (error) {
                         throw new Error(error.message);
                     }
+                    this.inventoryGoods = data;
                 }
             } catch (error) {
                 console.error(error);
@@ -209,10 +212,6 @@ export const useStoreGoods = defineStore('goods', {
                 }
 
                 this.inventoryGoods = data || [];
-
-                if (error) {
-                    throw new Error(error.message);
-                }
             } catch (error) {
                 console.error(error);
             } finally {
