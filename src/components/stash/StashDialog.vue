@@ -75,6 +75,9 @@ const handleTrade = async () => {
         }
 
         await Promise.all([delay(3000), trade()]);
+        sessionStorage.setItem('purchaseCompleted', 'true');
+        await router.push('purchase-success');
+
         storeBalance.purchaseStatus = '';
         storeGoods.stashGoods = [];
 

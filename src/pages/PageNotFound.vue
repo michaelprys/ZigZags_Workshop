@@ -4,7 +4,7 @@
         style="background-image: url('~assets/common/bg.avif'); opacity: 23%; z-index: -1"
     ></div>
 
-    <section class="flex flex-center fullscreen q-pa-md text-center text-white">
+    <section id="not-found" class="flex flex-center fullscreen q-pa-md text-center text-white">
         <div class="" style="max-width: 700px">
             <q-img
                 src="~assets/not-found/not-found.avif"
@@ -31,3 +31,12 @@
         </div>
     </section>
 </template>
+
+<style scoped>
+#not-found {
+    padding-bottom: 19em;
+}
+#not-found {
+    padding-top: 10.5rem;
+}
+</style>

@@ -1,5 +1,5 @@
 <template>
-    <section id="success-stash" class="column flex-center relative-position">
+    <section id="purchase-success" class="column flex-center relative-position">
         <div class="column flex-center" style="max-width: 34rem; width: 100%">
             <q-img
                 src="~assets/stash/success-stash.jpg"
@@ -10,16 +10,16 @@
             <div class="column flex-center q-mt-xl">
                 <span class="text-h4 text-secondary">Deal done!</span>
                 <p class="q-mt-md text-center text-primary text-subtitle1">
-                    Ah, you bought it. Hope you're prepared for... <br />
-                    what happens next
+                    Hah! You got it! Hope yer pockets ain't <br />
+                    growin' legs now... Check yer loot, quick!
                 </p>
                 <q-btn
                     class="q-mt-lg"
                     color="secondary"
                     text-color="dark"
                     unelevated
-                    :to="{ name: 'workshop' }"
-                    label="Purchase more"
+                    :to="{ name: 'vault' }"
+                    label="Open vault"
                     no-caps
                 />
             </div>
@@ -28,10 +28,10 @@
 </template>
 
 <style scoped>
-#success-stash {
+#purchase-success {
     padding-bottom: 19em;
 }
-#success-stash {
+#purchase-success {
     padding-top: 10.5rem;
 }
 </style>

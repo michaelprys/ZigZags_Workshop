@@ -62,6 +62,19 @@ const routes: RouteRecordRaw[] = [
                 component: () => import('pages/PageStash.vue'),
             },
             {
+                path: 'purchase-success',
+                name: 'purchase-success',
+                component: () => import('pages/PagePurchaseSuccess.vue'),
+                beforeEnter: (to, from, next) => {
+                    if (!sessionStorage.getItem('purchaseCompleted')) {
+                        next('/');
+                    } else {
+                        sessionStorage.removeItem('purchaseCompleted');
+                        next();
+                    }
+                },
+            },
+            {
                 path: 'black-market-access',
                 name: 'black-market-access',
                 component: () => import('src/pages/PageBlackMarketAccess.vue'),

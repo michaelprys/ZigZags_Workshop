@@ -61,6 +61,7 @@ export default defineRouter(function () {
                 return next({ name: 'vault' });
             }
         }
+
         next();
     });
 
