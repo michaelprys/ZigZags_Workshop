@@ -1,40 +1,99 @@
 <script setup lang="ts">
+import { useQuasar } from 'quasar';
+import { useStoreGoods } from 'src/stores/useStoreGoods';
+import { computed, onMounted } from 'vue';
 import { vDraggable } from 'vue-draggable-plus';
 
-const list = [1, 2, 3];
+const storeGoods = useStoreGoods();
+const inventoryGoods = computed(() => storeGoods.inventoryGoods);
+const $q = useQuasar();
+
+const handleRemoveItem = async (selectedGood) => {
+    $q.dialog({
+        dark: true,
+        title: 'Remove item',
+        message: 'This action is irreversible',
+        ok: {
+            label: 'Yes',
+            color: 'secondary',
+            'text-color': 'dark',
+        },
+        cancel: {
+            label: 'No',
+            flat: true,
+            'text-color': 'primary',
+        },
+        style: 'padding: 1rem',
+    })
+        .onOk(async () => {
+            try {
+                await storeGoods.removeGoodFromInventory(selectedGood);
+            } catch (error) {
+                console.error('Error removing good from inventory: ', error);
+            }
+        })
+        .onCancel(() => {})
+        .onDismiss(() => {});
+};
+
+onMounted(async () => {
+    await storeGoods.loadGoodsToInventory();
+});
 </script>
 
 <template>
     <ul
         v-draggable="[
-            list,
+            inventoryGoods,
             {
                 animation: 150,
             },
         ]"
         class="q-mt-lg slots"
     >
-        <li v-for="i in 55" :key="i" class="slots__item">
-            <q-tooltip
-                :delay="500"
-                anchor="bottom right"
-                self="center start"
-                class="bg-primary column text-center text-dark"
-                style="width: 11.25rem"
-            >
-                <span class="text-caption text-negative">Boots of swiftness</span>
-                <span> Speedy boots for fast getaways. Run like a goblin on fire! </span>
-            </q-tooltip>
+        <template v-for="(slot, idx) in 55" :key="idx">
+            <li class="slots__item">
+                <div class="slots__item-placeholder"></div>
 
-            <div class="slots__item-placeholder"></div>
-            <!-- <q-img
-                                    class="slots__item-image"
-                                    src="https://placehold.co/500"
-                                    width="1024px"
-                                    height="1024px"
-                                    style="width: 100%; height: 100%"
-                                /> -->
-        </li>
+                <Transition name="remove">
+                    <div v-if="inventoryGoods[idx]">
+                        <q-tooltip
+                            :delay="500"
+                            anchor="bottom right"
+                            self="center start"
+                            class="bg-primary column text-center text-dark"
+                            style="width: 11.25rem"
+                        >
+                            <span class="text-caption text-negative">{{
+                                inventoryGoods[idx].goods.name
+                            }}</span>
+                            <span>{{ inventoryGoods[idx].goods.short_description }}</span>
+                        </q-tooltip>
+
+                        <q-btn
+                            @click="handleRemoveItem(inventoryGoods[idx].good_id)"
+                            class="slots__btn-close"
+                            dense
+                            flat
+                            size="xs"
+                            icon="close"
+                        ></q-btn>
+
+                        <div class="slots__item-quantity">
+                            {{ inventoryGoods[idx].quantity }}
+                        </div>
+
+                        <q-img
+                            class="slots__item-image"
+                            :src="inventoryGoods[idx].goods.image_url"
+                            width="1024px"
+                            height="1024px"
+                            style="width: 100%; height: 100%"
+                        />
+                    </div>
+                </Transition>
+            </li>
+        </template>
     </ul>
 </template>
 
@@ -66,15 +125,51 @@ const list = [1, 2, 3];
     box-shadow: 0 4px 10px rgba(0, 0, 0, 0.7);
 }
 
+.slots__btn-close {
+    position: absolute;
+    top: 0;
+    right: 0;
+    z-index: 3;
+    background-color: rgb(23, 23, 23);
+}
+
+.slots__item-quantity {
+    position: absolute;
+    bottom: 3px;
+    right: 3px;
+    padding-inline: 0.25em;
+    height: 1.0625rem;
+    background-color: var(--q-dark);
+    color: var(--q-primary);
+    z-index: 1;
+    border-radius: 0.25rem;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    user-select: none;
+    border: 2px solid rgba(255, 255, 255, 0.1);
+    font-size: 0.75rem;
+}
+
 .slots__item-placeholder {
     position: absolute;
     width: 100%;
     height: 100%;
     background: linear-gradient(145deg, rgba(45, 45, 45, 0.7), rgba(25, 25, 25, 0.9));
-    border: 2px solid rgba(255, 255, 255, 0.1);
-    border-radius: 0.25rem;
-    box-shadow: inset 0 0 8px rgba(0, 0, 0, 0.5);
+    border-radius: 6px;
+    box-shadow: inset 0 0 6px rgba(0, 0, 0, 0.8);
+    border: 2px solid rgba(255, 255, 255, 0.05);
+    transition:
+        border-color 0.15s,
+        box-shadow 0.15s;
 }
+
+/* .slots__item:hover .slots__item-placeholder {
+    border-color: rgba(255, 255, 255, 0.3);
+    box-shadow:
+        inset 0 0 6px rgba(0, 0, 0, 0.8),
+        0 0 8px rgba(255, 255, 255, 0.15);
+} */
 
 .slots__item-placeholder::before {
     content: '';
@@ -93,13 +188,13 @@ const list = [1, 2, 3];
     height: 100%;
     user-select: none;
     border-radius: var(--rounded);
-    filter: grayscale(20%) contrast(90%) brightness(90%);
+    filter: contrast(95%) brightness(95%);
 }
 .slots__item-image::before {
     content: '';
     position: absolute;
     inset: 0;
-    border: 2px solid rgb(120, 120, 120);
+    /* border: 2px solid rgb(120, 120, 120); */
     border-radius: var(--rounded);
     z-index: 3;
 }

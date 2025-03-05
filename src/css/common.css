@@ -8,6 +8,15 @@
     opacity: 0;
 }
 
+.remove-enter-active,
+.remove-leave-active {
+    transition: opacity 30ms ease-in;
+}
+.remove-enter-from,
+.remove-leave-to {
+    opacity: 0;
+}
+
 .list-move,
 .list-enter-active,
 .list-leave-active {

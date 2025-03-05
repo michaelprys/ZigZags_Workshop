@@ -79,7 +79,7 @@ watchEffect(async () => {
                                 dark
                                 label-color="info"
                                 input-class="text-primary"
-                                label="paymentType of choice *"
+                                label="Currency of choice *"
                                 lazy-rules="ondemand"
                                 :rules="[(val) => val.value !== '' || 'Choose paymentType']"
                                 @update:model-value="resetAmount"

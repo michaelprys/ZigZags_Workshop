@@ -1,5 +1,6 @@
 import { acceptHMRUpdate, defineStore } from 'pinia';
 import { useStoreAuth } from 'src/stores/useStoreAuth';
+import { useStoreBalance } from 'src/stores/useStoreBalance';
 import supabase from 'src/utils/supabase';
 
 export type Good = {
@@ -33,11 +34,12 @@ export const useStoreGoods = defineStore('goods', {
         selectedGood: null as Good | null,
         selectedCategories: [] as string[],
         stashGoods: [] as Good[],
+        inventoryGoods: [],
     }),
 
     persist: {
         storage: sessionStorage,
-        pick: ['selectedGood', 'selectedCategories', 'stashGoods'],
+        pick: ['selectedGood', 'selectedCategories', 'stashGoods', 'purchaseSuccessful'],
     },
 
     getters: {
@@ -83,9 +85,8 @@ export const useStoreGoods = defineStore('goods', {
                 const { data, error } = await query;
                 if (error) {
                     throw new Error(error.message);
-                } else {
-                    this.goods = data || [];
                 }
+                this.goods = data || [];
             } catch (error) {
                 console.error(error);
             } finally {
@@ -117,9 +118,8 @@ export const useStoreGoods = defineStore('goods', {
 
                 if (error) {
                     throw new Error(error.message);
-                } else {
-                    this.suggestedGoods = data;
                 }
+                this.suggestedGoods = data;
             } catch (error) {
                 console.error(error);
             } finally {
@@ -131,6 +131,12 @@ export const useStoreGoods = defineStore('goods', {
             this.pending = true;
 
             try {
+                const storeAuth = useStoreAuth();
+
+                if (!storeAuth.session) {
+                    await storeAuth.checkSession();
+                }
+
                 const { data, error } = await supabase
                     .from('goods')
                     .select('name, image_url')
@@ -138,9 +144,104 @@ export const useStoreGoods = defineStore('goods', {
 
                 if (error) {
                     throw new Error(error.message);
-                } else {
-                    this.featuredGoods = data;
                 }
+                this.featuredGoods = data;
+            } catch (error) {
+                console.error(error);
+            } finally {
+                this.pending = false;
+            }
+        },
+
+        async savePurchasedGoods() {
+            this.pending = true;
+
+            try {
+                const storeBalance = useStoreBalance();
+                const storeAuth = useStoreAuth();
+
+                if (!storeAuth.session) {
+                    await storeAuth.checkSession();
+                }
+
+                if (storeBalance.purchaseStatus === 'purchased') {
+                    const goodsToInsert = this.stashGoods.map((good) => ({
+                        good_id: good.id,
+                        user_id: storeAuth.session?.id,
+                        quantity: good.quantity || 1,
+                        status: 'purchased',
+                    }));
+
+                    const { error } = await supabase.from('user_goods').upsert(goodsToInsert);
+
+                    if (error) {
+                        throw new Error(error.message);
+                    }
+                }
+            } catch (error) {
+                console.error(error);
+            } finally {
+                this.pending = false;
+            }
+        },
+
+        async loadGoodsToInventory() {
+            this.pending = true;
+
+            try {
+                const storeAuth = useStoreAuth();
+
+                if (!storeAuth.session) {
+                    await storeAuth.checkSession();
+                }
+
+                const { data, error } = await supabase
+                    .from('user_goods')
+                    .select(
+                        `
+                        good_id, quantity,
+                        goods (id, name, image_url, price, short_description, category)`,
+                    )
+                    .eq('user_id', storeAuth.session?.id);
+
+                if (error) {
+                    throw new Error(error.message);
+                }
+
+                this.inventoryGoods = data || [];
+
+                if (error) {
+                    throw new Error(error.message);
+                }
+            } catch (error) {
+                console.error(error);
+            } finally {
+                this.pending = false;
+            }
+        },
+
+        async removeGoodFromInventory(selectedGood) {
+            this.pending = true;
+
+            try {
+                const storeAuth = useStoreAuth();
+
+                if (!storeAuth.session) {
+                    await storeAuth.checkSession();
+                }
+
+                const { data, error } = await supabase
+                    .from('user_goods')
+                    .delete()
+                    .eq('user_id', storeAuth.session?.id)
+                    .eq('good_id', selectedGood);
+
+                if (error) {
+                    throw new Error(error.message);
+                }
+
+                this.inventoryGoods[selectedGood] = null;
+                await this.loadGoodsToInventory();
             } catch (error) {
                 console.error(error);
             } finally {

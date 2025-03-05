@@ -17,13 +17,12 @@ const storeGoods = useStoreGoods();
 const storeBalance = useStoreBalance();
 
 defineProps(['modelValue']);
-const emit = defineEmits(['update:modelValue', 'trade']);
+const emit = defineEmits(['update:modelValue']);
 
 const { finalPrice } = useManageStash();
 const emberheartRubies = computed(() => Math.floor(finalPrice.value * 0.01));
 const gamblersLootbox = computed(() => Math.ceil(finalPrice.value * 0.001));
 
-const paymentType = ref(null);
 const paymentTypes = computed(() => {
     return [
         { label: `Gold (${finalPrice.value})`, value: 'gold' },
@@ -32,11 +31,15 @@ const paymentTypes = computed(() => {
     ];
 });
 
+const paymentType = ref(null);
+
 const paymentData = reactive({
     gold: finalPrice.value,
     emberheart_rubies: emberheartRubies,
     gamblers_lootbox: gamblersLootbox,
 });
+
+let selectedPaymentType = null;
 
 const validateFunds = (selectedPaymentType) => {
     const amount = paymentData[selectedPaymentType];
@@ -48,7 +51,12 @@ const validateFunds = (selectedPaymentType) => {
     return true;
 };
 
-const onSubmit = async () => {
+const trade = async () => {
+    await storeBalance.updateBalance(selectedPaymentType, paymentData[selectedPaymentType]);
+    await storeGoods.savePurchasedGoods();
+};
+
+const handleTrade = async () => {
     pending.value = true;
 
     if (!myForm.value) return;
@@ -66,15 +74,8 @@ const onSubmit = async () => {
             return;
         }
 
-        emit('trade');
-
-        const selectedPaymentType = paymentType.value?.value;
-
-        await Promise.all([
-            delay(3000),
-            storeBalance.updateBalance(selectedPaymentType, paymentData[selectedPaymentType]),
-        ]);
-
+        await Promise.all([delay(3000), trade()]);
+        storeBalance.purchaseStatus = '';
         storeGoods.stashGoods = [];
 
         $q.notify({
@@ -93,6 +94,12 @@ const onSubmit = async () => {
         pending.value = false;
     }
 };
+
+watchEffect(() => {
+    if (paymentType.value) {
+        selectedPaymentType = paymentType.value?.value;
+    }
+});
 </script>
 
 <template>
@@ -110,7 +117,7 @@ const onSubmit = async () => {
                 </div>
 
                 <div>
-                    <q-form ref="myForm" class="q-gutter-md q-mt-lg" @submit.prevent="onSubmit">
+                    <q-form ref="myForm" class="q-gutter-md q-mt-lg" @submit.prevent="handleTrade">
                         <div class="flex" style="gap: 1rem">
                             <q-select
                                 v-model="paymentType"
@@ -120,13 +127,13 @@ const onSubmit = async () => {
                                 dark
                                 label-color="info"
                                 input-class="text-primary"
-                                label="paymentType of Choice *"
+                                label="Currency of Choice *"
                                 lazy-rules="ondemand"
                                 :rules="[
                                     (val) =>
                                         val && val.value
                                             ? true
-                                            : 'Please select paymentType of choice',
+                                            : 'Please select currency of choice',
                                     (val) => validateFunds(val.value),
                                 ]"
                             ></q-select>

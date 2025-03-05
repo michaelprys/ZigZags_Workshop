@@ -11,6 +11,7 @@ export const useStoreBalance = defineStore('balance', {
             gamblers_lootbox: 0,
         },
         sessionId: null,
+        purchaseStatus: '',
     }),
 
     persist: {
@@ -19,16 +20,13 @@ export const useStoreBalance = defineStore('balance', {
 
     getters: {
         balanceAfterTrade: (state) => (paymentType, amount) => {
-            const balance = state.balance[paymentType];
-
-            if (balance > 0 && balance > amount) {
-                return balance - amount;
-            }
+            const balance = state.balance[paymentType] ?? 0;
+            return balance >= amount ? balance - amount : balance;
         },
     },
 
     actions: {
-        async topUpBalance(sessionId, status, amount, paymentType) {
+        async topUpBalance(sessionId, transactionStatus, amount, paymentType) {
             if (this.sessionId === sessionId) return;
 
             this.pending = true;
@@ -43,7 +41,7 @@ export const useStoreBalance = defineStore('balance', {
                     {
                         user_id: storeAuth.session?.id,
                         session_id: sessionId,
-                        status: status,
+                        status: transactionStatus,
                         amount: amount,
                         payment_type: paymentType,
                     },
@@ -54,7 +52,7 @@ export const useStoreBalance = defineStore('balance', {
                     throw new Error(transactionError.message);
                 }
 
-                if (status === 'success') {
+                if (transactionStatus === 'success') {
                     const { error: balanceError } = await supabase.rpc('increment_balance', {
                         user_id: storeAuth.session?.id,
                         amount: amount,
@@ -112,18 +110,22 @@ export const useStoreBalance = defineStore('balance', {
             const storeAuth = useStoreAuth();
 
             try {
-                const { data: userBalance, error: fetchError } = await supabase
+                const { data: userBalance, error: fetchBalanceError } = await supabase
                     .from('user_balances')
                     .select('*')
                     .eq('user_id', storeAuth.session?.id)
                     .single();
 
-                if (fetchError) {
-                    throw new Error(fetchError.message);
+                if (fetchBalanceError) {
+                    throw new Error(fetchBalanceError.message);
                 }
 
                 if (userBalance) {
                     const newBalance = this.balanceAfterTrade(paymentType, amount);
+
+                    if (typeof newBalance !== 'number') {
+                        throw new Error(`Error: newBalance is not a number (${newBalance})`);
+                    }
 
                     const { error: updateError } = await supabase
                         .from('user_balances')
@@ -133,6 +135,8 @@ export const useStoreBalance = defineStore('balance', {
                     if (updateError) {
                         throw new Error(updateError.message);
                     }
+
+                    this.purchaseStatus = 'purchased';
                 } else {
                     const { error: insertError } = await supabase.from('user_balances').insert([
                         {
@@ -144,6 +148,8 @@ export const useStoreBalance = defineStore('balance', {
                     if (insertError) {
                         throw new Error(insertError.message);
                     }
+
+                    this.purchaseStatus = 'purchased';
                 }
             } catch (error) {
                 console.error('Error during balance update:', error);
