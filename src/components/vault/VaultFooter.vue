@@ -1,9 +1,9 @@
 <script setup lang="ts">
 import ItemBalance from 'src/components/items/ItemBalance.vue';
-import { useStoreBalance } from 'src/stores/useStoreBalance';
+import { useStoreBalance } from 'src/stores/storeBalance';
 import { useTopUpPayment } from 'src/use/useTopUpPayment';
 import { useTopUpState } from 'src/use/useTopUpState';
-import { onMounted, ref, watchEffect } from 'vue';
+import { onMounted, ref, useTemplateRef, watchEffect } from 'vue';
 import { useRoute } from 'vue-router';
 
 const storeBalance = useStoreBalance();
@@ -23,7 +23,7 @@ const handlePaste = (e) => {
     }
 };
 
-const topUpForm = ref(null);
+const topUpForm = useTemplateRef('topup-form');
 
 const {
     paymentTypes,
@@ -33,7 +33,7 @@ const {
     resetAmount,
     increment,
     decrement,
-    calculatedAmount,
+    calculatedAmount
 } = useTopUpState();
 
 const { pending, handlePayment } = useTopUpPayment(paymentType, topUpAmount, minAmounts);
@@ -49,7 +49,7 @@ onMounted(async () => {
 
 watchEffect(async () => {
     for (const paymentType in storeBalance.balance) {
-        if (storeBalance.balance.hasOwnProperty(paymentType)) {
+        if (Object.prototype.hasOwnProperty.call(storeBalance.balance, paymentType)) {
             await storeBalance.displayBalance();
         }
     }
@@ -66,7 +66,7 @@ watchEffect(async () => {
                     </q-card-section>
 
                     <q-form
-                        ref="topUpForm"
+                        ref="topup-form"
                         @submit.prevent="handlePayment(topUpForm)"
                         @keydown.enter.prevent="handlePayment(topUpForm)"
                     >
@@ -108,7 +108,7 @@ watchEffect(async () => {
                                     :rules="[
                                         (val) =>
                                             val >= minAmounts[paymentType.value] ||
-                                            `Minimal: ${minAmounts[paymentType.value]}`,
+                                            `Minimal: ${minAmounts[paymentType.value]}`
                                     ]"
                                     @keypress="preventIncorrectChars"
                                     @paste="handlePaste"
@@ -145,11 +145,11 @@ watchEffect(async () => {
         <ItemBalance class="balance-panel">
             <q-btn
                 class="balance-panel__btn"
-                @click="isOpen = true"
                 style="border-radius: var(--rounded)"
                 icon="add"
                 flat
                 dense
+                @click="isOpen = true"
             ></q-btn>
         </ItemBalance>
     </div>

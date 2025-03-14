@@ -1,35 +1,29 @@
 import { acceptHMRUpdate, defineStore } from 'pinia';
-import { useStoreAuth } from 'src/stores/useStoreAuth';
+import { useStoreAuth } from 'src/stores/storeAuth';
 import supabase from 'src/utils/supabase';
+import { reactive, ref } from 'vue';
 
-export const useStoreBalance = defineStore('balance', {
-    state: () => ({
-        pending: false,
-        balance: {
-            gold: 0,
-            emberheart_rubies: 0,
-            gamblers_lootbox: 0,
-        },
-        sessionId: null,
-        purchaseStatus: '',
-    }),
+export const useStoreBalance = defineStore(
+    'balance',
+    () => {
+        const pending = ref(false),
+            sessionId = ref(null),
+            purchaseStatus = ref(''),
+            balance = reactive({
+                gold: 0,
+                emberheart_rubies: 0,
+                gamblers_lootbox: 0
+            });
 
-    persist: {
-        pick: ['sessionId'],
-    },
+        const balanceAfterTrade = (paymentType, amount) => {
+            const currentBalance = balance[paymentType] ?? 0;
+            return currentBalance >= amount ? currentBalance - amount : currentBalance;
+        };
 
-    getters: {
-        balanceAfterTrade: (state) => (paymentType, amount) => {
-            const balance = state.balance[paymentType] ?? 0;
-            return balance >= amount ? balance - amount : balance;
-        },
-    },
+        const topUpBalance = async (sessionId, transactionStatus, amount, paymentType) => {
+            if (sessionId.value === sessionId) return;
 
-    actions: {
-        async topUpBalance(sessionId, transactionStatus, amount, paymentType) {
-            if (this.sessionId === sessionId) return;
-
-            this.pending = true;
+            pending.value = true;
             const storeAuth = useStoreAuth();
 
             try {
@@ -43,9 +37,9 @@ export const useStoreBalance = defineStore('balance', {
                         session_id: sessionId,
                         status: transactionStatus,
                         amount: amount,
-                        payment_type: paymentType,
+                        payment_type: paymentType
                     },
-                    { onConflict: ['session_id'] },
+                    { onConflict: ['session_id'] }
                 );
 
                 if (transactionError && transactionError.code !== '23505') {
@@ -56,7 +50,7 @@ export const useStoreBalance = defineStore('balance', {
                     const { error: balanceError } = await supabase.rpc('increment_balance', {
                         user_id: storeAuth.session?.id,
                         amount: amount,
-                        payment_type: paymentType,
+                        payment_type: paymentType
                     });
 
                     if (balanceError) {
@@ -64,16 +58,16 @@ export const useStoreBalance = defineStore('balance', {
                     }
                 }
 
-                this.sessionId = sessionId;
+                sessionId.value = sessionId;
             } catch (error) {
                 console.error('Error updating balance: ', error);
             } finally {
-                this.pending = false;
+                pending.value = false;
             }
-        },
+        };
 
-        async displayBalance() {
-            this.pending = true;
+        const displayBalance = async () => {
+            pending.value = true;
             const storeAuth = useStoreAuth();
 
             try {
@@ -91,22 +85,22 @@ export const useStoreBalance = defineStore('balance', {
                 }
 
                 if (retrievedBalance && retrievedBalance.length > 0) {
-                    const balance = retrievedBalance[0];
-                    for (const paymentType in balance) {
-                        if (balance.hasOwnProperty(paymentType)) {
-                            this.balance[paymentType] = balance[paymentType];
+                    const balanceData = retrievedBalance[0];
+                    for (const paymentType in balanceData) {
+                        if (Object.prototype.hasOwnProperty.call(balanceData, paymentType)) {
+                            balance[paymentType] = balanceData[paymentType];
                         }
                     }
                 }
             } catch (error) {
                 console.error(error);
             } finally {
-                this.pending = false;
+                pending.value = false;
             }
-        },
+        };
 
-        async updateBalance(paymentType, amount) {
-            this.pending = true;
+        const updateBalance = async (paymentType, amount) => {
+            pending.value = true;
             const storeAuth = useStoreAuth();
 
             try {
@@ -121,7 +115,7 @@ export const useStoreBalance = defineStore('balance', {
                 }
 
                 if (userBalance) {
-                    const newBalance = this.balanceAfterTrade(paymentType, amount);
+                    const newBalance = balanceAfterTrade(paymentType, amount);
 
                     if (typeof newBalance !== 'number') {
                         throw new Error(`Error: newBalance is not a number (${newBalance})`);
@@ -136,29 +130,45 @@ export const useStoreBalance = defineStore('balance', {
                         throw new Error(updateError.message);
                     }
 
-                    this.purchaseStatus = 'purchased';
+                    purchaseStatus.value = 'purchased';
                 } else {
                     const { error: insertError } = await supabase.from('user_balances').insert([
                         {
                             user_id: storeAuth.session?.id,
-                            [paymentType]: amount,
-                        },
+                            [paymentType]: amount
+                        }
                     ]);
 
                     if (insertError) {
                         throw new Error(insertError.message);
                     }
 
-                    this.purchaseStatus = 'purchased';
+                    purchaseStatus.value = 'purchased';
                 }
             } catch (error) {
                 console.error('Error during balance update:', error);
             } finally {
-                this.pending = false;
+                pending.value = false;
             }
-        },
+        };
+
+        return {
+            pending,
+            balance,
+            sessionId,
+            purchaseStatus,
+            balanceAfterTrade,
+            topUpBalance,
+            displayBalance,
+            updateBalance
+        };
     },
-});
+    {
+        persist: {
+            pick: ['sessionId']
+        }
+    }
+);
 
 if (import.meta.hot) {
     import.meta.hot.accept(acceptHMRUpdate(useStoreBalance, import.meta.hot));

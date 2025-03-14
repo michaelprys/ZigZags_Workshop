@@ -1,6 +1,6 @@
 import { Dialog, Notify } from 'quasar';
-import { useStoreAuth } from 'src/stores/useStoreAuth';
-import { type Good, useStoreGoods } from 'src/stores/useStoreGoods';
+import { useStoreAuth } from 'src/stores/storeAuth';
+import { type Good, useStoreGoods } from 'src/stores/storeGoods';
 import { computed } from 'vue';
 import { useRoute } from 'vue-router';
 
@@ -23,9 +23,9 @@ export const useManageStash = () => {
                     icon: 'close',
                     color: color === 'positive' ? 'dark' : 'primary',
                     dense: true,
-                    size: 'xs',
-                },
-            ],
+                    size: 'xs'
+                }
+            ]
         });
     };
 
@@ -46,9 +46,9 @@ export const useManageStash = () => {
                 ok: {
                     label: 'Ok',
                     color: 'secondary',
-                    'text-color': 'dark',
+                    'text-color': 'dark'
                 },
-                style: 'padding: 1rem',
+                style: 'padding: 1rem'
             });
         } else {
             let existingGood = storeGoods.stashGoods.find((good) => good.slug === selected.slug);
@@ -61,7 +61,7 @@ export const useManageStash = () => {
                     slug: selected.slug,
                     category: selected.category,
                     image_url: selected.image_url,
-                    price: selected.price,
+                    price: selected.price
                 };
                 storeGoods.stashGoods.push(existingGood);
 
@@ -84,7 +84,7 @@ export const useManageStash = () => {
     const basePrice = computed(() => {
         return (basePrice.value = storeGoods.stashGoods.reduce(
             (total, currentGood) => total + currentGood.price * currentGood.quantity,
-            0,
+            0
         ));
     });
 
@@ -115,6 +115,6 @@ export const useManageStash = () => {
         addToStash,
         removeFromStash,
         decreaseGoodQuantity,
-        increaseGoodQuantity,
+        increaseGoodQuantity
     };
 };

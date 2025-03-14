@@ -1,10 +1,10 @@
 <script setup lang="ts">
 import gsap from 'gsap';
-import { useStoreAuth } from 'src/stores/useStoreAuth';
-import { useStoreGoods } from 'src/stores/useStoreGoods';
+import { useStoreAuth } from 'src/stores/storeAuth';
+import { useStoreGoods } from 'src/stores/storeGoods';
 import { useManageStash } from 'src/use/useManageStash';
 import { useTransition } from 'src/use/useTransition';
-import { onMounted, reactive, ref, watch, watchEffect } from 'vue';
+import { onMounted, reactive, ref, watch } from 'vue';
 
 const { basePrice, goblinTax, removeFromStash, increaseGoodQuantity, decreaseGoodQuantity } =
     useManageStash();
@@ -13,7 +13,6 @@ const storeGoods = useStoreGoods();
 
 const { transitionName, applyTransition } = useTransition();
 
-const trade = ref(false);
 const vaultAccessed = ref(false);
 
 const emit = defineEmits(['openDialog']);
@@ -28,7 +27,7 @@ onMounted(async () => {
 const tweened = reactive({
     tweenedBasePrice: basePrice.value,
     tweenedGoblinTax: goblinTax.value,
-    tweenedFinalPrice: basePrice.value + goblinTax.value,
+    tweenedFinalPrice: basePrice.value + goblinTax.value
 });
 
 watch([basePrice, goblinTax], ([newBasePrice, newGoblinTax]) => {
@@ -36,7 +35,7 @@ watch([basePrice, goblinTax], ([newBasePrice, newGoblinTax]) => {
         duration: 0.5,
         tweenedBasePrice: newBasePrice,
         tweenedGoblinTax: newGoblinTax,
-        tweenedFinalPrice: newBasePrice + newGoblinTax,
+        tweenedFinalPrice: newBasePrice + newGoblinTax
     });
 });
 </script>
@@ -45,18 +44,6 @@ watch([basePrice, goblinTax], ([newBasePrice, newGoblinTax]) => {
     <section id="stash" class="column flex-center relative-position">
         <div class="q-pa-md">
             <h1 class="text-center text-h3">Your stash</h1>
-            <!-- <div>
-                    <q-btn
-                        class="q-pa-sm"
-                        color="secondary"
-                        text-color="primary"
-                        size="md"
-                        flat
-                        icon="delete"
-                        dense
-                        @click="storeGoods.stashGoods = []"
-                    />
-                </div> -->
             <div class="flex q-mt-xl">
                 <div dark class="panel q-mr-xl">
                     <TransitionGroup :name="transitionName" tag="ul">
@@ -116,21 +103,21 @@ watch([basePrice, goblinTax], ([newBasePrice, newGoblinTax]) => {
                 </div>
 
                 <div class="column panel-price">
-                    <div class="q-pa-lg panel-price__inner">
-                        <div class="text-subtitle1 flex" style="gap: 0.3125rem">
+                    <div class="panel-price__inner q-pa-lg">
+                        <div class="flex text-subtitle1" style="gap: 0.3125rem">
                             <span class="text-secondary">💰 Base price:</span>
 
                             <span>{{ tweened.tweenedBasePrice.toFixed(0) }} Gold</span>
                         </div>
 
-                        <div class="q-mt-xs text-subtitle1 flex" style="gap: 0.3125rem">
+                        <div class="flex q-mt-xs text-subtitle1" style="gap: 0.3125rem">
                             <span class="text-secondary">💎 Goblin Tax:</span>
                             <span>{{ tweened.tweenedGoblinTax.toFixed(0) }} Gold</span>
                         </div>
 
                         <div class="q-my-md separator-single"></div>
 
-                        <div class="text-subtitle1 flex" style="gap: 0.3125rem">
+                        <div class="flex text-subtitle1" style="gap: 0.3125rem">
                             <span class="text-secondary">Final Price: </span>
                             <span>{{ tweened.tweenedFinalPrice.toFixed(0) }} Gold</span>
                         </div>

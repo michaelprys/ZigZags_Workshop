@@ -1,22 +1,25 @@
 <script setup lang="ts">
 import { useQuasar } from 'quasar';
-import IconLoot from 'src/components/icons/IconLoot.vue';
 import ItemBalance from 'src/components/items/ItemBalance.vue';
-import { useStoreBalance } from 'src/stores/useStoreBalance';
-import { useStoreGoods } from 'src/stores/useStoreGoods';
+import { useStoreBalance } from 'src/stores/storeBalance';
+import { useStoreGoods } from 'src/stores/storeGoods';
+import { useStoreInventory } from 'src/stores/storeInventory';
 import { useManageStash } from 'src/use/useManageStash';
 import { delay } from 'src/utils/delay';
-import { computed, reactive, ref, watchEffect } from 'vue';
+import { computed, reactive, ref, useTemplateRef, watchEffect } from 'vue';
 import { useRouter } from 'vue-router';
 
 const $q = useQuasar();
-const myForm = ref(null);
+const myForm = useTemplateRef('my-form');
 const pending = ref(false);
 const router = useRouter();
 const storeGoods = useStoreGoods();
+const storeInventory = useStoreInventory();
 const storeBalance = useStoreBalance();
 
-defineProps(['modelValue']);
+defineProps<{
+    modelValue: boolean;
+}>();
 const emit = defineEmits(['update:modelValue']);
 
 const { finalPrice } = useManageStash();
@@ -27,7 +30,7 @@ const paymentTypes = computed(() => {
     return [
         { label: `Gold (${finalPrice.value})`, value: 'gold' },
         { label: `Emberheart Rubies (${emberheartRubies.value})`, value: 'emberheart_rubies' },
-        { label: `Gambler's Lootbox (${gamblersLootbox.value})`, value: 'gamblers_lootbox' },
+        { label: `Gambler's Lootbox (${gamblersLootbox.value})`, value: 'gamblers_lootbox' }
     ];
 });
 
@@ -36,7 +39,7 @@ const paymentType = ref(null);
 const paymentData = reactive({
     gold: finalPrice.value,
     emberheart_rubies: emberheartRubies,
-    gamblers_lootbox: gamblersLootbox,
+    gamblers_lootbox: gamblersLootbox
 });
 
 let selectedPaymentType = null;
@@ -51,12 +54,15 @@ const validateFunds = (selectedPaymentType) => {
     return true;
 };
 
+const tradeCancelled = ref(false);
+
 const trade = async () => {
     await storeBalance.updateBalance(selectedPaymentType, paymentData[selectedPaymentType]);
-    await storeGoods.savePurchasedGoods();
+    await storeInventory.saveGoodsToInventory();
 };
 
 const handleTrade = async () => {
+    tradeCancelled.value = false;
     pending.value = true;
 
     if (!myForm.value) return;
@@ -68,29 +74,41 @@ const handleTrade = async () => {
                 message: "Something went wrong. Where's my gold?!",
                 position: 'bottom-right',
                 classes: 'toast',
-                actions: [{ icon: 'close', color: 'dark', dense: true, size: 'xs' }],
+                actions: [{ icon: 'close', color: 'dark', dense: true, size: 'xs' }]
             });
             pending.value = false;
             return;
         }
 
-        await Promise.all([delay(3000), trade()]);
-        sessionStorage.setItem('purchaseCompleted', 'true');
-        await router.push('purchase-success');
+        if (tradeCancelled.value) {
+            return;
+        }
 
-        storeBalance.purchaseStatus = '';
-        storeGoods.stashGoods = [];
+        await Promise.all([
+            delay(3000).then(async () => {
+                if (tradeCancelled.value) {
+                    return;
+                }
+                await trade();
 
-        $q.notify({
-            type: 'positive',
-            textColor: 'dark',
-            message: "Pleasure doin' business!",
-            position: 'bottom-right',
-            classes: 'toast',
-            actions: [{ icon: 'close', color: 'dark', dense: true, size: 'xs' }],
-        });
+                sessionStorage.setItem('purchaseCompleted', 'true');
+                await router.push('purchase-success');
 
-        emit('update:modelValue', false);
+                storeBalance.purchaseStatus = '';
+                storeGoods.stashGoods = [];
+
+                $q.notify({
+                    type: 'positive',
+                    textColor: 'dark',
+                    message: "Pleasure doin' business!",
+                    position: 'bottom-right',
+                    classes: 'toast',
+                    actions: [{ icon: 'close', color: 'dark', dense: true, size: 'xs' }]
+                });
+
+                emit('update:modelValue', false);
+            })
+        ]);
     } catch (err) {
         console.error('Validation error:', err);
     } finally {
@@ -98,19 +116,27 @@ const handleTrade = async () => {
     }
 };
 
+const cancelTrade = () => {
+    tradeCancelled.value = true;
+    pending.value = false;
+};
+
 watchEffect(() => {
     if (paymentType.value) {
         selectedPaymentType = paymentType.value?.value;
     }
+
+    console.log(pending.value);
 });
 </script>
 
 <template>
     <Teleport to="body">
         <q-dialog
-            :modelValue="modelValue"
-            @update:modelValue="(val) => emit('update:modelValue', val)"
+            @hide="tradeCancelled = true"
+            :model-value="modelValue"
             backdrop-filter="blur(8px); brightness(60%)"
+            @update:model-value="(val) => emit('update:modelValue', val)"
         >
             <div class="modal">
                 <div class="flex items-center justify-between q-pb-none">
@@ -120,7 +146,7 @@ watchEffect(() => {
                 </div>
 
                 <div>
-                    <q-form ref="myForm" class="q-gutter-md q-mt-lg" @submit.prevent="handleTrade">
+                    <q-form ref="my-form" class="q-gutter-md q-mt-lg" @submit.prevent="handleTrade">
                         <div class="flex" style="gap: 1rem">
                             <q-select
                                 v-model="paymentType"
@@ -137,7 +163,7 @@ watchEffect(() => {
                                         val && val.value
                                             ? true
                                             : 'Please select currency of choice',
-                                    (val) => validateFunds(val.value),
+                                    (val) => validateFunds(val.value)
                                 ]"
                             ></q-select>
                         </div>
@@ -159,6 +185,7 @@ watchEffect(() => {
 
                             <q-btn
                                 v-close-popup
+                                @click="cancelTrade"
                                 label="Close"
                                 flat
                                 color="secondary"

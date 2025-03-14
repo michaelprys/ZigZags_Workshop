@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { useStoreBalance } from 'src/stores/useStoreBalance';
+import { useStoreBalance } from 'src/stores/storeBalance';
 import { onMounted } from 'vue';
 
 const storeBalance = useStoreBalance();

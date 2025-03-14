@@ -1,6 +1,10 @@
 import { Notify } from 'quasar';
 
-export const callToast = (message: string, isSuccess: boolean, position?: string = 'bottom-right') => {
+export const callToast = (
+    message: string,
+    isSuccess: boolean,
+    position?: string = 'bottom-right'
+) => {
     Notify.create({
         timeout: 2000,
         message,
@@ -8,6 +12,6 @@ export const callToast = (message: string, isSuccess: boolean, position?: string
         textColor: isSuccess ? 'dark' : 'primary',
         position,
         progress: true,
-        progressClass: 'progress',
+        progressClass: 'progress'
     });
 };

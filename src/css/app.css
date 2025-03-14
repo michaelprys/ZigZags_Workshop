@@ -63,7 +63,8 @@ input::-webkit-inner-spin-button {
 
 body {
     font-family: 'oblivionregular';
-    background: linear-gradient(
+    background:
+        linear-gradient(
             oklch(from var(--q-dark-page) l c h / 0.23),
             oklch(from var(--q-dark-page) l c h / 0.23)
         ),

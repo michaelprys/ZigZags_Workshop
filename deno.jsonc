@@ -1,6 +1,5 @@
 {
     "compilerOptions": {
-        "lib": ["deno.ns", "deno.window"],
-    },
-    // "exclude": ["src"]
+        "lib": ["deno.ns", "deno.window"]
+    }
 }

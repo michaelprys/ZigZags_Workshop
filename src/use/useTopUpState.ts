@@ -1,23 +1,18 @@
-import { useStoreAuth } from 'src/stores/useStoreAuth';
-import { useStoreGoods } from 'src/stores/useStoreGoods';
 import { computed, ref } from 'vue';
 
 export const useTopUpState = () => {
-    const storeAuth = useStoreAuth();
-    const storeGoods = useStoreGoods();
-
     const paymentTypes = [
         { value: 'gold', label: 'Gold', price: import.meta.env.VITE_PRICE_GOLD },
         {
             value: 'emberheart_rubies',
             label: 'Emberheart Rubies',
-            price: import.meta.env.VITE_PRICE_EMBERHEART_RUBIES,
+            price: import.meta.env.VITE_PRICE_EMBERHEART_RUBIES
         },
         {
             value: 'gamblers_lootbox',
             label: "Gambler's Lootbox",
-            price: import.meta.env.VITE_PRICE_GAMBLERS_LOOTBOX,
-        },
+            price: import.meta.env.VITE_PRICE_GAMBLERS_LOOTBOX
+        }
     ];
 
     const paymentType = ref(paymentTypes[0]);
@@ -58,6 +53,6 @@ export const useTopUpState = () => {
         resetAmount,
         increment,
         decrement,
-        calculatedAmount,
+        calculatedAmount
     };
 };

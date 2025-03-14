@@ -1,11 +1,14 @@
 <script setup lang="ts">
 import { useQuasar } from 'quasar';
-import { useStoreGoods } from 'src/stores/useStoreGoods';
+import { useStoreInventory } from 'src/stores/storeInventory';
 import { computed, onMounted } from 'vue';
 import { vDraggable } from 'vue-draggable-plus';
 
-const storeGoods = useStoreGoods();
-const inventoryGoods = computed(() => storeGoods.inventoryGoods);
+const storeInventory = useStoreInventory();
+const { updateGoodSlot, removeGoodFromInventory, loadInventoryGoods } = storeInventory;
+
+const inventoryGoods = computed(() => storeInventory.inventoryGoods);
+
 const $q = useQuasar();
 
 const handleRemoveItem = async (selectedGood) => {
@@ -16,18 +19,18 @@ const handleRemoveItem = async (selectedGood) => {
         ok: {
             label: 'Yes',
             color: 'secondary',
-            'text-color': 'dark',
+            'text-color': 'dark'
         },
         cancel: {
             label: 'No',
             flat: true,
-            'text-color': 'primary',
+            'text-color': 'primary'
         },
-        style: 'padding: 1rem',
+        style: 'padding: 1rem'
     })
         .onOk(async () => {
             try {
-                await storeGoods.removeGoodFromInventory(selectedGood);
+                await removeGoodFromInventory(selectedGood);
             } catch (error) {
                 console.error('Error removing good from inventory: ', error);
             }
@@ -36,8 +39,15 @@ const handleRemoveItem = async (selectedGood) => {
         .onDismiss(() => {});
 };
 
+// const handleSlots = async (event) => {
+//     const goodId = inventoryGoods[event.newIndex].good_id;
+//     const nextSlot = event.newIndex;
+//     await updateGoodSlot(goodId, nextSlot);
+//     await loadInventoryGoods();
+// };
+
 onMounted(async () => {
-    await storeGoods.loadGoodsToInventory();
+    await loadInventoryGoods();
 });
 </script>
 
@@ -47,7 +57,8 @@ onMounted(async () => {
             inventoryGoods,
             {
                 animation: 150,
-            },
+                onUpdate: handleSlots
+            }
         ]"
         class="q-mt-lg slots"
     >
@@ -57,6 +68,18 @@ onMounted(async () => {
 
                 <Transition name="remove">
                     <div v-if="inventoryGoods[idx] && inventoryGoods[idx].goods">
+                        <div
+                            style="
+                                position: absolute;
+                                top: 15px;
+                                z-index: 150;
+                                color: red;
+                                font-weight: bold;
+                                font-size: 24px;
+                            "
+                        >
+                            {{ inventoryGoods[idx].slot }}
+                        </div>
                         <q-tooltip
                             :delay="500"
                             anchor="bottom right"
@@ -71,12 +94,12 @@ onMounted(async () => {
                         </q-tooltip>
 
                         <q-btn
-                            @click="handleRemoveItem(inventoryGoods[idx].good_id)"
                             class="slots__btn-close"
                             dense
                             flat
                             size="xs"
                             icon="close"
+                            @click="handleRemoveItem(inventoryGoods[idx].good_id)"
                         ></q-btn>
 
                         <div class="slots__item-quantity">

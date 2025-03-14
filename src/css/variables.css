@@ -13,5 +13,7 @@
     --q-negative: #9b151f;
     --q-negative-dimmed: #5c0903;
     --q-info: #878582;
+    --q-placeholder-primary: #000000;
+    --q-placeholder-secondary: #1a1917;
     --q-warning: #ff5733;
 }

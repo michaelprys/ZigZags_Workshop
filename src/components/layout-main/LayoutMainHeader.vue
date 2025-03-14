@@ -71,7 +71,8 @@ import IconLoot from 'src/components/icons/IconLoot.vue';
 
 <style scoped>
 .texture {
-    background: linear-gradient(
+    background:
+        linear-gradient(
             0deg,
             rgba(39, 22, 11, 0) -0.01%,
             rgba(39, 22, 11, 0) 20%,

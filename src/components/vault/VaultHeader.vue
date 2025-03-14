@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { useQuasar } from 'quasar';
-import { useStoreAuth } from 'src/stores/useStoreAuth';
-import { useStoreGoods } from 'src/stores/useStoreGoods';
+import { useStoreAuth } from 'src/stores/storeAuth';
+import { useStoreGoods } from 'src/stores/storeGoods';
 import { callToast } from 'src/utils/callToast';
 import supabase from 'src/utils/supabase';
 import { computed, onMounted } from 'vue';
@@ -34,14 +34,14 @@ const alert = () => {
         ok: {
             label: 'Yes',
             color: 'secondary',
-            'text-color': 'dark',
+            'text-color': 'dark'
         },
         cancel: {
             label: 'No',
             flat: true,
-            'text-color': 'primary',
+            'text-color': 'primary'
         },
-        style: 'padding: 1rem',
+        style: 'padding: 1rem'
     })
         .onOk(() => {
             leaveVault()
@@ -96,7 +96,7 @@ onMounted(async () => {
                     <span class="text-caption text-negative">{{ determineFaction }}</span>
                 </q-tooltip>
             </div>
-            <h2 class="text-center text-h6 header__title">
+            <h2 class="header__title text-center text-h6">
                 {{ storeAuth.session?.user_metadata.first_name }}'s Inventory
             </h2>
         </div>

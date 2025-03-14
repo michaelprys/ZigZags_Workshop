@@ -1,12 +1,8 @@
 import { loadStripe } from '@stripe/stripe-js';
-import { useStoreAuth } from 'src/stores/useStoreAuth';
-import { useStoreGoods } from 'src/stores/useStoreGoods';
-import { useTopUpState } from 'src/use/useTopUpState';
 import supabase from 'src/utils/supabase';
 import { ref } from 'vue';
 
 export const useTopUpPayment = (paymentType, topUpAmount, minAmounts) => {
-    const storeAuth = useStoreAuth();
     const stripePromise = loadStripe(import.meta.env.VITE_PUBLISHABLE_KEY);
     const pending = ref(false);
 
@@ -36,7 +32,7 @@ export const useTopUpPayment = (paymentType, topUpAmount, minAmounts) => {
 
                 const {
                     data: { session },
-                    error,
+                    error
                 } = await supabase.auth.getSession();
 
                 if (error || !session) {
@@ -48,8 +44,8 @@ export const useTopUpPayment = (paymentType, topUpAmount, minAmounts) => {
                     sessionData: {
                         price: paymentType.value?.price,
                         quantity: topUpAmount.value,
-                        paymentType: paymentType.value.value,
-                    },
+                        paymentType: paymentType.value.value
+                    }
                 };
 
                 const res = await fetch(
@@ -58,10 +54,10 @@ export const useTopUpPayment = (paymentType, topUpAmount, minAmounts) => {
                         method: 'POST',
                         headers: {
                             'Content-Type': 'application/json',
-                            Authorization: `Bearer ${session.access_token}`,
+                            Authorization: `Bearer ${session.access_token}`
                         },
-                        body: JSON.stringify(sessionData),
-                    },
+                        body: JSON.stringify(sessionData)
+                    }
                 );
 
                 const contentType = res.headers.get('Content-Type');
@@ -73,7 +69,7 @@ export const useTopUpPayment = (paymentType, topUpAmount, minAmounts) => {
 
                     if (sessionID) {
                         const { error } = stripe.redirectToCheckout({
-                            sessionId: sessionID,
+                            sessionId: sessionID
                         });
 
                         if (error) {
@@ -94,10 +90,8 @@ export const useTopUpPayment = (paymentType, topUpAmount, minAmounts) => {
         }
     };
 
-    const receivePaymentData = async () => {};
-
     return {
         pending,
-        handlePayment,
+        handlePayment
     };
 };

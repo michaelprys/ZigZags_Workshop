@@ -1,8 +1,8 @@
 <script setup lang="ts">
-import { ref } from 'vue';
-import supabase from 'src/utils/supabase';
-import { useRouter } from 'vue-router';
 import { callToast } from 'src/utils/callToast';
+import supabase from 'src/utils/supabase';
+import { ref, useTemplateRef } from 'vue';
+import { useRouter } from 'vue-router';
 
 const router = useRouter();
 
@@ -11,7 +11,7 @@ const pending = ref(false);
 
 const isPwd = ref(true);
 
-const setNewKeyForm = ref(null);
+const setNewKeyForm = useTemplateRef('set-new-key-form');
 
 const setNewKey = async () => {
     pending.value = true;
@@ -21,14 +21,14 @@ const setNewKey = async () => {
 
         if (valid) {
             const { error } = await supabase.auth.updateUser({
-                password: vaultKey.value,
+                password: vaultKey.value
             });
 
             if (error) {
                 callToast(
                     error ? "Couldn't set a new vault key" : 'Something went wrong',
                     false,
-                    'bottom',
+                    'bottom'
                 );
             } else {
                 callToast('The new vault key has been set', true, 'bottom');
@@ -54,7 +54,7 @@ const setNewKey = async () => {
         >
             <div class="q-px-md" style="max-width: 40.25rem; width: 100%">
                 <q-form
-                    ref="setNewKeyForm"
+                    ref="set-new-key-form"
                     class="shadow-10 vault-form"
                     @keydown.enter.prevent="setNewKey"
                     @submit.prevent="setNewKey"
@@ -81,7 +81,7 @@ const setNewKey = async () => {
                                 :rules="[
                                     (val) =>
                                         (val && val.length >= 6) ||
-                                        'Too easy! Must be 6 characters at least.',
+                                        'Too easy! Must be 6 characters at least.'
                                 ]"
                             >
                                 <template #append>

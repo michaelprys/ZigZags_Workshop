@@ -170,7 +170,7 @@
                                 <p class="q-mt-lg text-subtitle1">
                                     Attention! ZigZag here. So listen up, if you want to get into
                                     the Black Market, there's just one thing you need — An
-                                    <strong>invitation </strong>, and I can sell you one. Why waste
+                                    <strong>invitation </strong>, and we can sell you one. Why waste
                                     time and energy getting the access when all you need is right
                                     here with me? To get in, you'll need to find the old sewers near
                                     the Rat's Tail Tavern. It's a bit of a maze down there, traps

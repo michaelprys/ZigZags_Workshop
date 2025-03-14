@@ -1,25 +1,31 @@
 <script setup lang="ts">
-import { ref, onMounted, computed } from 'vue';
-import { useStoreGoods } from 'src/stores/useStoreGoods';
+import { useStoreGoods } from 'src/stores/storeGoods';
+import { computed, onMounted, ref } from 'vue';
 import { useRouter } from 'vue-router';
 
 const router = useRouter();
 
 const storeGoods = useStoreGoods();
 const model = ref(null);
-const suggestions = ref([]);
+
+type Suggestion = {
+    label: string;
+    value: string;
+    link: string;
+};
+
+const suggestions = ref<Suggestion[]>([]);
 
 const formattedSuggestions = computed(() => {
     return storeGoods.suggestedGoods.map((good) => ({
         label: good.name,
         value: good.slug,
-        link: `/goods/${good.category}/${good.slug}`,
+        link: `/goods/${good.category}/${good.slug}`
     }));
 });
 
-const filterFn = (val, update) => {
+const filterFn = (val: string, update: (fn: () => void) => void) => {
     if (val.length < 1) {
-        abort();
         return;
     }
 
@@ -33,14 +39,14 @@ const filterFn = (val, update) => {
     update(() => {
         const needle = val.toLowerCase();
         suggestions.value = formattedSuggestions.value.filter(
-            (v) => v.label.toLowerCase().indexOf(needle) > -1,
+            (v) => v.label.toLowerCase().indexOf(needle) > -1
         );
     });
 };
 
-const goToLink = async (option) => {
+const goToLink = async (option: Suggestion) => {
     const foundSuggestion = storeGoods.suggestedGoods.find(
-        (suggestion) => suggestion.slug === option.value,
+        (suggestion) => suggestion.slug === option.value
     );
 
     if (foundSuggestion) {
@@ -81,7 +87,7 @@ onMounted(async () => {
                             input-debounce="0"
                             style="width: 100%"
                             @filter="filterFn"
-                            @update:modelValue="goToLink"
+                            @update:model-value="goToLink"
                         >
                             <template #option="scope">
                                 <q-item clickable @click="goToLink(scope.opt)">

@@ -20,6 +20,6 @@ export const useTransition = () => {
 
     return {
         transitionName,
-        applyTransition,
+        applyTransition
     };
 };

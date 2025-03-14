@@ -1,13 +1,13 @@
 <script setup lang="ts">
-import { ref } from 'vue';
-import supabase from 'src/utils/supabase';
 import { callToast } from 'src/utils/callToast';
 import { delay } from 'src/utils/delay';
+import supabase from 'src/utils/supabase';
+import { ref, useTemplateRef } from 'vue';
 
 const mailbox = ref('');
 const pending = ref(false);
 
-const orderKeyForm = ref(null);
+const orderKeyForm = useTemplateRef('order-key-form');
 
 const orderKey = async () => {
     pending.value = true;
@@ -18,22 +18,22 @@ const orderKey = async () => {
         if (valid) {
             const { error } = await Promise.all([
                 supabase.auth.resetPasswordForEmail(mailbox.value, {
-                    redirectTo: 'http://localhost:9000/set-new-vault-key',
+                    redirectTo: 'http://localhost:9000/set-new-vault-key'
                 }),
-                delay(500),
+                delay(500)
             ]);
 
             if (error) {
                 callToast(
                     error ? 'Invalid mailbox format' : 'Something went wrong',
                     false,
-                    'bottom',
+                    'bottom'
                 );
             } else {
                 callToast(
                     "If this mailbox exists in our list, the key's on its way!",
                     true,
-                    'bottom',
+                    'bottom'
                 );
             }
         } else {
@@ -57,7 +57,7 @@ const orderKey = async () => {
         >
             <div class="q-px-md" style="max-width: 40.25rem; width: 100%">
                 <q-form
-                    ref="orderKeyForm"
+                    ref="order-key-form"
                     class="shadow-10 vault-form"
                     @keydown.enter.prevent="orderKey"
                     @submit.prevent="orderKey"
@@ -84,7 +84,7 @@ const orderKey = async () => {
                                     (val) =>
                                         val.length > 0 ||
                                         'Got to have a mailbox to order a new vault key.',
-                                    (val) => /.+@.+\..+/.test(val) || 'Enter proper mailbox.',
+                                    (val) => /.+@.+\..+/.test(val) || 'Enter proper mailbox.'
                                 ]"
                             />
                         </div>

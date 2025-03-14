@@ -1,8 +1,8 @@
 <script setup lang="ts">
-import { useStoreGoods } from 'src/stores/useStoreGoods';
+import { useStoreGoods } from 'src/stores/storeGoods';
 import { useManageStash } from 'src/use/useManageStash';
 import { useMoveImage } from 'src/use/useMoveImage';
-import { ref } from 'vue';
+import { ref, useTemplateRef } from 'vue';
 import { useRouter } from 'vue-router';
 
 const router = useRouter();
@@ -12,7 +12,8 @@ const isAuth = storeGoods.selectedGood?.requires_access;
 
 const { addToStash } = useManageStash();
 
-const imgRef = ref<HTMLImageElement | null>(null);
+const imgRef = useTemplateRef('img-ref');
+
 const { moveImage, resetImage } = useMoveImage(imgRef);
 </script>
 
@@ -31,7 +32,7 @@ const { moveImage, resetImage } = useMoveImage(imgRef);
                 <div class="wrapper">
                     <div class="image-wrapper">
                         <img
-                            ref="imgRef"
+                            ref="img-ref"
                             class="image"
                             :src="storeGoods.selectedGood.image_url"
                             @mousemove="moveImage"

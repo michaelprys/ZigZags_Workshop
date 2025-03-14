@@ -18,6 +18,6 @@ export const useMoveImage = (image: HTMLImageElement | null) => {
 
     return {
         moveImage,
-        resetImage,
+        resetImage
     };
 };

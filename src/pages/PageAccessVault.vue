@@ -1,8 +1,8 @@
 <script setup lang="ts">
-import { ref } from 'vue';
-import supabase from 'src/utils/supabase';
-import { useRouter } from 'vue-router';
 import { callToast } from 'src/utils/callToast';
+import supabase from 'src/utils/supabase';
+import { ref, useTemplateRef } from 'vue';
+import { useRouter } from 'vue-router';
 
 const router = useRouter();
 
@@ -11,7 +11,7 @@ const vaultKey = ref('');
 
 const isPwd = ref(true);
 
-const accessVaultForm = ref(null);
+const accessVaultForm = useTemplateRef('access-vault-form');
 
 const accessVault = async () => {
     try {
@@ -20,13 +20,13 @@ const accessVault = async () => {
         if (valid) {
             const { error } = await supabase.auth.signInWithPassword({
                 email: mailbox.value,
-                password: vaultKey.value,
+                password: vaultKey.value
             });
 
             if (error) {
                 callToast(
                     error ? 'Wrong vault key or mailbox. Try again' : 'Something went wrong',
-                    false,
+                    false
                 );
             } else {
                 await router.push({ name: 'vault' });
@@ -50,7 +50,7 @@ const accessVault = async () => {
         >
             <div class="q-px-md" style="max-width: 40.25rem; width: 100%">
                 <q-form
-                    ref="accessVaultForm"
+                    ref="access-vault-form"
                     class="shadow-10 vault-form"
                     @keydown.enter.prevent="accessVault"
                     @submit.prevent="accessVault"
@@ -72,7 +72,7 @@ const accessVault = async () => {
                                 :rules="[
                                     (val) =>
                                         val.length > 0 ||
-                                        'Got to have a mailbox to access the vault.',
+                                        'Got to have a mailbox to access the vault.'
                                 ]"
                             />
                             <q-input
@@ -86,7 +86,7 @@ const accessVault = async () => {
                                 lazy-rules="ondemand"
                                 :rules="[
                                     (val) =>
-                                        (val && val.length >= 6) || 'Must have a valid vault key.',
+                                        (val && val.length >= 6) || 'Must have a valid vault key.'
                                 ]"
                             >
                                 <template #append>

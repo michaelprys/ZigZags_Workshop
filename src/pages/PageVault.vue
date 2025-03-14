@@ -2,9 +2,6 @@
 import VaultContent from 'src/components/vault/VaultContent.vue';
 import VaultFooter from 'src/components/vault/VaultFooter.vue';
 import VaultHeader from 'src/components/vault/VaultHeader.vue';
-import { ref } from 'vue';
-
-const balanceDialog = ref(false);
 </script>
 
 <template>
@@ -18,7 +15,7 @@ const balanceDialog = ref(false);
             <div class="bg"></div>
 
             <div class="q-px-md">
-                <div class="q-pa-lg inventory">
+                <div class="inventory q-pa-lg">
                     <div class="inventory__inner">
                         <VaultHeader />
                         <VaultContent />

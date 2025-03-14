@@ -38,9 +38,11 @@
                             Warning: Enter at your own risk! Once ya buy somethin', it's yours — no
                             refunds. And don't bother tryin' to haggle!
                         </p>
-                        <q-btn class="q-mt-md text-subtitle1" outline color="secondary">
-                            <RouterLink :to="{ name: 'merchant' }">Get an invitation</RouterLink>
-                        </q-btn>
+                        <RouterLink :to="{ name: 'black-market-access' }">
+                            <q-btn class="q-mt-md text-subtitle1" outline color="secondary">
+                                Get invitation
+                            </q-btn></RouterLink
+                        >
                     </div>
                 </div>
             </div>

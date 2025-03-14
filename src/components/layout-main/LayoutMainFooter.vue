@@ -2,7 +2,6 @@
 import { onMounted, ref, watch } from 'vue';
 import { useRoute } from 'vue-router';
 
-const footerImageRef = ref<HTMLImageElement | null>(null);
 const isVideoLoaded = ref(false);
 const onLoaded = () => {
     isVideoLoaded.value = true;
@@ -29,7 +28,7 @@ const quotes = [
     "A goblin's silence is worth more than gold... unless you're buying.",
     'The shadows whisper, but only the brave dare to listen.',
     'A vault is only as strong as its keeper.',
-    'Some locks are meant to be opened, some secrets are meant to be kept.',
+    'Some locks are meant to be opened, some secrets are meant to be kept.'
 ];
 const quote = ref<string>('');
 const lastQuoteIdx = ref(null);
@@ -47,7 +46,7 @@ watch(
     () => {
         quote.value = randomizeQuote();
     },
-    { immediate: true },
+    { immediate: true }
 );
 </script>
 
@@ -56,7 +55,6 @@ watch(
         <div class="footer__zigzag">
             <div class="footer__wrapper">
                 <q-img
-                    ref="footerImageRef"
                     class="footer__image"
                     src="~assets/footer/zigzag.avif"
                     style="width: 9.375rem; height: 9.375rem"
@@ -121,7 +119,8 @@ watch(
     transform: translateX(-50%);
     width: 4rem;
     height: 4rem;
-    background: linear-gradient(
+    background:
+        linear-gradient(
             oklch(from var(--q-dark-page) l c h / 0.23),
             oklch(from var(--q-dark-page) l c h / 0.23)
         ),

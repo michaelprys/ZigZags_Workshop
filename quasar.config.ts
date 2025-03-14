@@ -1,86 +1,43 @@
 import { defineConfig } from '#q-app/wrappers';
+import VitePluginChecker from 'vite-plugin-checker';
 
-export default defineConfig(() => {
-    return {
-        boot: ['quasar-defaults'],
-
-        css: ['app.css', 'variables.css', 'common.css'],
-
-        extras: ['roboto-font', 'material-icons'],
-
-        htmlVariables: {
-            productName: "Zigzag's Workshop",
-        },
-
-        build: {
-            target: {
-                browser: ['es2022', 'firefox115', 'chrome115', 'safari14'],
-                node: 'node20',
-            },
-
-            typescript: {
-                strict: true,
-                vueShim: true,
-            },
-
-            vueRouterMode: 'hash',
-
-            vitePlugins: [
-                [
-                    {
-                        eslint: {
-                            lintCommand:
-                                'eslint -c ./eslint.config.js "./src*/**/*.{ts,js,mjs,cjs,vue}"',
-                            useFlatConfig: true,
-                        },
-                        overlay: false,
-                    },
-                    { server: false },
-                ],
-            ],
-        },
-        devServer: {
-            open: false,
-        },
-
-        framework: {
-            plugins: ['Notify', 'Dialog'],
-        },
-
-        animations: [],
-
-        ssr: {
-            prodPort: 3000,
-
-            middlewares: ['render'],
-
-            pwa: false,
-        },
-        pwa: {
-            workboxMode: 'GenerateSW',
-        },
-
-        cordova: {},
-
-        capacitor: {
-            hideSplashscreen: true,
-        },
-
-        electron: {
-            preloadScripts: ['electron-preload'],
-
-            inspectPort: 5858,
-
-            bundler: 'packager',
-
-            packager: {},
-
-            builder: {
-                appId: 'zigzags-workshop',
-            },
-        },
-        bex: {
-            extraScripts: [],
-        },
-    };
-});
+export default defineConfig(() => ({
+    boot: ['quasar-defaults', 'query'],
+    css: ['app.css', 'variables.css', 'common.css'],
+    extras: ['roboto-font', 'material-icons'],
+    htmlVariables: { productName: "Zigzag's Workshop" },
+    build: {
+        target: { browser: ['es2022', 'firefox115', 'chrome115', 'safari14'], node: 'node20' },
+        typescript: { strict: true, vueShim: true },
+        vueRouterMode: 'hash',
+        vitePlugins: [
+            VitePluginChecker({
+                typescript: true,
+                vueTsc: true,
+                overlay: {
+                    initialIsOpen: false,
+                    position: 'bl',
+                    panelStyle: `
+                    background-color: #0B141E;
+                    color: #ffffff;
+                    padding: 1rem;
+                    border-radius: .5rem;
+                    border: 1px solid #444444;
+                    box-shadow: 0 .25rem .5rem rgba(0, 0, 0, 0.3);
+                    font-family: Arial, sans-serif;
+                `,
+                    badgeStyle: `
+                    background-color: transparent;
+                    color: #a8d0e6;
+                    font-size: .875rem;
+                    padding: .5rem 1rem;
+                    opacity: 0.5;
+                    filter: grayscale(1)
+                `
+                }
+            })
+        ]
+    },
+    devServer: { open: false },
+    framework: { plugins: ['Notify', 'Dialog'] }
+}));

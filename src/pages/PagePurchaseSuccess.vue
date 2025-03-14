@@ -2,7 +2,7 @@
     <section id="purchase-success" class="column flex-center relative-position">
         <div class="column flex-center" style="max-width: 34rem; width: 100%">
             <q-img
-                src="~assets/stash/success-stash.jpg"
+                src="~assets/stash/success-stash.avif"
                 width="1024px"
                 height="1024px"
                 style="border-radius: 50%; filter: grayscale(0.2); width: 12.5rem; height: 100%"

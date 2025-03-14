@@ -1,12 +1,12 @@
 <script setup lang="ts">
 import { callToast } from 'src/utils/callToast';
 import supabase from 'src/utils/supabase';
-import { ref } from 'vue';
+import { ref, useTemplateRef } from 'vue';
 import { useRouter } from 'vue-router';
 
 const router = useRouter();
 
-const setupVaultForm = ref(null);
+const setupVaultForm = useTemplateRef('setup-vault-form');
 const name = ref('');
 const mailbox = ref('');
 const vaultKey = ref('');
@@ -33,9 +33,9 @@ const setupVault = async () => {
                 options: {
                     data: {
                         first_name: name.value,
-                        faction: faction.value,
-                    },
-                },
+                        faction: faction.value
+                    }
+                }
             });
 
             if (error) {
@@ -64,7 +64,7 @@ const setupVault = async () => {
         >
             <div class="q-px-md" style="max-width: 40.25rem; width: 100%">
                 <q-form
-                    ref="setupVaultForm"
+                    ref="setup-vault-form"
                     class="shadow-10 vault-form"
                     @keydown.enter.prevent="setupVault"
                     @submit.prevent="setupVault"
@@ -85,7 +85,7 @@ const setupVault = async () => {
                                 label="True name *"
                                 lazy-rules="ondemand"
                                 :rules="[
-                                    (val) => val.length > 0 || 'No name? How do we call ya then?',
+                                    (val) => val.length > 0 || 'No name? How do we call ya then?'
                                 ]"
                             />
                             <q-input
@@ -100,7 +100,7 @@ const setupVault = async () => {
                                     (val) =>
                                         val.length > 0 ||
                                         'Got to have a mailbox to order a new vault key.',
-                                    (val) => /.+@.+\..+/.test(val) || 'Enter proper mailbox.',
+                                    (val) => /.+@.+\..+/.test(val) || 'Enter proper mailbox.'
                                 ]"
                             />
                             <q-input
@@ -115,7 +115,7 @@ const setupVault = async () => {
                                 :rules="[
                                     (val) =>
                                         (val && val.length >= 6) ||
-                                        'The key\'s too easy. Should be least 6 chars',
+                                        'The key\'s too easy. Should be least 6 chars'
                                 ]"
                                 ><template #append>
                                     <q-icon
@@ -158,7 +158,7 @@ const setupVault = async () => {
                                 label="Your faction *"
                                 lazy-rules="ondemand"
                                 :rules="[
-                                    (val) => (val && val.length > 0) || 'Who do you fight for?',
+                                    (val) => (val && val.length > 0) || 'Who do you fight for?'
                                 ]"
                             />
                         </div>

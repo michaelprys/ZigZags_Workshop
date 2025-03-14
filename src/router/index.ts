@@ -1,5 +1,6 @@
 import { defineRouter } from '#q-app/wrappers';
-import { useStoreAuth } from 'src/stores/useStoreAuth';
+import { useStoreAuth } from 'src/stores/storeAuth';
+import { delay } from 'src/utils/delay';
 import { createRouter, createWebHistory } from 'vue-router';
 import routes from './routes';
 
@@ -11,17 +12,17 @@ export default defineRouter(function () {
             if (to.hash) {
                 return {
                     el: to.hash,
-                    behavior: 'smooth',
+                    behavior: 'smooth'
                 };
             }
 
-            if (to.query.page) {
-                return { top: savedPosition ? savedPosition.y : 0 };
-            }
+            // if (to.query.page) {
+            //     return { top: savedPosition ? savedPosition.top : 0 };
+            // }
 
-            if (to.path === from.path) {
-                return { top: 0, behavior: 'smooth' };
-            }
+            // if (to.path === from.path) {
+            //     return { top: 0, behavior: 'smooth' };
+            // }
 
             // if (savedPosition) {
             //     return savedPosition;
@@ -32,7 +33,7 @@ export default defineRouter(function () {
             return { top: 0 };
         },
         routes,
-        history: createHistory(process.env.VUE_ROUTER_BASE),
+        history: createHistory(process.env.VUE_ROUTER_BASE)
     });
 
     Router.beforeEach(async (to, from, next) => {
@@ -52,9 +53,18 @@ export default defineRouter(function () {
                 return next({ name: 'access-vault' });
             }
         } else {
-            if (to.name === 'black-market' || to.name === 'black-market-details') {
+            if (to.name === 'black-market') {
                 if (!hasInvitation) {
                     return next({ name: 'black-market-access' });
+                }
+                // next({ name: 'black-market-access' });
+                // await delay(2000);
+            }
+            if (to.name === 'black-market-details') {
+                if (!hasInvitation) {
+                    return next({ name: 'black-market-access' });
+                } else {
+                    next({ name: 'black-market-access' });
                 }
             }
             if (to.name === 'access-vault') {

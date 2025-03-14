@@ -10,7 +10,7 @@
 
 .remove-enter-active,
 .remove-leave-active {
-    transition: opacity 30ms ease-in;
+    transition: opacity 40ms ease-in;
 }
 .remove-enter-from,
 .remove-leave-to {
@@ -34,10 +34,6 @@
     position: absolute;
 }
 
-/* .pagination-enter-from,
-.pagination-leave-to {
-    opacity: 0;
-} */
 .pagination-enter-active,
 .pagination-leave-active {
     transition: opacity 300ms ease-in-out;
@@ -47,8 +43,6 @@
     position: absolute;
 }
 
-/* Divider */
-/* ------------------------------- */
 .separator {
     margin-inline: auto;
     content: '';
@@ -73,13 +67,11 @@
     content: '';
     position: absolute;
 }
-/* Text glow */
-/* ------------------------------- */
+
 .text-glow-dark {
     text-shadow: 0.1875rem 0.3125rem 0.3125rem rgba(21, 21, 21, 0.5);
 }
-/* Vault form */
-/* ------------------------------- */
+
 .vault-form {
     width: 100%;
     height: 100%;
@@ -105,4 +97,10 @@
 }
 .vault-form__title {
     text-shadow: rgba(0, 0, 0, 0.3) 3px 3px 6px;
+}
+
+.skeleton {
+    position: absolute;
+    inset: 0;
+    background-color: var(--q-placeholder-primary);
 }

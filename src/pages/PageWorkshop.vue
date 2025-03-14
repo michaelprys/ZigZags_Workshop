@@ -1,30 +1,59 @@
 <script setup lang="ts">
-import ItemGoods from 'src/components/items/ItemGoods.vue';
-import { useStoreGoods } from 'src/stores/useStoreGoods';
+import ItemCategories from 'src/components/items/ItemCategories.vue';
+import { useStoreGoods } from 'src/stores/storeGoods';
 import { useFilters } from 'src/use/useFilters';
+import { useManageStash } from 'src/use/useManageStash';
 import { usePaginatedGoods } from 'src/use/usePaginatedGoods';
-import { ref } from 'vue';
+import { useTransition } from 'src/use/useTransition';
+import { delay } from 'src/utils/delay';
+import { ref, watch } from 'vue';
 import { useRoute, useRouter } from 'vue-router';
 
+const { applyTransition } = useTransition();
 const storeGoods = useStoreGoods();
 const route = useRoute();
 const router = useRouter();
+const { addToStash } = useManageStash();
 
 const categories = ref([
     { label: 'gadgets', active: false },
     { label: 'trinkets', active: false },
     { label: 'weapons', active: false },
     { label: 'companions', active: false },
-    { label: 'mounts', active: false },
+    { label: 'mounts', active: false }
 ]);
 
-const { currentPage, loadPaginatedGoods } = usePaginatedGoods(false, router);
-const { selectCategories, resetCategories } = useFilters(
+const { currentPage, queryData, isPending, loadPaginatedGoods } = usePaginatedGoods(false, router);
+
+const { updateSelectedCategories, resetCategories } = useFilters(
     categories,
     loadPaginatedGoods,
     route,
     router,
-    currentPage,
+    currentPage
+);
+
+const imgLoaded = ref({});
+
+watch(
+    () => queryData.value,
+    (newGoods) => {
+        if (!newGoods) return;
+
+        newGoods.forEach((good) => {
+            const img = new Image();
+            img.onload = async () => {
+                if (img.complete) {
+                    imgLoaded.value[good?.id] = true;
+                } else {
+                    await delay(200);
+                    imgLoaded.value[good?.id] = true;
+                }
+            };
+            img.src = good?.image_url;
+        });
+    },
+    { immediate: true, deep: true }
 );
 </script>
 
@@ -33,16 +62,158 @@ const { selectCategories, resetCategories } = useFilters(
         <section id="workshop" style="padding-top: 4.625em; padding-bottom: 8.5em">
             <h1 class="text-center text-h3">Explore goods</h1>
 
-            <ItemGoods
-                :resetCategories="resetCategories"
+            <ItemCategories
                 :categories="categories"
-                classCard="card"
-                @update:selected-categories="selectCategories"
-            >
-                <template #pagination>
+                :update-selected-categories="updateSelectedCategories"
+                :reset-categories="resetCategories"
+            />
+
+            <div class="column flex-center q-px-md relative-position">
+                <ul
+                    class="flex flex-center q-gutter-lg q-mt-none q-pl-none"
+                    style="max-width: 84.5rem"
+                >
+                    <li
+                        class="card"
+                        v-for="good in queryData"
+                        :key="good.id"
+                        style="cursor: pointer; z-index: 5"
+                    >
+                        <q-card flat dark>
+                            <div>
+                                <div class="card__image-wrapper relative">
+                                    <Transition name="fade">
+                                        <q-skeleton
+                                            v-if="!imgLoaded[good.id]"
+                                            animation="blink"
+                                            animation-speed="1800"
+                                            dark
+                                            square
+                                            class="skeleton"
+                                            style="
+                                                height: 13.125rem;
+                                                border-top-left-radius: var(--rounded);
+                                                border-top-right-radius: var(--rounded);
+                                            "
+                                        />
+                                    </Transition>
+                                    <q-img class="card__image" :src="good.image_url" />
+                                </div>
+
+                                <q-card-section>
+                                    <div class="relative items-center no-wrap row">
+                                        <Transition>
+                                            <q-skeleton
+                                                v-if="!imgLoaded[good.id]"
+                                                animation="blink"
+                                                dark
+                                                animation-speed="1800"
+                                                class="skeleton"
+                                                style="height: 2rem; margin: 1rem"
+                                            />
+                                        </Transition>
+                                        <div class="col ellipsis text-h6 text-primary">
+                                            {{ good.name }}
+                                        </div>
+                                    </div>
+                                </q-card-section>
+
+                                <q-card-section class="q-pt-none">
+                                    <div class="relative items-center no-wrap row">
+                                        <Transition name="fade">
+                                            <q-skeleton
+                                                v-if="!imgLoaded[good.id]"
+                                                animation="blink"
+                                                dark
+                                                animation-speed="1800"
+                                                class="skeleton"
+                                                style="height: 5.25rem; margin-inline: 1rem"
+                                            />
+                                        </Transition>
+                                        <div>
+                                            <div class="flex items-center" style="gap: 5px">
+                                                <span class="text-secondary text-subtitle1"
+                                                    >Price: {{ good.price }} gold
+                                                </span>
+                                                <div
+                                                    v-if="good.debuff"
+                                                    class="flex items-center text-negative"
+                                                    style="margin-bottom: 3px"
+                                                >
+                                                    <slot name="debuff"></slot>
+                                                </div>
+                                            </div>
+                                            <span class="inline-block text-caption text-grey">
+                                                {{ good.short_description }}
+                                            </span>
+                                        </div>
+                                    </div>
+                                </q-card-section>
+                            </div>
+
+                            <q-card-actions class="flex justify-between">
+                                <div class="relative items-center no-wrap row">
+                                    <Transition name="fade">
+                                        <q-skeleton
+                                            v-if="!imgLoaded[good.id]"
+                                            animation="blink"
+                                            dark
+                                            animation-speed="1800"
+                                            type="QBtn"
+                                            style="
+                                                position: absolute;
+                                                background-color: var(--q-placeholder-primary);
+                                                width: 9.3448rem;
+                                                margin-inline: 0.5rem;
+                                            "
+                                        />
+                                    </Transition>
+                                    <q-btn flat color="primary" @click="addToStash(good)">
+                                        💰 &nbsp; Add to stash
+                                    </q-btn>
+                                </div>
+
+                                <q-card-actions>
+                                    <div class="relative items-center no-wrap row">
+                                        <Transition name="fade">
+                                            <q-skeleton
+                                                v-if="!imgLoaded[good.id]"
+                                                animation="blink"
+                                                dark
+                                                animation-speed="1800"
+                                                type="QBtn"
+                                                style="
+                                                    position: absolute;
+                                                    background-color: var(--q-placeholder-primary);
+                                                    width: 4.6019rem;
+                                                    margin-right: 0.5rem;
+                                                "
+                                            />
+                                        </Transition>
+                                        <RouterLink
+                                            :to="{
+                                                name: 'good-details',
+                                                params: {
+                                                    category: good?.category,
+                                                    slug: good?.slug
+                                                }
+                                            }"
+                                            @click="storeGoods.selectGood(good)"
+                                        >
+                                            <q-btn flat color="primary"> Details </q-btn>
+                                        </RouterLink>
+                                    </div>
+                                </q-card-actions>
+                            </q-card-actions>
+                        </q-card>
+                    </li>
+                </ul>
+
+                <div @click="applyTransition('pagination', 150)">
                     <div class="flex flex-center q-pa-lg">
                         <q-pagination
                             v-model="currentPage"
+                            v-if="!isPending"
                             class="q-mt-md"
                             color="secondary"
                             active-text-color="dark"
@@ -52,21 +223,14 @@ const { selectCategories, resetCategories } = useFilters(
                             @update:model-value="loadPaginatedGoods"
                         />
                     </div>
-                </template>
-            </ItemGoods>
+                </div>
+            </div>
         </section>
     </q-page>
 </template>
 
 <style scoped>
-:deep(.q-checkbox__svg),
-:deep(.q-checkbox__bg) {
-    background: var(--q-secondary-dimmed);
-    outline: var(--q-secondary-dimmed);
-    border-color: var(--q-secondary-dimmed);
-}
-
-:deep(.card) {
+.card {
     border: 1px solid color-mix(in srgb, var(--q-primary) 20%, black 90%);
     border-radius: var(--rounded);
     width: 19.625rem;
@@ -74,5 +238,32 @@ const { selectCategories, resetCategories } = useFilters(
     display: flex;
     flex-direction: column;
     justify-content: space-between;
+}
+
+.card:hover .card__image {
+    transform: scale(1.05);
+}
+
+.card__image-wrapper {
+    border-top-left-radius: var(--rounded);
+    border-top-right-radius: var(--rounded);
+    overflow: hidden;
+}
+
+.card__image {
+    transition: transform 0.15s linear;
+    transform: scale(1);
+    height: 13.125rem;
+}
+
+#workshop {
+    min-height: 75rem;
+}
+
+:deep(.q-checkbox__svg),
+:deep(.q-checkbox__bg) {
+    background: var(--q-secondary-dimmed);
+    outline: var(--q-secondary-dimmed);
+    border-color: var(--q-secondary-dimmed);
 }
 </style>
