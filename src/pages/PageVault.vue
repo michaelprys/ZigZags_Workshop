@@ -16,7 +16,7 @@ import VaultHeader from 'src/components/vault/VaultHeader.vue';
 
             <div class="q-px-md">
                 <div class="inventory q-pa-lg">
-                    <div class="inventory__inner">
+                    <div class="inner">
                         <VaultHeader />
                         <VaultContent />
                         <VaultFooter />
@@ -27,7 +27,7 @@ import VaultHeader from 'src/components/vault/VaultHeader.vue';
     </q-page>
 </template>
 
-<style scoped>
+<style lang="scss" scoped>
 .inventory {
     position: relative;
     background: linear-gradient(180deg, #25211f 0%, #100f0d 100%);
@@ -37,19 +37,18 @@ import VaultHeader from 'src/components/vault/VaultHeader.vue';
     box-shadow:
         inset 0 0 10px rgba(0, 0, 0, 0.1),
         0 4px 12px rgba(0, 0, 0, 0.1);
+    &::before {
+        content: '';
+        position: absolute;
+        inset: 0;
+        background-color: rgba(255, 255, 255, 0.03);
+        backdrop-filter: blur(3px);
+        border-radius: 8px;
+        z-index: -1;
+    }
 }
 
-.inventory::before {
-    content: '';
-    position: absolute;
-    inset: 0;
-    background-color: rgba(255, 255, 255, 0.03);
-    backdrop-filter: blur(3px);
-    border-radius: 8px;
-    z-index: -1;
-}
-
-.inventory__inner {
+.inner {
     position: relative;
     z-index: 1;
 }

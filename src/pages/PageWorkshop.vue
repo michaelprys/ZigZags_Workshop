@@ -60,7 +60,7 @@ watch(
 <template>
     <q-page>
         <section id="workshop" style="padding-top: 4.625em; padding-bottom: 8.5em">
-            <h1 class="text-center text-h3">Explore goods</h1>
+            <h1 class="title text-center text-h3">Explore goods</h1>
 
             <ItemCategories
                 :categories="categories"
@@ -74,14 +74,14 @@ watch(
                     style="max-width: 84.5rem"
                 >
                     <li
-                        class="card"
                         v-for="good in queryData"
                         :key="good.id"
+                        class="card"
                         style="cursor: pointer; z-index: 5"
                     >
                         <q-card flat dark>
                             <div>
-                                <div class="card__image-wrapper relative">
+                                <div class="image-wrapper relative">
                                     <Transition name="fade">
                                         <q-skeleton
                                             v-if="!imgLoaded[good.id]"
@@ -89,15 +89,10 @@ watch(
                                             animation-speed="1800"
                                             dark
                                             square
-                                            class="skeleton"
-                                            style="
-                                                height: 13.125rem;
-                                                border-top-left-radius: var(--rounded);
-                                                border-top-right-radius: var(--rounded);
-                                            "
+                                            class="skeleton-img"
                                         />
                                     </Transition>
-                                    <q-img class="card__image" :src="good.image_url" />
+                                    <q-img class="image" :src="good.image_url" />
                                 </div>
 
                                 <q-card-section>
@@ -108,8 +103,7 @@ watch(
                                                 animation="blink"
                                                 dark
                                                 animation-speed="1800"
-                                                class="skeleton"
-                                                style="height: 2rem; margin: 1rem"
+                                                class="skeleton-name"
                                             />
                                         </Transition>
                                         <div class="col ellipsis text-h6 text-primary">
@@ -123,10 +117,10 @@ watch(
                                         <Transition name="fade">
                                             <q-skeleton
                                                 v-if="!imgLoaded[good.id]"
+                                                class="skeleton-content"
                                                 animation="blink"
                                                 dark
                                                 animation-speed="1800"
-                                                class="skeleton"
                                                 style="height: 5.25rem; margin-inline: 1rem"
                                             />
                                         </Transition>
@@ -156,16 +150,11 @@ watch(
                                     <Transition name="fade">
                                         <q-skeleton
                                             v-if="!imgLoaded[good.id]"
+                                            class="skeleton-add"
                                             animation="blink"
                                             dark
                                             animation-speed="1800"
                                             type="QBtn"
-                                            style="
-                                                position: absolute;
-                                                background-color: var(--q-placeholder-primary);
-                                                width: 9.3448rem;
-                                                margin-inline: 0.5rem;
-                                            "
                                         />
                                     </Transition>
                                     <q-btn flat color="primary" @click="addToStash(good)">
@@ -178,16 +167,11 @@ watch(
                                         <Transition name="fade">
                                             <q-skeleton
                                                 v-if="!imgLoaded[good.id]"
+                                                class="skeleton-details"
                                                 animation="blink"
                                                 dark
                                                 animation-speed="1800"
                                                 type="QBtn"
-                                                style="
-                                                    position: absolute;
-                                                    background-color: var(--q-placeholder-primary);
-                                                    width: 4.6019rem;
-                                                    margin-right: 0.5rem;
-                                                "
                                             />
                                         </Transition>
                                         <RouterLink
@@ -212,8 +196,8 @@ watch(
                 <div @click="applyTransition('pagination', 150)">
                     <div class="flex flex-center q-pa-lg">
                         <q-pagination
-                            v-model="currentPage"
                             v-if="!isPending"
+                            v-model="currentPage"
                             class="q-mt-md"
                             color="secondary"
                             active-text-color="dark"
@@ -229,41 +213,76 @@ watch(
     </q-page>
 </template>
 
-<style scoped>
+<style lang="scss" scoped>
+@use 'sass:map';
+
+#workshop {
+    min-height: 75rem;
+}
+.skeleton-img {
+    position: absolute;
+    height: 13.125rem;
+    border-top-left-radius: $rounded;
+    border-top-right-radius: $rounded;
+    inset: 0;
+}
+.skeleton-name {
+    position: absolute;
+    height: 2rem;
+    margin: 1rem;
+    inset: 0;
+    background-color: $placeholder-primary;
+}
+.skeleton-content {
+    position: absolute;
+    height: 5.25rem;
+    margin-inline: 1rem;
+    background-color: $placeholder-primary;
+    inset: 0;
+}
+.skeleton-add {
+    position: absolute;
+    background-color: $placeholder-primary;
+    width: 9.3448rem;
+    margin-inline: 0.5rem;
+}
+.skeleton-details {
+    position: absolute;
+    background-color: $placeholder-primary;
+    width: 4.6019rem;
+    margin-right: 0.5rem;
+}
 .card {
-    border: 1px solid color-mix(in srgb, var(--q-primary) 20%, black 90%);
-    border-radius: var(--rounded);
+    border: 1px solid color-mix(in srgb, $primary 20%, black 90%);
+    border-radius: $rounded;
     width: 19.625rem;
     min-height: 26.875rem;
     display: flex;
     flex-direction: column;
     justify-content: space-between;
+    :hover {
+        & .image {
+            transform: scale(1.05);
+        }
+    }
 }
-
-.card:hover .card__image {
-    transform: scale(1.05);
-}
-
-.card__image-wrapper {
-    border-top-left-radius: var(--rounded);
-    border-top-right-radius: var(--rounded);
-    overflow: hidden;
-}
-
-.card__image {
+.image {
     transition: transform 0.15s linear;
     transform: scale(1);
     height: 13.125rem;
 }
-
-#workshop {
-    min-height: 75rem;
+.image-wrapper {
+    border-top-left-radius: $rounded;
+    border-top-right-radius: $rounded;
+    overflow: hidden;
 }
-
+.title {
+    font-size: map.get($h3, 'size');
+}
 :deep(.q-checkbox__svg),
 :deep(.q-checkbox__bg) {
-    background: var(--q-secondary-dimmed);
-    outline: var(--q-secondary-dimmed);
-    border-color: var(--q-secondary-dimmed);
+    background: $secondary-dimmed;
+    outline: $secondary-dimmed;
+    border-color: $secondary-dimmed;
 }
 </style>

@@ -17,10 +17,6 @@
     font-style: normal;
 }
 
-:root {
-    --rounded: 0.5em;
-}
-
 body,
 h1,
 h2,
@@ -51,6 +47,7 @@ a {
     position: static;
     padding-bottom: 1rem;
 }
+
 .q-field--with-bottom {
     padding-bottom: 0;
 }
@@ -64,12 +61,9 @@ input::-webkit-inner-spin-button {
 body {
     font-family: 'oblivionregular';
     background:
-        linear-gradient(
-            oklch(from var(--q-dark-page) l c h / 0.23),
-            oklch(from var(--q-dark-page) l c h / 0.23)
-        ),
+        linear-gradient(oklch(from $dark-page l c h / 0.23), oklch(from $dark-page l c h / 0.23)),
         url('/src/assets/common/bg-common.avif');
-    color: var(--q-primary);
+    color: $primary;
     background-color: #040405;
 }
 

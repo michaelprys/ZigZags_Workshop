@@ -42,12 +42,8 @@ const { moveImage, resetImage } = useMoveImage(imgRef);
 
                     <div class="content q-pa-lg">
                         <div
-                            class="content__overlay"
-                            :class="
-                                isAuth
-                                    ? 'content__overlay-black-market'
-                                    : 'content__overlay-workshop'
-                            "
+                            class="overlay"
+                            :class="isAuth ? 'overlay-black-market' : 'overlay-workshop'"
                         ></div>
                         <div class="column">
                             <div class="flex items-center justify-between">
@@ -101,7 +97,7 @@ const { moveImage, resetImage } = useMoveImage(imgRef);
     >
 </template>
 
-<style scoped>
+<style lang="scss" scoped>
 .bg {
     position: absolute;
     top: 2.2rem;
@@ -125,17 +121,15 @@ const { moveImage, resetImage } = useMoveImage(imgRef);
     filter: brightness(80%);
     background-image: url('src/assets/good-details/bg-black-market-details.avif');
 }
-
 .wrapper {
     display: flex;
     justify-content: center;
     gap: 2.5rem;
 }
-
 .content {
     position: relative;
-    border: 1px solid color-mix(in srgb, var(--q-primary) 40%, black 90%);
-    border-radius: var(--rounded);
+    border: 1px solid color-mix(in srgb, $primary 40%, black 90%);
+    border-radius: $rounded;
     max-width: 40rem;
     min-height: 42rem;
     border-radius: 0.3125rem;
@@ -144,20 +138,19 @@ const { moveImage, resetImage } = useMoveImage(imgRef);
         0 1px 1px rgba(0, 0, 0, 0.12),
         0 2px 2px rgba(0, 0, 0, 0.12);
 }
-.content__overlay {
+.overlay {
     position: absolute;
     inset: 0;
     z-index: -1;
     backdrop-filter: blur(16px) saturate(180%);
     filter: brightness(60%);
 }
-.content__overlay-workshop {
+.overlay-workshop {
     background-color: rgba(21, 36, 44, 0.9);
 }
-.content__overlay-black-market {
+.overlay-black-market {
     background-color: rgba(15, 22, 32, 0.9);
 }
-
 .image-wrapper {
     width: 28.9375rem;
     height: 19.5rem;
@@ -165,16 +158,14 @@ const { moveImage, resetImage } = useMoveImage(imgRef);
     overflow: hidden;
     border-radius: 0.3125rem;
 }
-
 .image {
     width: 100%;
     height: 100%;
     object-fit: cover;
     border-radius: 0.3125rem;
     user-select: none;
-}
-
-.image:hover {
-    transform: scale(1.5);
+    &:hover {
+        transform: scale(1.5);
+    }
 }
 </style>

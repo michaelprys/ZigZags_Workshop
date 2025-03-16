@@ -63,8 +63,8 @@ onMounted(async () => {
         class="q-mt-lg slots"
     >
         <template v-for="(slot, idx) in 55" :key="idx">
-            <li class="slots__item">
-                <div class="slots__item-placeholder"></div>
+            <li class="slot">
+                <div class="placeholder"></div>
 
                 <Transition name="remove">
                     <div v-if="inventoryGoods[idx] && inventoryGoods[idx].goods">
@@ -94,7 +94,7 @@ onMounted(async () => {
                         </q-tooltip>
 
                         <q-btn
-                            class="slots__btn-close"
+                            class="btn-close"
                             dense
                             flat
                             size="xs"
@@ -102,12 +102,12 @@ onMounted(async () => {
                             @click="handleRemoveItem(inventoryGoods[idx].good_id)"
                         ></q-btn>
 
-                        <div class="slots__item-quantity">
+                        <div class="quantity">
                             {{ inventoryGoods[idx].quantity }}
                         </div>
 
                         <q-img
-                            class="slots__item-image"
+                            class="image"
                             :src="inventoryGoods[idx].goods.image_url"
                             width="1024px"
                             height="1024px"
@@ -120,7 +120,7 @@ onMounted(async () => {
     </ul>
 </template>
 
-<style scoped>
+<style lang="scss" scoped>
 .slots {
     display: grid;
     grid-template-columns: repeat(11, 1fr);
@@ -129,12 +129,7 @@ onMounted(async () => {
     width: 100%;
     place-items: center;
 }
-
-.slots__item:hover {
-    box-shadow: 0 1px 12px rgba(92, 90, 78, 0.6);
-}
-
-.slots__item {
+.slot {
     position: relative;
     cursor: pointer;
     display: flex;
@@ -146,24 +141,25 @@ onMounted(async () => {
     border-radius: 0.25rem;
     overflow: hidden;
     box-shadow: 0 4px 10px rgba(0, 0, 0, 0.7);
+    &:hover {
+        box-shadow: 0 1px 12px rgba(92, 90, 78, 0.6);
+    }
 }
-
-.slots__btn-close {
+.btn-close {
     position: absolute;
     top: 0;
     right: 0;
     z-index: 3;
     background-color: rgb(23, 23, 23);
 }
-
-.slots__item-quantity {
+.quantity {
     position: absolute;
     bottom: 3px;
     right: 3px;
     padding-inline: 0.25em;
     height: 1.0625rem;
-    background-color: var(--q-dark);
-    color: var(--q-primary);
+    background-color: $dark;
+    color: $primary;
     z-index: 1;
     border-radius: 0.25rem;
     display: flex;
@@ -173,8 +169,7 @@ onMounted(async () => {
     border: 2px solid rgba(255, 255, 255, 0.1);
     font-size: 0.75rem;
 }
-
-.slots__item-placeholder {
+.placeholder {
     position: absolute;
     width: 100%;
     height: 100%;
@@ -185,24 +180,15 @@ onMounted(async () => {
     transition:
         border-color 0.15s,
         box-shadow 0.15s;
+    &::before {
+        content: '';
+        position: absolute;
+        inset: 0;
+        background: radial-gradient(circle at top left, rgba(255, 255, 255, 0.2), transparent);
+        border-radius: 0.18rem;
+    }
 }
-
-/* .slots__item:hover .slots__item-placeholder {
-    border-color: rgba(255, 255, 255, 0.3);
-    box-shadow:
-        inset 0 0 6px rgba(0, 0, 0, 0.8),
-        0 0 8px rgba(255, 255, 255, 0.15);
-} */
-
-.slots__item-placeholder::before {
-    content: '';
-    position: absolute;
-    inset: 0;
-    background: radial-gradient(circle at top left, rgba(255, 255, 255, 0.2), transparent);
-    border-radius: 0.18rem;
-}
-
-.slots__item-image {
+.image {
     position: absolute;
     top: 50%;
     left: 50%;
@@ -210,15 +196,14 @@ onMounted(async () => {
     width: 100%;
     height: 100%;
     user-select: none;
-    border-radius: var(--rounded);
+    border-radius: $rounded;
     filter: contrast(95%) brightness(95%);
-}
-.slots__item-image::before {
-    content: '';
-    position: absolute;
-    inset: 0;
-    /* border: 2px solid rgb(120, 120, 120); */
-    border-radius: var(--rounded);
-    z-index: 3;
+    &::before {
+        content: '';
+        position: absolute;
+        inset: 0;
+        border-radius: $rounded;
+        z-index: 3;
+    }
 }
 </style>

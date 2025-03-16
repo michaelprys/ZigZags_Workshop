@@ -52,10 +52,10 @@ watch([basePrice, goblinTax], ([newBasePrice, newGoblinTax]) => {
                             :key="good.id"
                             class="card"
                         >
-                            <q-img class="card__image shadow-1" :src="good.image_url" />
+                            <q-img class="image shadow-1" :src="good.image_url" />
 
                             <div class="flex justify-between q-pa-md" style="width: 100%">
-                                <div class="card__info column">
+                                <div class="info column">
                                     <span class="text-body1 text-bold">{{ good.name }}</span>
                                     <span class="text-bold text-info"
                                         >Category: {{ good.category }}</span
@@ -103,7 +103,7 @@ watch([basePrice, goblinTax], ([newBasePrice, newGoblinTax]) => {
                 </div>
 
                 <div class="column panel-price">
-                    <div class="panel-price__inner q-pa-lg">
+                    <div class="panel-price-inner q-pa-lg">
                         <div class="flex text-subtitle1" style="gap: 0.3125rem">
                             <span class="text-secondary">💰 Base price:</span>
 
@@ -137,16 +137,14 @@ watch([basePrice, goblinTax], ([newBasePrice, newGoblinTax]) => {
     </section>
 </template>
 
-<style scoped>
+<style lang="scss" scoped>
 #stash {
     padding-bottom: 19em;
     padding-top: 2em;
 }
-
 .q-carousel__slide div:last-child {
     margin-right: 0;
 }
-
 .separator-single {
     margin-inline: auto;
     content: '';
@@ -158,31 +156,27 @@ watch([basePrice, goblinTax], ([newBasePrice, newGoblinTax]) => {
     display: block;
     z-index: 100;
 }
-
 .panel,
 .panel-price {
     height: 100%;
-    border-radius: var(--rounded);
+    border-radius: $rounded;
     position: relative;
-    background-color: var(--q-dark);
+    background-color: $dark;
     border: 1px solid rgba(255, 255, 255, 0.125);
 }
 .panel {
     width: 60rem;
     min-height: 35.6688rem;
 }
-
 .panel-price {
     display: flex;
     align-items: center;
     justify-content: space-between;
     width: 17rem;
 }
-
-.panel-price__inner {
+.panel-price-inner {
     width: 16.6875rem;
 }
-
 .card {
     position: relative;
     display: flex;
@@ -190,21 +184,21 @@ watch([basePrice, goblinTax], ([newBasePrice, newGoblinTax]) => {
     padding-block: 0.8rem;
     padding-left: 1rem;
     z-index: 1;
+    &::before {
+        content: '';
+        position: absolute;
+        inset: 0;
+        border-bottom: 1px solid rgba(255, 255, 255, 0.125);
+        mask-image: linear-gradient(to right, transparent, white 5%, white 95%, transparent);
+        z-index: -1;
+        &:nth-child(n + 3):last-child::before {
+            content: none;
+        }
+    }
 }
-.card::before {
-    content: '';
-    position: absolute;
-    inset: 0;
-    border-bottom: 1px solid rgba(255, 255, 255, 0.125);
-    mask-image: linear-gradient(to right, transparent, white 5%, white 95%, transparent);
-    z-index: -1;
-}
-.card:nth-child(n + 3):last-child::before {
-    content: none;
-}
-.card__image {
+.image {
     width: 200px;
     background-size: cover;
-    border-radius: var(--rounded);
+    border-radius: $rounded;
 }
 </style>

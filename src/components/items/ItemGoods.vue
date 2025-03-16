@@ -28,7 +28,6 @@ watch(
             const img = new Image();
             img.onload = async () => {
                 if (!props.isPending) {
-                    console.log('Image loaded for good id:', good.id);
                     imgLoaded.value[good?.id] = true;
                 } else {
                     await delay(200);
@@ -53,7 +52,7 @@ watch(
             <li v-for="good in queryData" :key="good.id" style="cursor: pointer">
                 <q-card :class="classCard" flat dark>
                     <div>
-                        <div class="card__image-wrapper relative">
+                        <div class="image-wrapper relative">
                             <Transition name="fade">
                                 <q-skeleton
                                     v-if="!imgLoaded[good.id]"
@@ -61,15 +60,10 @@ watch(
                                     animation-speed="1800"
                                     dark
                                     square
-                                    class="skeleton"
-                                    style="
-                                        height: 13.125rem;
-                                        border-top-left-radius: var(--rounded);
-                                        border-top-right-radius: var(--rounded);
-                                    "
+                                    class="skeleton-img"
                                 />
                             </Transition>
-                            <q-img class="card__image" :src="good.image_url" />
+                            <q-img class="image" :src="good.image_url" />
                         </div>
 
                         <q-card-section>
@@ -132,12 +126,7 @@ watch(
                                     dark
                                     animation-speed="1800"
                                     type="QBtn"
-                                    style="
-                                        position: absolute;
-                                        background-color: var(--q-placeholder-primary);
-                                        width: 9.3448rem;
-                                        margin-inline: 0.5rem;
-                                    "
+                                    class="skeleton-add"
                                 />
                             </Transition>
                             <q-btn flat color="primary" @click="addToStash(good)">
@@ -154,12 +143,6 @@ watch(
                                         dark
                                         animation-speed="1800"
                                         type="QBtn"
-                                        style="
-                                            position: absolute;
-                                            background-color: var(--q-placeholder-primary);
-                                            width: 4.6019rem;
-                                            margin-right: 0.5rem;
-                                        "
                                     />
                                 </Transition>
                                 <RouterLink
@@ -187,18 +170,35 @@ watch(
     </div>
 </template>
 
-<style scoped>
-.card:hover .card__image {
-    transform: scale(1.05);
+<style lang="scss" scoped>
+.skeleton-img {
+    height: 13.125rem;
+    border-top-left-radius: $rounded;
+    border-top-right-radius: $rounded;
 }
-
-.card__image-wrapper {
-    border-top-left-radius: var(--rounded);
-    border-top-right-radius: var(--rounded);
+.skeleton-add {
+    position: absolute;
+    background-color: $placeholder-primary;
+    width: 9.3448rem;
+    margin-inline: 0.5rem;
+}
+.skeleton-details {
+    position: absolute;
+    background-color: $placeholder-primary;
+    width: 4.6019rem;
+    margin-right: 0.5rem;
+}
+.card {
+    &:hover .image {
+        transform: scale(1.05);
+    }
+}
+.image-wrapper {
+    border-top-left-radius: $rounded;
+    border-top-right-radius: $rounded;
     overflow: hidden;
 }
-
-.card__image {
+.image {
     transition: transform 0.15s linear;
     transform: scale(1);
     height: 13.125rem;

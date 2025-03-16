@@ -125,17 +125,15 @@ watchEffect(() => {
     if (paymentType.value) {
         selectedPaymentType = paymentType.value?.value;
     }
-
-    console.log(pending.value);
 });
 </script>
 
 <template>
     <Teleport to="body">
         <q-dialog
-            @hide="tradeCancelled = true"
             :model-value="modelValue"
             backdrop-filter="blur(8px); brightness(60%)"
+            @hide="tradeCancelled = true"
             @update:model-value="(val) => emit('update:modelValue', val)"
         >
             <div class="modal">
@@ -185,11 +183,11 @@ watchEffect(() => {
 
                             <q-btn
                                 v-close-popup
-                                @click="cancelTrade"
                                 label="Close"
                                 flat
                                 color="secondary"
                                 text-color="primary"
+                                @click="cancelTrade"
                             ></q-btn>
                         </div>
                     </q-form>
@@ -199,18 +197,18 @@ watchEffect(() => {
     </Teleport>
 </template>
 
-<style scoped>
+<style lang="scss" scoped>
 .toast {
     bottom: 40px !important;
     right: 40px !important;
     padding: 60px;
 }
 .modal {
-    background-color: var(--q-dark);
+    background-color: $dark;
     max-width: 40.25rem;
     width: 100%;
     padding: 1.25em;
-    border: 1px solid color-mix(in srgb, var(--q-primary) 30%, black 90%);
-    border-radius: var(--rounded);
+    border: 1px solid color-mix(in srgb, $primary 30%, black 90%);
+    border-radius: $rounded;
 }
 </style>

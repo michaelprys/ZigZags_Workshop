@@ -27,7 +27,7 @@
     </section>
 </template>
 
-<style scoped>
+<style lang="scss" scoped>
 #empty-stash {
     padding-bottom: 19em;
 }

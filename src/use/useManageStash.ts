@@ -48,7 +48,7 @@ export const useManageStash = () => {
                     color: 'secondary',
                     'text-color': 'dark'
                 },
-                style: 'padding: 1rem'
+                style: 'padding: 1rem; border-radius: 0.5em'
             });
         } else {
             let existingGood = storeGoods.stashGoods.find((good) => good.slug === selected.slug);

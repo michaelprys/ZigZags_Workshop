@@ -3,13 +3,11 @@ import { useQuery } from '@pinia/colada';
 import { useStoreGoods } from 'src/stores/storeGoods';
 import { delay } from 'src/utils/delay';
 import { computed, ref, watch } from 'vue';
-import { useRoute } from 'vue-router';
 
-const route = useRoute();
 const storeGoods = useStoreGoods();
 const activeSlide = ref(1);
 
-const { data: queryData, isPending } = useQuery({
+const { data: queryData } = useQuery({
     key: ['featuredGoods'],
     query: () => storeGoods.loadFeaturedGoods(),
     staleTime: 1000 * 60 * 5
@@ -52,18 +50,19 @@ watch(
 <template>
     <section id="featured" style="padding-top: 6.625em; padding-bottom: 8.5em">
         <h1 class="sr-only">Featured</h1>
-        <div class="flex flex-center q-px-md">
+        <div class="wrapper flex flex-center q-px-md">
             <div>
                 <div class="text-center">
-                    <h2 class="text-glow-dark text-h3 text-primary">You want it?</h2>
-                    <h3 class="q-my-lg text-h5 text-secondary">It's yours... for a price!</h3>
+                    <h2 class="title text-glow-dark text-h3 text-primary">You want it?</h2>
+                    <h3 class="subtitle q-my-lg text-h5 text-secondary">
+                        It's yours... for a price!
+                    </h3>
                 </div>
 
                 <div class="q-pa-md">
                     <q-carousel
                         v-model="activeSlide"
-                        class="bg-transparent non-selectable"
-                        style="width: 81.25rem"
+                        class="carousel bg-transparent non-selectable"
                         transition-prev="slide-right"
                         transition-next="slide-left"
                         swipeable
@@ -79,37 +78,30 @@ watch(
                             v-for="(slide, idx) in slideGroup"
                             :key="idx"
                             :name="idx + 1"
-                            class="cursor-pointer no-wrap"
+                            class="slide cursor-pointer no-wrap"
                         >
-                            <div class="fit items-center row">
+                            <div class="slide-inner fit items-center row">
                                 <div
                                     v-for="(img, imgIdx) in slide"
                                     :key="imgIdx + 1"
-                                    class="relative full-height q-mr-md"
+                                    class="slide-content relative full-height"
                                     :class="imgIdx === 1 ? 'col-5' : 'col'"
-                                    style="border-radius: var(--rounded)"
                                 >
                                     <div style="position: relative; height: 100%">
                                         <q-skeleton
                                             v-if="!imgLoaded[img?.id]"
+                                            class="skeleton"
                                             animation="wave"
                                             animation-speed="1800"
                                             dark
                                             square
                                             :style="imgIdx === 1 ? 'col-5' : 'col'"
-                                            style="
-                                                position: absolute;
-                                                inset: 0;
-                                                background-color: var(--q-placeholder-secondary);
-                                                border-radius: var(--rounded);
-                                            "
                                         >
                                         </q-skeleton>
                                         <q-img
                                             :src="img?.image_url"
                                             :alt="img?.name"
-                                            class="full-height inner shadow-1"
-                                            style="border-radius: var(--rounded)"
+                                            class="image full-height inner shadow-1"
                                         />
                                     </div>
                                 </div>
@@ -124,8 +116,54 @@ watch(
     <div class="divider"></div>
 </template>
 
-<style scoped>
+<style lang="scss" scoped>
+@use 'sass:map';
+
 :deep(.q-carousel__control) {
     margin-top: -2rem;
+}
+.wrapper {
+    overflow: hidden;
+}
+.carousel {
+    width: 81.25rem !important;
+}
+.slide-content {
+    margin-right: 16px;
+    border-radius: $rounded;
+    &:last-child {
+        margin-right: 0;
+    }
+    & .q-img {
+        border-radius: $rounded !important;
+    }
+}
+.skeleton {
+    position: absolute;
+    inset: 0;
+    background-color: $placeholder-secondary;
+    border-radius: $rounded;
+}
+.image {
+    border-radius: $rounded;
+}
+
+@media (width <= $breakpoint-md) {
+    .title {
+        font-size: map.get($h4, 'size');
+    }
+    .subtitle {
+        font-size: map.get($body1, 'size');
+        margin-top: 0.5rem;
+    }
+    :deep(.q-field__label) {
+        font-size: map.get($body2, 'size');
+    }
+}
+@media (width <= 1300px) {
+    .carousel {
+        width: 75rem !important;
+        padding-inline: 2.375rem;
+    }
 }
 </style>

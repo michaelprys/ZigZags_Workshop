@@ -189,12 +189,11 @@
     </Transition>
 </template>
 
-<style scoped>
+<style lang="scss" scoped>
 .wrapper {
     width: 100%;
     min-height: 39rem;
 }
-
 .map-texture {
     position: absolute;
     background-image: url('src/assets/guide/entrance.avif');

@@ -52,16 +52,16 @@ onMounted(async () => {
     </div>
 </template>
 
-<style scoped>
+<style lang="scss" scoped>
 .balance-panel {
     display: flex;
     justify-content: center;
     align-items: center;
     padding-block: 0.1875em;
     padding-inline: 0.75em;
-    background-color: var(--q-medium);
-    border: 1px solid var(--q-gold-frame);
-    border-radius: var(--rounded);
+    background-color: $medium;
+    border: 1px solid $gold-frame;
+    border-radius: $rounded;
     grid-column-start: 3;
     justify-self: end;
     z-index: 0;

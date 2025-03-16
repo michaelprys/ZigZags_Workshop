@@ -60,7 +60,7 @@ watchEffect(async () => {
     <div class="footer q-mt-lg">
         <Teleport to="body">
             <q-dialog v-model="isOpen" backdrop-filter="blur(8px); brightness(60%)">
-                <q-card dark class="q-pa-md" style="max-width: 22.25rem; width: 100%">
+                <q-card dark class="inner q-pa-md" style="max-width: 22.25rem; width: 100%">
                     <q-card-section class="q-pt-none">
                         <div class="text-h6 text-primary">Add funds</div>
                     </q-card-section>
@@ -134,7 +134,7 @@ watchEffect(async () => {
 
         <q-pagination
             v-model="currentPage"
-            class="footer__nav"
+            class="nav"
             :max="3"
             direction-links
             flat
@@ -143,28 +143,24 @@ watchEffect(async () => {
         />
 
         <ItemBalance class="balance-panel">
-            <q-btn
-                class="balance-panel__btn"
-                style="border-radius: var(--rounded)"
-                icon="add"
-                flat
-                dense
-                @click="isOpen = true"
-            ></q-btn>
+            <q-btn class="btn" icon="add" flat dense @click="isOpen = true"></q-btn>
         </ItemBalance>
     </div>
 </template>
 
-<style scoped>
+<style lang="scss" scoped>
+.inner {
+    border-radius: $rounded !important;
+}
 .balance-panel {
     padding-left: 0em;
     padding-right: 0.5em;
     padding-block: 0;
 }
-.balance-panel__btn {
+.btn {
     height: 100%;
+    border-radius: $rounded;
 }
-
 .footer {
     display: grid;
     place-items: center;
@@ -172,29 +168,28 @@ watchEffect(async () => {
     gap: 0px 0px;
     width: 100%;
 }
-.footer__nav {
+.nav {
     grid-column-start: 2;
     justify-self: center;
 }
-
-:deep(.footer__nav button:last-child),
-:deep(.footer__nav button:first-child) {
+:deep(.nav button:last-child),
+:deep(.nav button:first-child) {
     display: none;
 }
-:deep(.footer__nav .q-btn[disabled]) {
+:deep(.nav .q-btn[disabled]) {
     cursor: default !important;
     pointer-events: none !important;
 }
-:deep(.footer__nav .q-btn),
-:deep(.footer__nav .q-btn .q-icon) {
+:deep(.nav .q-btn),
+:deep(.nav .q-btn .q-icon) {
     cursor: pointer !important;
 }
-:deep(.footer__nav .q-btn[disabled] .q-icon),
-:deep(.footer__nav .q-icon),
-:deep(.footer__nav span) {
+:deep(.nav .q-btn[disabled] .q-icon),
+:deep(.nav .q-icon),
+:deep(.nav span) {
     cursor: default !important;
 }
-:deep(.footer__nav label) {
+:deep(.nav label) {
     pointer-events: none !important;
     user-select: none !important;
 }

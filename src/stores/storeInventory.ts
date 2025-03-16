@@ -110,8 +110,6 @@ export const useStoreInventory = defineStore('inventory', () => {
         pending.value = true;
 
         try {
-            console.log('Updating current good:', goodId, nextSlot);
-
             // get current good's slot
             const { data: currentSlot, error: currentSlotError } = await supabase
                 .from('user_goods')
@@ -146,8 +144,6 @@ export const useStoreInventory = defineStore('inventory', () => {
                     throw new Error('updateNextGoodError: ', updateNextGoodError.message);
                 }
             }
-
-            console.log('Updating next good:', goodId, nextGood.slot);
 
             // replace the current one with the next one
             const { error: updateCurrentGoodError } = await supabase

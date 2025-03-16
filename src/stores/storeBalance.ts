@@ -72,7 +72,7 @@ export const useStoreBalance = defineStore(
 
             try {
                 if (!storeAuth.session) {
-                    await storeAuth.checkSession();
+                    return;
                 }
 
                 const { data: retrievedBalance, error: retrievedBalanceError } = await supabase

@@ -26,7 +26,7 @@
         "**/*.yaml": false,
         "**/postcss.config.js": true,
         "*.js": false,
-        "postcss.config.js": true,
+        "postcss.config.js": false,
         "**/*.js": false,
         "**/tsconfig.json": true,
         "**/.prettierrc.json": true,

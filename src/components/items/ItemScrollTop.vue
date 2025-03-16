@@ -28,7 +28,7 @@ onBeforeUnmount(() => {
 
 <template>
     <q-btn
-        class="custom-button fade-in-secondary"
+        class="scroll-top-btn fade-in-secondary"
         :class="{ 'is-crossed': isCrossed, 'is-not-crossed': !isCrossed }"
         aria-label="Go to the beginning of the page"
         style="box-shadow: inset 0 0 0 12.5rem rgba(255, 255, 255, 0.08)"
@@ -38,8 +38,10 @@ onBeforeUnmount(() => {
     </q-btn>
 </template>
 
-<style scoped>
-.custom-button {
+<style lang="scss" scoped>
+@use 'sass:map';
+
+.scroll-top-btn {
     z-index: 300;
     position: fixed;
     bottom: 3.8rem;
@@ -48,26 +50,26 @@ onBeforeUnmount(() => {
     background-color: rgba(35, 35, 35, 0.3);
     padding: 0.5em;
     -webkit-user-drag: none;
-    color: var(--q-primary);
+    color: $primary;
     backdrop-filter: blur(0.5rem);
     transition:
         transform 0.3s linear,
         background-color 0.1s linear;
     box-shadow: inset 0 0 0 12.5rem rgba(255, 255, 255, 0.08);
-}
-.custom-button svg {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-}
-.custom-button:hover {
-    transform: translateY(-0.5rem);
-    background-color: rgba(35, 35, 35, 1);
-}
-.custom-button.is-crossed {
-    transform: translateY(0);
-}
-.custom-button.is-not-crossed {
-    transform: translateY(700%);
+    & svg {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+    }
+    &:hover {
+        transform: translateY(-0.5rem);
+        background-color: rgba(35, 35, 35, 1);
+    }
+    &.is-crossed {
+        transform: translateY(0);
+    }
+    &.is-not-crossed {
+        transform: translateY(700%);
+    }
 }
 </style>

@@ -3,7 +3,7 @@ import VitePluginChecker from 'vite-plugin-checker';
 
 export default defineConfig(() => ({
     boot: ['quasar-defaults', 'query'],
-    css: ['app.css', 'variables.css', 'common.css'],
+    css: ['app.scss', 'common.scss'],
     extras: ['roboto-font', 'material-icons'],
     htmlVariables: { productName: "Zigzag's Workshop" },
     build: {

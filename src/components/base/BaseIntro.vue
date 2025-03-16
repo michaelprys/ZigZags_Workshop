@@ -1,12 +1,21 @@
 <script setup lang="ts">
+import { useQuery } from '@pinia/colada';
+import { useStoreAuth } from 'src/stores/storeAuth';
 import { useStoreGoods } from 'src/stores/storeGoods';
-import { computed, onMounted, ref } from 'vue';
+import { computed, ref, watch } from 'vue';
 import { useRouter } from 'vue-router';
 
+const storeAuth = useStoreAuth();
+const storeGoods = useStoreGoods();
 const router = useRouter();
 
-const storeGoods = useStoreGoods();
 const model = ref(null);
+
+const { data: queryData } = useQuery({
+    key: () => ['suggestions', storeAuth.session],
+    query: () => storeGoods.loadSuggestedGoods(),
+    staleTime: 1000 * 60 * 5
+});
 
 type Suggestion = {
     label: string;
@@ -17,11 +26,13 @@ type Suggestion = {
 const suggestions = ref<Suggestion[]>([]);
 
 const formattedSuggestions = computed(() => {
-    return storeGoods.suggestedGoods.map((good) => ({
-        label: good.name,
-        value: good.slug,
-        link: `/goods/${good.category}/${good.slug}`
-    }));
+    return (
+        queryData?.value?.map((good) => ({
+            label: good.name,
+            value: good.slug,
+            link: `/goods/${good.category}/${good.slug}`
+        })) || []
+    );
 });
 
 const filterFn = (val: string, update: (fn: () => void) => void) => {
@@ -45,7 +56,7 @@ const filterFn = (val: string, update: (fn: () => void) => void) => {
 };
 
 const goToLink = async (option: Suggestion) => {
-    const foundSuggestion = storeGoods.suggestedGoods.find(
+    const foundSuggestion = queryData?.value?.find(
         (suggestion) => suggestion.slug === option.value
     );
 
@@ -54,10 +65,6 @@ const goToLink = async (option: Suggestion) => {
         await router.push(option.link);
     }
 };
-
-onMounted(async () => {
-    await storeGoods.loadSuggestedGoods();
-});
 </script>
 
 <template>
@@ -67,16 +74,18 @@ onMounted(async () => {
         <div class="flex flex-center q-px-md">
             <div class="relative-position shadow-8 text-center wrapper">
                 <div class="column fit flex-center">
-                    <div style="z-index: 1">
-                        <h2 class="text-glow-dark text-h3 text-primary">Time is money, friend!</h2>
-                        <h3 class="q-mt-lg text-h5 text-secondary">
+                    <div class="q-px-lg" style="z-index: 1">
+                        <h2 class="title text-glow-dark text-h3 text-primary">
+                            Time is money, friend!
+                        </h2>
+                        <h3 class="subtitle q-mt-lg text-h5 text-secondary">
                             I got the best deals anywhere
                         </h3>
 
                         <q-select
                             v-model="model"
                             :options="suggestions"
-                            class="q-mt-lg"
+                            class="select q-mt-lg"
                             label-color="info"
                             color="secondary"
                             dark
@@ -112,7 +121,7 @@ onMounted(async () => {
                         </div>
                     </div>
                 </div>
-                <div class="absolute-top fit" style="border-radius: var(--rounded)">
+                <div class="parallax-wrapper absolute-top fit">
                     <q-parallax class="fit">
                         <template #media>
                             <video
@@ -137,11 +146,30 @@ onMounted(async () => {
     <div class="separator"></div>
 </template>
 
-<style scoped>
+<style lang="scss" scoped>
+@use 'sass:map';
+
 .wrapper {
     position: relative;
     max-width: 92.5rem;
     width: 100%;
     height: 40rem;
+}
+
+@media (width <= $breakpoint-sm) {
+    .title {
+        font-size: map.get($h4, 'size');
+    }
+    .subtitle {
+        font-size: map.get($body1, 'size');
+        margin-top: 0.5rem;
+    }
+    :deep(.q-field__label) {
+        font-size: map.get($body2, 'size');
+    }
+}
+
+.parallax-wrapper {
+    border-radius: $rounded;
 }
 </style>

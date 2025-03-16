@@ -52,17 +52,17 @@ watch(
 
 <template>
     <q-footer class="footer relative-position">
-        <div class="footer__zigzag">
-            <div class="footer__wrapper">
+        <div class="zigzag">
+            <div class="wrapper">
                 <q-img
-                    class="footer__image"
+                    class="image"
                     src="~assets/footer/zigzag.avif"
                     style="width: 9.375rem; height: 9.375rem"
                     alt="Zigzag"
                 />
                 <video
                     :style="{ opacity: isVideoLoaded ? 1 : 0 }"
-                    class="footer__candle"
+                    class="candle"
                     width="1920"
                     height="1080"
                     loop
@@ -89,7 +89,7 @@ watch(
             "
         >
             <Transition name="fade" mode="out-in">
-                <q :key="quote" class="font-quote text-h6 text-info">
+                <q :key="quote" class="quote font-quote text-h6 text-info">
                     <i>{{ quote }}</i>
                 </q>
             </Transition>
@@ -97,52 +97,53 @@ watch(
     </q-footer>
 </template>
 
-<style scoped>
+<style lang="scss" scoped>
+@use 'sass:map';
+
 .footer {
     background-color: transparent;
     z-index: 0;
 }
-
-.footer__zigzag {
+.zigzag {
     display: flex;
     align-items: center;
     justify-content: center;
     padding-top: 8.5em;
     padding-bottom: 1.875em;
     user-select: none;
+    &::before {
+        content: '';
+        position: absolute;
+        top: 9.6rem;
+        left: calc(50% - 2.95rem);
+        transform: translateX(-50%);
+        width: 4rem;
+        height: 4rem;
+        background:
+            linear-gradient(
+                oklch(from $dark-page l c h / 0.23),
+                oklch(from $dark-page l c h / 0.23)
+            ),
+            url('/src/assets/footer/patch.avif');
+        background-position: center;
+        pointer-events: none;
+        mask-image: radial-gradient(circle, rgb(255, 255, 255) 50%, rgba(255, 255, 255, 0) 100%);
+    }
 }
-.footer__zigzag::before {
-    content: '';
-    position: absolute;
-    top: 9.6rem;
-    left: calc(50% - 2.95rem);
-    transform: translateX(-50%);
-    width: 4rem;
-    height: 4rem;
-    background:
-        linear-gradient(
-            oklch(from var(--q-dark-page) l c h / 0.23),
-            oklch(from var(--q-dark-page) l c h / 0.23)
-        ),
-        url('/src/assets/footer/patch.avif');
-    background-position: center;
-    pointer-events: none;
-    mask-image: radial-gradient(circle, rgb(255, 255, 255) 50%, rgba(255, 255, 255, 0) 100%);
-}
-.footer__wrapper {
+.wrapper {
     position: relative;
 }
-.footer__image {
+.image {
     height: 9.375rem;
     width: 9.375rem;
     filter: brightness(70%) contrast(93%);
     transition: filter 0.2s linear;
     cursor: pointer;
+    &:hover {
+        filter: brightness(90%);
+    }
 }
-.footer__image:hover {
-    filter: brightness(90%);
-}
-.footer__candle {
+.candle {
     position: absolute;
     width: 1.875rem;
     height: 1.875rem;
@@ -152,5 +153,11 @@ watch(
     object-fit: cover;
     filter: brightness(110%) blur(0.0437rem);
     margin-top: 0.5rem;
+}
+
+@media (width <= $breakpoint-sm) {
+    .quote {
+        font-size: map.get($body1, 'size');
+    }
 }
 </style>

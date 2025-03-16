@@ -1,13 +1,11 @@
 <script setup lang="ts">
 import { useQuasar } from 'quasar';
 import { useStoreAuth } from 'src/stores/storeAuth';
-import { useStoreGoods } from 'src/stores/storeGoods';
 import { callToast } from 'src/utils/callToast';
 import supabase from 'src/utils/supabase';
 import { computed, onMounted } from 'vue';
 import { useRouter } from 'vue-router';
 
-const storeGoods = useStoreGoods();
 const storeAuth = useStoreAuth();
 const router = useRouter();
 const $q = useQuasar();
@@ -19,9 +17,6 @@ const leaveVault = async () => {
         callToast(error ? 'Unable to leave the vault' : 'Something went wrong', false);
     } else {
         await storeAuth.checkSession();
-        if (storeGoods.goods.find((good) => good.requires_access === true)) {
-            localStorage.removeItem('goods');
-        }
         callToast('Safe travels!', true);
     }
 };
@@ -41,7 +36,7 @@ const alert = () => {
             flat: true,
             'text-color': 'primary'
         },
-        style: 'padding: 1rem'
+        style: 'padding: 1rem; border-radius: 0.5em'
     })
         .onOk(() => {
             leaveVault()
@@ -79,7 +74,7 @@ onMounted(async () => {
 
 <template>
     <div class="header">
-        <div class="header__title-wrapper">
+        <div class="title-wrapper">
             <div class="q-ma-none" style="cursor: pointer">
                 <q-img
                     :src="`${imgSrc('avif')}`"
@@ -96,42 +91,35 @@ onMounted(async () => {
                     <span class="text-caption text-negative">{{ determineFaction }}</span>
                 </q-tooltip>
             </div>
-            <h2 class="header__title text-center text-h6">
+            <h2 class="title text-center text-h6">
                 {{ storeAuth.session?.user_metadata.first_name }}'s Inventory
             </h2>
         </div>
 
-        <q-btn
-            class="header__alert-btn"
-            icon="close"
-            color="primary"
-            flat
-            dense
-            @click="alert"
-        ></q-btn>
+        <q-btn class="alert-btn" icon="close" color="primary" flat dense @click="alert"></q-btn>
     </div>
 </template>
 
-<style scoped>
+<style lang="scss" scoped>
 .header {
     display: grid;
     place-items: center;
     grid-template-columns: 1fr auto 1fr;
-    color: var(--q-primary);
+    color: $primary;
     font-size: 1.2rem;
     text-align: center;
     position: relative;
 }
-.header__title {
+.title {
     grid-column-start: 2;
 }
-.header__title-wrapper {
+.title-wrapper {
     grid-column-start: 2;
     display: flex;
     align-items: center;
     gap: 16px;
 }
-.header__alert-btn {
+.alert-btn {
     justify-self: end;
     grid-column-start: 3;
 }

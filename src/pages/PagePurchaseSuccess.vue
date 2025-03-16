@@ -27,11 +27,9 @@
     </section>
 </template>
 
-<style scoped>
+<style lang="scss" scoped>
 #purchase-success {
     padding-bottom: 19em;
-}
-#purchase-success {
     padding-top: 10.5rem;
 }
 </style>

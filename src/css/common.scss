@@ -75,9 +75,9 @@
 .vault-form {
     width: 100%;
     height: 100%;
-    border-radius: var(--rounded);
+    border-radius: $rounded;
     position: relative;
-    background-color: var(--q-dark);
+    background-color: $dark;
     border: 1px solid rgba(255, 255, 255, 0.125);
 }
 .vault-form::before {
@@ -87,7 +87,7 @@
     content: '';
     border-radius: 0.75rem;
     border: 1px solid rgba(255, 255, 255, 0.125);
-    border-radius: var(--rounded);
+    border-radius: $rounded;
     box-shadow: rgba(0, 0, 0, 0.24) 0px 3px 8px;
     z-index: -2;
     background-color: rgb(8, 8, 8);
@@ -102,5 +102,5 @@
 .skeleton {
     position: absolute;
     inset: 0;
-    background-color: var(--q-placeholder-primary);
+    background-color: $placeholder-primary;
 }

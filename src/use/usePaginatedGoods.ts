@@ -32,7 +32,6 @@ export const usePaginatedGoods = (requiresAccess: boolean) => {
 
             if (page !== currentPage.value) {
                 currentPage.value = page;
-                console.log('Page changed:', newPage);
                 await loadPaginatedGoods();
             }
         }

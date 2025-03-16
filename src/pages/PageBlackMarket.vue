@@ -77,14 +77,14 @@ watch(
                     style="max-width: 84.5rem"
                 >
                     <li
-                        class="card"
                         v-for="good in queryData"
                         :key="good.id"
+                        class="card"
                         style="cursor: pointer; z-index: 5"
                     >
                         <q-card style="background-color: transparent; box-shadow: none">
                             <div>
-                                <div class="card__image-wrapper relative">
+                                <div class="image-wrapper relative">
                                     <Transition name="fade">
                                         <q-skeleton
                                             v-if="!imgLoaded[good.id]"
@@ -92,15 +92,10 @@ watch(
                                             animation-speed="1800"
                                             dark
                                             square
-                                            class="skeleton"
-                                            style="
-                                                height: 13.125rem;
-                                                border-top-left-radius: var(--rounded);
-                                                border-top-right-radius: var(--rounded);
-                                            "
+                                            class="skeleton-img"
                                         />
                                     </Transition>
-                                    <q-img class="card__image" :src="good.image_url" />
+                                    <q-img class="image" :src="good.image_url" />
                                 </div>
 
                                 <q-card-section>
@@ -111,8 +106,7 @@ watch(
                                                 animation="blink"
                                                 dark
                                                 animation-speed="1800"
-                                                class="skeleton"
-                                                style="height: 2rem; margin: 1rem"
+                                                class="skeleton-name"
                                             />
                                         </Transition>
                                         <div class="col ellipsis text-h6 text-primary">
@@ -129,8 +123,7 @@ watch(
                                                 animation="blink"
                                                 dark
                                                 animation-speed="1800"
-                                                class="skeleton"
-                                                style="height: 5.25rem; margin-inline: 1rem"
+                                                class="skeleton-content"
                                             />
                                         </Transition>
                                         <div>
@@ -143,25 +136,12 @@ watch(
                                                     class="flex items-center text-negative"
                                                     style="margin-bottom: 3px"
                                                 >
-                                                    <IconDebuff class="debuff">
+                                                    <IconDebuff>
                                                         <q-tooltip
                                                             :delay="500"
                                                             anchor="center right"
                                                             self="top start"
-                                                            class="column text-center text-dark"
-                                                            style="
-                                                                background-color: var(--q-dark);
-                                                                border: 1px solid
-                                                                    color-mix(
-                                                                        in srgb,
-                                                                        var(--q-primary) 50%,
-                                                                        #ff7f50 90%
-                                                                    );
-                                                                border-radius: var(--rounded);
-                                                                box-shadow:
-                                                                    0px 3px 8px rgba(0, 0, 0, 0.4),
-                                                                    2px 5px 12px #ff7f50;
-                                                            "
+                                                            class="tooltip-debuff column text-center text-dark"
                                                         >
                                                             <span
                                                                 class="text-caption"
@@ -189,12 +169,7 @@ watch(
                                             dark
                                             animation-speed="1800"
                                             type="QBtn"
-                                            style="
-                                                position: absolute;
-                                                background-color: var(--q-placeholder-primary);
-                                                width: 9.3448rem;
-                                                margin-inline: 0.5rem;
-                                            "
+                                            class="skeleton-add"
                                         />
                                     </Transition>
                                     <q-btn flat color="primary" @click="addToStash(good)">
@@ -211,12 +186,7 @@ watch(
                                                 dark
                                                 animation-speed="1800"
                                                 type="QBtn"
-                                                style="
-                                                    position: absolute;
-                                                    background-color: var(--q-placeholder-primary);
-                                                    width: 4.6019rem;
-                                                    margin-right: 0.5rem;
-                                                "
+                                                class="skeleton-details"
                                             />
                                         </Transition>
                                         <RouterLink
@@ -241,8 +211,8 @@ watch(
                 <div @click="applyTransition('pagination', 150)">
                     <div class="flex flex-center q-pa-lg">
                         <q-pagination
-                            v-model="currentPage"
                             v-if="!isPending"
+                            v-model="currentPage"
                             class="q-mt-md"
                             color="secondary"
                             active-text-color="dark"
@@ -258,13 +228,62 @@ watch(
     </q-page>
 </template>
 
-<style scoped>
+<style lang="scss" scoped>
+#black-market {
+    min-height: 75rem;
+}
+.skeleton-img {
+    position: absolute;
+    height: 13.125rem;
+    border-top-left-radius: $rounded;
+    border-top-right-radius: $rounded;
+    inset: 0;
+}
+.skeleton-name {
+    position: absolute;
+    height: 2rem;
+    margin: 1rem;
+    background-color: $placeholder-primary;
+    inset: 0;
+}
+.skeleton-content {
+    position: absolute;
+    height: 5.25rem;
+    margin-inline: 1rem;
+    background-color: $placeholder-primary;
+    inset: 0;
+}
+.skeleton-add {
+    position: absolute;
+    background-color: $placeholder-primary;
+    width: 9.3448rem;
+    margin-inline: 0.5rem;
+}
+.skeleton-details {
+    position: absolute;
+    background-color: $placeholder-primary;
+    width: 4.6019rem;
+    margin-right: 0.5rem;
+}
+.tooltip-debuff {
+    background-color: $dark;
+    border: 1px solid color-mix(in srgb, $primary 50%, #ff7f50 90%);
+    border-radius: $rounded;
+    box-shadow:
+        0px 3px 8px rgba(0, 0, 0, 0.4),
+        2px 5px 12px #ff7f50;
+}
+:deep(.q-checkbox__bg) {
+    background: $negative-dimmed;
+    outline: $negative;
+    border-color: $negative-dimmed;
+}
 .card {
     width: 19.625rem;
     min-height: 26.875rem;
     position: relative;
     border: 2px solid transparent;
-    border-radius: var(--rounded);
+    border-radius: $rounded;
     background: linear-gradient(45deg, rgba(0, 0, 0, 0.9) 0%, rgba(50, 0, 0, 1) 100%);
     color: #ddd;
     overflow: hidden;
@@ -274,55 +293,36 @@ watch(
     display: flex;
     flex-direction: column;
     justify-content: space-between;
+    &::after {
+        content: '';
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        width: 120%;
+        height: 120%;
+        transform: translate(-50%, -50%) rotate(45deg);
+        border-radius: 50%;
+        z-index: -2;
+        opacity: 0.3;
+    }
+    &:hover {
+        & .image {
+            transform: scale(1.05);
+        }
+    }
+    & .image {
+        transition: transform 0.15s linear;
+        transform: scale(1);
+        height: 13.125rem;
+    }
+    & .image-wrapper {
+        border-radius: $rounded;
+        overflow: hidden;
+    }
 }
-
-.card::after {
-    content: '';
-    position: absolute;
-    top: 50%;
-    left: 50%;
-    width: 120%;
-    height: 120%;
-    transform: translate(-50%, -50%) rotate(45deg);
-    border-radius: 50%;
-    z-index: -2;
-    opacity: 0.3;
-}
-
-.card .card__image-wrapper {
-    border-radius: var(--rounded);
-}
-
-.card:hover .card__image {
-    transform: scale(1.05);
-}
-
-.card__image-wrapper {
-    border-top-left-radius: var(--rounded);
-    border-top-right-radius: var(--rounded);
-    overflow: hidden;
-}
-
-.card__image {
-    transition: transform 0.15s linear;
-    transform: scale(1);
-    height: 13.125rem;
-}
-
-#black-market {
-    min-height: 75rem;
-}
-
-:deep(.q-checkbox__bg) {
-    background: var(--q-negative-dimmed);
-    outline: var(--q-negative);
-    border-color: var(--q-negative-dimmed);
-}
-
 .title {
     color: #710b03;
 }
-
 .overlay {
     position: absolute;
     inset: 0;
@@ -332,30 +332,28 @@ watch(
     background-repeat: no-repeat;
     opacity: 50%;
     z-index: -1;
+    &::before {
+        content: '';
+        position: absolute;
+        top: 13%;
+        left: 50%;
+        width: 120%;
+        min-height: 100svh;
+        background: radial-gradient(
+            ellipse at center,
+            rgba(10, 10, 60, 0.6) 0%,
+            rgba(20, 10, 50, 0.5) 30%,
+            rgba(0, 0, 0, 0) 80%
+        );
+        transform: translateX(-50%) scaleY(1.2);
+        filter: blur(50px);
+        z-index: -1;
+    }
 }
-
-.overlay::before {
-    content: '';
-    position: absolute;
-    top: 13%;
-    left: 50%;
-    width: 120%;
-    min-height: 100svh;
-    background: radial-gradient(
-        ellipse at center,
-        rgba(10, 10, 60, 0.6) 0%,
-        rgba(20, 10, 50, 0.5) 30%,
-        rgba(0, 0, 0, 0) 80%
-    );
-    transform: translateX(-50%) scaleY(1.2);
-    filter: blur(50px);
-    z-index: -1;
-}
-
 .debuff {
     transition: filter 0.15s linear;
-}
-.debuff:hover {
-    filter: brightness(120%);
+    &:hover {
+        filter: brightness(120%);
+    }
 }
 </style>

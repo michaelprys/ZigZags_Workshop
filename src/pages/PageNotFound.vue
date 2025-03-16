@@ -12,7 +12,7 @@
                 class="shadow-4"
             ></q-img>
             <div class="q-pt-xl">
-                <div class="text-h4">Oopsie! The path is closed, chum!</div>
+                <div class="text-h4">Oops! The path is closed!</div>
 
                 <div class="q-mt-lg text-h6 text-info">
                     Better turn back before Zigzag spots you.
@@ -32,11 +32,9 @@
     </section>
 </template>
 
-<style scoped>
+<style lang="scss" scoped>
 #not-found {
     padding-bottom: 19em;
-}
-#not-found {
     padding-top: 10.5rem;
 }
 </style>

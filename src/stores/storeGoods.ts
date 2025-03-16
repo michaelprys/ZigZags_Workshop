@@ -23,7 +23,6 @@ export const useStoreGoods = defineStore(
     () => {
         const pending = ref(false);
         const totalGoods = ref(0);
-        const suggestedGoods = ref<Good[]>([]);
         const selectedGood = ref<Good | null>(null);
         const selectedWorkshopCategories = ref<string[]>([]);
         const selectedBlackMarketCategories = ref<string[]>([]);
@@ -109,7 +108,8 @@ export const useStoreGoods = defineStore(
                 if (error) {
                     throw new Error(error.message);
                 }
-                suggestedGoods.value = data;
+
+                return data;
             } catch (error) {
                 console.error(error);
             } finally {
@@ -147,7 +147,6 @@ export const useStoreGoods = defineStore(
         return {
             pending,
             totalGoods,
-            suggestedGoods,
             selectedGood,
             selectedWorkshopCategories,
             selectedBlackMarketCategories,

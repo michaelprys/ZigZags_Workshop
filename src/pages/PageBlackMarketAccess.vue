@@ -1,21 +1,21 @@
 <script setup lang="ts">
 import { useStoreAuth } from 'src/stores/storeAuth';
 import { useStoreBalance } from 'src/stores/storeBalance';
-// import { delay } from 'src/utils/delay';
-// import { useStoreInventory } from 'src/stores/storeInventory';
+import { useStoreInventory } from 'src/stores/storeInventory';
+import { delay } from 'src/utils/delay';
 import { computed, onMounted, ref } from 'vue';
 
 const storeAuth = useStoreAuth();
 const storeBalance = useStoreBalance();
 
-const hasInvitation = ref(true);
+const hasInvitation = ref(false);
 const dialog = ref(false);
-// const storeInventory = useStoreInventory();
-// const inventoryGoods = computed(() => storeInventory.inventoryGoods);
+const storeInventory = useStoreInventory();
+const inventoryGoods = computed(() => storeInventory.inventoryGoods);
 
-// const handleTrade = async () => {
-//     await Promise.all([delay(3000), trade()]);
-// };
+const handleTrade = async () => {
+    await Promise.all([delay(3000), trade()]);
+};
 
 onMounted(async () => {
     // if (!storeAuth.session) await storeAuth.checkSession();
@@ -84,16 +84,7 @@ onMounted(async () => {
             style="padding-bottom: 8.5em; min-height: calc(100svh - 4.625em)"
         >
             <div class="q-mt-lg q-px-md" style="width: 100%; max-width: 43rem">
-                <div
-                    class="bg-dark column shadow-10"
-                    style="
-                        border-bottom-left-radius: var(--rounded);
-                        border-bottom-right-radius: var(--rounded);
-                        background-color: var(--q-bg-modal);
-                        width: 100%;
-                        margin-inline: auto;
-                    "
-                >
+                <div class="wrapper bg-dark column shadow-10">
                     <q-img
                         class="black-market-access-img"
                         src="~assets/black-market-access/black-market-access.avif"
@@ -102,15 +93,15 @@ onMounted(async () => {
 
                     <template v-if="!storeAuth.session && !hasInvitation">
                         <div class="q-pa-lg flex-center column">
-                            <h2 class="text-h4 text-negative">Invitation unconfirmed</h2>
-                            <h3 class="q-mt-sm text-info text-subtitle2">
+                            <h2 class="title text-h4 text-negative">Invitation unconfirmed</h2>
+                            <h3 class="subtitle q-mt-sm text-info text-subtitle2">
                                 Access vault to verify invitation
                             </h3>
 
-                            <div class="flex flex-center q-mt-md">
+                            <div class="btn-main flex flex-center q-mt-md">
                                 <RouterLink :to="{ name: 'vault' }"
                                     ><q-btn
-                                        class="q-mt-none"
+                                        class="btn-main q-mt-none"
                                         color="secondary"
                                         outline
                                         label="Go to vault"
@@ -121,14 +112,15 @@ onMounted(async () => {
 
                     <template v-if="storeAuth.session && !hasInvitation">
                         <div class="q-pa-lg flex-center column">
-                            <h2 class="text-h4 text-negative">Invitation: 20000 gold</h2>
-                            <h3 class="q-mt-sm text-info text-subtitle1">
+                            <h2 class="title text-h4 text-negative">Invitation: 20000 gold</h2>
+                            <h3 class="subtitle q-mt-sm text-info text-subtitle1">
                                 Get access to the black market
                             </h3>
 
-                            <div class="flex flex-center q-mt-md">
+                            <div class="btn-main-wrapper flex flex-center q-mt-md">
                                 <q-btn
-                                    class="q-mt-none"
+                                    class="btn-main q-mt-none"
+                                    style="width: 100%"
                                     outline
                                     color="secondary"
                                     label="Buy invitation"
@@ -166,50 +158,75 @@ onMounted(async () => {
     </q-page>
 </template>
 
-<style scoped>
+<style lang="scss" scoped>
+@use 'sass:map';
+
 :deep(.q-img__image) {
     object-fit: 100% !important;
     object-position: 20% 45% !important;
 }
-
+.wrapper {
+    border-bottom-left-radius: $rounded;
+    border-bottom-right-radius: $rounded;
+    background-color: $bg-modal;
+    width: 100%;
+    margin-inline: auto;
+}
 .black-market-access-img {
-    border-top-left-radius: var(--rounded);
-    border-top-right-radius: var(--rounded);
+    border-top-left-radius: $rounded;
+    border-top-right-radius: $rounded;
     filter: grayscale(0.2);
     width: 100%;
     max-height: 18.75rem;
 }
 .message {
-    background-color: var(--q-dark);
-    border: 1px solid color-mix(in srgb, var(--q-primary) 20%, black 90%);
-    border-radius: var(--rounded);
+    background-color: $dark;
+    border: 1px solid color-mix(in srgb, $primary 20%, black 90%);
+    border-radius: $rounded;
 }
-
 .toast {
     bottom: 40px !important;
     right: 40px !important;
     padding: 60px;
 }
 .modal {
-    background-color: var(--q-dark);
+    background-color: $dark;
     max-width: 30rem;
     width: 100%;
     padding: 1.25em;
-    border: 1px solid color-mix(in srgb, var(--q-primary) 30%, black 90%);
-    border-radius: var(--rounded);
+    border: 1px solid color-mix(in srgb, $primary 30%, black 90%);
+    border-radius: $rounded;
 }
-
 .balance-panel {
     display: flex;
     justify-content: center;
     align-items: center;
     padding-block: 0.1875em;
     padding-inline: 0.75em;
-    background-color: var(--q-medium);
-    border: 1px solid var(--q-gold-frame);
-    border-radius: var(--rounded);
+    background-color: $medium;
+    border: 1px solid $gold-frame;
+    border-radius: $rounded;
     grid-column-start: 3;
     justify-self: end;
     z-index: 0;
+}
+
+@media (width <= $breakpoint-md) {
+    .title {
+        font-size: map.get($h4, 'size');
+    }
+}
+@media (width <= $breakpoint-sm) {
+    .title {
+        font-size: map.get($h5, 'size');
+    }
+    .subtitle {
+        font-size: map.get($body2, 'size');
+    }
+}
+@media (width <= $breakpoint-xs) {
+    .btn-main-wrapper {
+        width: 100%;
+    }
 }
 </style>
