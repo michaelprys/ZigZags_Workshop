@@ -1,5 +1,7 @@
 <script setup lang="ts">
 import IconLoot from 'src/components/icons/IconLoot.vue';
+
+const emit = defineEmits(['toggle-drawer']);
 </script>
 
 <template>
@@ -70,7 +72,15 @@ import IconLoot from 'src/components/icons/IconLoot.vue';
             </div>
 
             <div class="q-px-md">
-                <q-btn class="hamburger" size="lg" dense icon="menu" @click="drawer = !drawer" />
+                <q-btn
+                    @click="emit('toggle-drawer')"
+                    class="hamburger"
+                    size="lg"
+                    text-color="primary"
+                    dense
+                    flat
+                    icon="menu"
+                />
             </div>
         </div>
     </q-header>

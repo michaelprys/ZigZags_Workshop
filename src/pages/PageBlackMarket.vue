@@ -229,6 +229,8 @@ watch(
 </template>
 
 <style lang="scss" scoped>
+@use 'sass:map';
+
 #black-market {
     min-height: 75rem;
 }
@@ -354,6 +356,12 @@ watch(
     transition: filter 0.15s linear;
     &:hover {
         filter: brightness(120%);
+    }
+}
+
+@media (width <= $breakpoint-md) {
+    .title {
+        font-size: map.get($h4, 'size');
     }
 }
 </style>

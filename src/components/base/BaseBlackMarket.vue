@@ -9,7 +9,7 @@
 
         <div class="flex flex-center q-px-md">
             <div class="content">
-                <q-img class="image shadow-8" src="~assets/index/black-market.avif" />
+                <q-img class="image shadow-8" src="~assets/base/black-market.avif" />
 
                 <div class="inner">
                     <h2 class="title text-h3">Goblin Black Market</h2>

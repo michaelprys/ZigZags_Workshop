@@ -1,47 +1,44 @@
 <script setup lang="ts">
-import { ref } from 'vue';
-
 const menuList = [
     {
-        icon: 'inbox',
-        label: 'Inbox',
-        separator: true
+        label: 'Base',
+        route: 'base'
     },
     {
-        icon: 'send',
-        label: 'Outbox',
-        separator: false
+        label: 'Guide',
+        route: 'guide'
+    },
+    {
+        label: 'Vault',
+        route: 'vault'
+    },
+    {
+        label: 'Workshop',
+        route: 'workshop'
+    },
+    {
+        label: 'Black-Market',
+        route: 'black-market'
+    },
+    {
+        label: 'Stash',
+        route: 'stash'
     }
 ];
-
-const drawer = ref(false);
 </script>
 
 <template>
-    <q-drawer
-        v-model="drawer"
-        class="drawer"
-        show-if-above
-        :width="300"
-        :breakpoint="500"
-        bordered
-        dark
-        overlay
-        side="left"
-        elevated
-    >
+    <q-drawer overlay class="drawer" :width="300" bordered dark side="left" elevated>
         <q-scroll-area class="fit">
-            <q-list>
+            <q-list class="q-py-lg">
                 <template v-for="(menuItem, index) in menuList" :key="index">
-                    <q-item v-ripple clickable :active="menuItem.label === 'Outbox'">
-                        <q-item-section avatar>
-                            <q-icon :name="menuItem.icon" />
-                        </q-item-section>
-                        <q-item-section>
-                            {{ menuItem.label }}
-                        </q-item-section>
-                    </q-item>
-                    <q-separator v-if="menuItem.separator" :key="'sep' + index" />
+                    <RouterLink :to="{ name: `${menuItem.route}` }">
+                        <q-item clickable :active="menuItem.label === 'Outbox'">
+                            <q-item-section class="q-py-sm q-px-md text-subtitle1">
+                                {{ menuItem.label }}
+                            </q-item-section>
+                        </q-item>
+                    </RouterLink>
                 </template>
             </q-list>
         </q-scroll-area>

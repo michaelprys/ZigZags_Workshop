@@ -285,4 +285,10 @@ watch(
     outline: $secondary-dimmed;
     border-color: $secondary-dimmed;
 }
+
+@media (width <= $breakpoint-md) {
+    .title {
+        font-size: map.get($h4, 'size');
+    }
+}
 </style>

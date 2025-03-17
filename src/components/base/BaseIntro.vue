@@ -2,7 +2,7 @@
 import { useQuery } from '@pinia/colada';
 import { useStoreAuth } from 'src/stores/storeAuth';
 import { useStoreGoods } from 'src/stores/storeGoods';
-import { computed, ref, watch } from 'vue';
+import { computed, ref } from 'vue';
 import { useRouter } from 'vue-router';
 
 const storeAuth = useStoreAuth();
@@ -122,22 +122,23 @@ const goToLink = async (option: Suggestion) => {
                     </div>
                 </div>
                 <div class="parallax-wrapper absolute-top fit">
-                    <q-parallax class="fit">
+                    <q-parallax class="parallax fit">
                         <template #media>
                             <video
-                                class="wrapper__intro-video"
+                                class="video"
                                 width="1516"
                                 height="926"
-                                poster="~assets/index/poster.avif"
+                                poster="~assets/base/poster.avif"
                                 loop
                                 muted
                                 autoplay
                             >
-                                <source src="~assets/index/intro.mp4" type="video/mp4" />
+                                <source src="~assets/base/intro.mp4" type="video/mp4" />
                             </video>
                             <div class="layer"></div>
                         </template>
                     </q-parallax>
+                    <div class="poster"></div>
                 </div>
             </div>
         </div>
@@ -155,6 +156,17 @@ const goToLink = async (option: Suggestion) => {
     width: 100%;
     height: 40rem;
 }
+.parallax-wrapper {
+    border-radius: $rounded;
+}
+.poster {
+    display: none;
+    background-image: url('/src/assets/base/poster.avif');
+    background-size: cover;
+    background-position: center;
+    width: 100%;
+    height: 100%;
+}
 
 @media (width <= $breakpoint-sm) {
     .title {
@@ -169,7 +181,12 @@ const goToLink = async (option: Suggestion) => {
     }
 }
 
-.parallax-wrapper {
-    border-radius: $rounded;
+@media (width <= 69.4375rem) {
+    .parallax {
+        display: none;
+    }
+    .poster {
+        display: block;
+    }
 }
 </style>

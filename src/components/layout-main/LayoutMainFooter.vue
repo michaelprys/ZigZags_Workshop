@@ -154,10 +154,4 @@ watch(
     filter: brightness(110%) blur(0.0437rem);
     margin-top: 0.5rem;
 }
-
-@media (width <= $breakpoint-sm) {
-    .quote {
-        font-size: map.get($body1, 'size');
-    }
-}
 </style>

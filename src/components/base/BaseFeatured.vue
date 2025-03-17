@@ -70,6 +70,7 @@ watch(
                         control-color="secondary"
                         padding
                         navigation
+                        autoplay
                         infinite
                         arrows
                         height="24rem"
