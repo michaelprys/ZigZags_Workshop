@@ -5,16 +5,13 @@
     ></div>
 
     <section id="not-found" class="flex flex-center fullscreen q-pa-md text-center text-white">
-        <div class="" style="max-width: 700px">
-            <q-img
-                src="~assets/not-found/not-found.avif"
-                style="width: 250px; border-radius: 50%"
-                class="shadow-4"
-            ></q-img>
-            <div class="q-pt-xl">
-                <div class="text-h4">Oops! The path is closed!</div>
+        <div class="q-px-md">
+            <q-img src="~assets/not-found/not-found.avif" class="img shadow-4"></q-img>
 
-                <div class="q-mt-lg text-h6 text-info">
+            <div class="wrapper q-mt-xl">
+                <div class="title text-h4">Oops! The path is closed!</div>
+
+                <div class="text q-mt-lg text-h6 text-info">
                     Better turn back before Zigzag spots you.
                 </div>
 
@@ -33,8 +30,32 @@
 </template>
 
 <style lang="scss" scoped>
+@use 'sass:map';
+
 #not-found {
     padding-bottom: 19em;
     padding-top: 10.5rem;
+}
+.img {
+    width: 15.625rem;
+    border-radius: 50%;
+}
+
+@media (width <= $breakpoint-sm) {
+    .img {
+        width: 10rem !important;
+    }
+    .wrapper {
+        max-width: 25rem;
+        width: 100%;
+        margin-top: 2rem;
+    }
+    .title {
+        font-size: map.get($h5, 'size');
+    }
+    .text {
+        font-size: map.get($subtitle1, 'size');
+        margin-top: 0.2rem;
+    }
 }
 </style>

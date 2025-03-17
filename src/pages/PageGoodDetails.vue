@@ -2,7 +2,7 @@
 import { useStoreGoods } from 'src/stores/storeGoods';
 import { useManageStash } from 'src/use/useManageStash';
 import { useMoveImage } from 'src/use/useMoveImage';
-import { ref, useTemplateRef } from 'vue';
+import { useTemplateRef } from 'vue';
 import { useRouter } from 'vue-router';
 
 const router = useRouter();
@@ -18,7 +18,7 @@ const { moveImage, resetImage } = useMoveImage(imgRef);
 </script>
 
 <template>
-    <q-page>
+    <q-page class="">
         <section
             id="good-details"
             class="relative-position"
@@ -28,12 +28,12 @@ const { moveImage, resetImage } = useMoveImage(imgRef);
 
             <div class="bg" :class="isAuth ? 'bg-black-market' : 'bg-workshop'"></div>
 
-            <div class="flex flex-center">
+            <div class="q-px-md flex flex-center">
                 <div class="wrapper">
-                    <div class="image-wrapper">
+                    <div class="img-wrapper">
                         <img
                             ref="img-ref"
-                            class="image"
+                            class="img"
                             :src="storeGoods.selectedGood.image_url"
                             @mousemove="moveImage"
                             @mouseleave="resetImage"
@@ -45,14 +45,17 @@ const { moveImage, resetImage } = useMoveImage(imgRef);
                             class="overlay"
                             :class="isAuth ? 'overlay-black-market' : 'overlay-workshop'"
                         ></div>
-                        <div class="column">
-                            <div class="flex items-center justify-between">
-                                <h2 class="text-bold text-h4">
+                        <div class="panel column">
+                            <div
+                                class="panel-top-wrapper flex items-center justify-between"
+                                style="gap: 1.5rem"
+                            >
+                                <h2 class="name text-bold text-h4">
                                     {{ storeGoods.selectedGood.name }}
                                 </h2>
 
                                 <q-btn
-                                    class="back-button q-px-md"
+                                    class="back-btn q-px-md"
                                     dense
                                     outline
                                     text-color="primary"
@@ -61,7 +64,7 @@ const { moveImage, resetImage } = useMoveImage(imgRef);
                                 >
                             </div>
 
-                            <h3 class="q-mt-md text-bold text-h6 text-secondary">
+                            <h3 class="category q-mt-md text-bold text-h6 text-secondary">
                                 Category: {{ storeGoods.selectedGood.category }}
                             </h3>
 
@@ -74,10 +77,9 @@ const { moveImage, resetImage } = useMoveImage(imgRef);
                             >
 
                             <q-btn
-                                class="button q-mt-lg"
+                                class="purchase-btn q-mt-lg"
                                 outline
                                 color="primary"
-                                style="max-width: 6rem"
                                 @click="addToStash(storeGoods.selectedGood)"
                                 >Purchase</q-btn
                             >
@@ -93,11 +95,16 @@ const { moveImage, resetImage } = useMoveImage(imgRef);
                     </div>
                 </div>
             </div>
-        </section></q-page
-    >
+        </section>
+    </q-page>
 </template>
 
 <style lang="scss" scoped>
+@use 'sass:map';
+
+#good-details {
+    overflow: hidden;
+}
 .bg {
     position: absolute;
     top: 2.2rem;
@@ -151,14 +158,15 @@ const { moveImage, resetImage } = useMoveImage(imgRef);
 .overlay-black-market {
     background-color: rgba(15, 22, 32, 0.9);
 }
-.image-wrapper {
+.img-wrapper {
     width: 28.9375rem;
     height: 19.5rem;
     margin-top: 5rem;
     overflow: hidden;
     border-radius: 0.3125rem;
+    box-shadow: rgba(0, 0, 0, 0.35) 0px 5px 15px;
 }
-.image {
+.img {
     width: 100%;
     height: 100%;
     object-fit: cover;
@@ -166,6 +174,44 @@ const { moveImage, resetImage } = useMoveImage(imgRef);
     user-select: none;
     &:hover {
         transform: scale(1.5);
+    }
+}
+.purchase-btn {
+    max-width: 6rem;
+}
+
+@media (width <= $breakpoint-md) {
+    .wrapper {
+        flex-direction: column;
+        align-items: center;
+        max-width: 800px;
+        width: 100%;
+    }
+    .bg {
+        left: 50%;
+        transform: translateX(-50%);
+    }
+    .content {
+        max-width: 100%;
+    }
+    .name {
+        font-size: map.get($h5, 'size');
+    }
+    .category {
+        font-size: map.get($subtitle1, 'size');
+    }
+}
+@media (width <= $breakpoint-xs) {
+    .img-wrapper {
+        width: 100%;
+        max-width: 100%;
+    }
+    .panel-top-wrapper {
+        flex-direction: column-reverse;
+        align-items: start;
+    }
+    .purchase-btn {
+        max-width: 100%;
     }
 }
 </style>

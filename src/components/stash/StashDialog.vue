@@ -137,10 +137,10 @@ watchEffect(() => {
             @update:model-value="(val) => emit('update:modelValue', val)"
         >
             <div class="modal">
-                <div class="flex items-center justify-between q-pb-none">
-                    <span class="text-h5 text-secondary">Complete trade</span>
+                <div class="title-wrapper flex items-center justify-between q-pb-none">
+                    <h2 class="title text-h5 text-secondary">Complete trade</h2>
 
-                    <ItemBalance />
+                    <ItemBalance class="balance" />
                 </div>
 
                 <div>
@@ -198,6 +198,8 @@ watchEffect(() => {
 </template>
 
 <style lang="scss" scoped>
+@use 'sass:map';
+
 .toast {
     bottom: 40px !important;
     right: 40px !important;
@@ -210,5 +212,14 @@ watchEffect(() => {
     padding: 1.25em;
     border: 1px solid color-mix(in srgb, $primary 30%, black 90%);
     border-radius: $rounded;
+}
+
+@media (width <= $breakpoint-xs) {
+    .title-wrapper {
+        flex-direction: column;
+    }
+    .balance {
+        margin-top: 1.2rem;
+    }
 }
 </style>

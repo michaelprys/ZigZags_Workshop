@@ -43,30 +43,31 @@ watch([basePrice, goblinTax], ([newBasePrice, newGoblinTax]) => {
 <template>
     <section id="stash" class="column flex-center relative-position">
         <div class="q-pa-md">
-            <h1 class="text-center text-h3">Your stash</h1>
-            <div class="flex q-mt-xl">
-                <div dark class="panel q-mr-xl">
+            <h1 class="title text-center text-h3">Your stash</h1>
+
+            <div class="wrapper q-mt-xl">
+                <div dark class="panel">
                     <TransitionGroup :name="transitionName" tag="ul">
                         <li
                             v-for="(good, goodIdx) in storeGoods.stashGoods"
                             :key="good.id"
                             class="card"
                         >
-                            <q-img class="image shadow-1" :src="good.image_url" />
+                            <q-img class="img shadow-1" :src="good.image_url" />
 
-                            <div class="flex justify-between q-pa-md" style="width: 100%">
+                            <div class="inner q-pa-md">
                                 <div class="info column">
                                     <span class="text-body1 text-bold">{{ good.name }}</span>
                                     <span class="text-bold text-info"
                                         >Category: {{ good.category }}</span
                                     >
-                                    <span class="q-mt-lg text-bold"
+                                    <span class="good-price q-mt-lg text-bold"
                                         ><span class="text-secondary">Price</span>:
                                         {{ good.price }} Gold</span
                                     >
                                 </div>
 
-                                <div class="column justify-between" style="align-items: flex-end">
+                                <div class="actions">
                                     <q-btn
                                         outline
                                         color="primary"
@@ -138,12 +139,20 @@ watch([basePrice, goblinTax], ([newBasePrice, newGoblinTax]) => {
 </template>
 
 <style lang="scss" scoped>
+@use 'sass:map';
+
 #stash {
     padding-bottom: 19em;
     padding-top: 2em;
 }
 .q-carousel__slide div:last-child {
     margin-right: 0;
+}
+.wrapper {
+    display: flex;
+    justify-content: center;
+    gap: 2rem;
+    width: 75rem;
 }
 .separator-single {
     margin-inline: auto;
@@ -165,17 +174,19 @@ watch([basePrice, goblinTax], ([newBasePrice, newGoblinTax]) => {
     border: 1px solid rgba(255, 255, 255, 0.125);
 }
 .panel {
-    width: 60rem;
-    min-height: 35.6688rem;
+    width: 100%;
+    min-height: 562.3px;
+    overflow: hidden;
 }
 .panel-price {
     display: flex;
     align-items: center;
     justify-content: space-between;
-    width: 17rem;
+    max-width: 18rem;
+    width: 100%;
 }
 .panel-price-inner {
-    width: 16.6875rem;
+    width: 100%;
 }
 .card {
     position: relative;
@@ -191,14 +202,94 @@ watch([basePrice, goblinTax], ([newBasePrice, newGoblinTax]) => {
         border-bottom: 1px solid rgba(255, 255, 255, 0.125);
         mask-image: linear-gradient(to right, transparent, white 5%, white 95%, transparent);
         z-index: -1;
-        &:nth-child(n + 3):last-child::before {
-            content: none;
-        }
+    }
+    &:nth-child(n + 3):last-child::before {
+        content: none;
     }
 }
-.image {
-    width: 200px;
+.img {
+    width: 12.5rem;
     background-size: cover;
     border-radius: $rounded;
+}
+.inner {
+    display: flex;
+    justify-content: space-between;
+    width: 100%;
+}
+.actions {
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    align-items: flex-end;
+}
+
+@media (width <= 81.9375rem) {
+    .title {
+        font-size: map.get($h4, 'size');
+    }
+    .subtitle {
+        font-size: map.get($body1, 'size');
+        margin-top: 0.5rem;
+    }
+    .wrapper {
+        width: 100%;
+        display: flex;
+        gap: 1.5rem;
+        justify-content: center;
+    }
+    .panel {
+        margin-right: 0;
+        width: 48.75rem;
+    }
+    .card {
+        &::before {
+            &:nth-child(n + 2):last-child::before {
+                content: none;
+            }
+        }
+    }
+    .inner {
+        padding-bottom: 0;
+    }
+    .panel-price-inner {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+    }
+    .good-price {
+        margin-top: 0.5rem;
+    }
+}
+@media (width <= 964px) {
+    .panel {
+        width: 100%;
+        max-width: 31.9875rem;
+        min-height: 30.6719rem;
+    }
+    .wrapper {
+        width: 100%;
+        display: flex;
+        flex-direction: column-reverse;
+        gap: 1.5rem;
+    }
+    .panel-price {
+        max-width: 100%;
+    }
+}
+@media (width <= $breakpoint-xs) {
+    .panel {
+        min-height: 30.7969rem;
+    }
+    .inner {
+        display: flex;
+        flex-direction: column;
+    }
+    .actions {
+        margin-top: 1rem;
+        flex-direction: row-reverse;
+        align-items: center;
+        width: 100%;
+    }
 }
 </style>
