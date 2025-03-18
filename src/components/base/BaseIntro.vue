@@ -68,7 +68,7 @@ const goToLink = async (option: Suggestion) => {
 </script>
 
 <template>
-    <section id="intro" style="padding-top: 6.5em; padding-bottom: 8.5em">
+    <section id="intro">
         <h1 class="sr-only">Introduction</h1>
 
         <div class="flex flex-center q-px-md">
@@ -150,6 +150,10 @@ const goToLink = async (option: Suggestion) => {
 <style lang="scss" scoped>
 @use 'sass:map';
 
+#intro {
+    padding-top: 6.5em;
+    padding-bottom: 8.5em;
+}
 .wrapper {
     position: relative;
     max-width: 92.5rem;

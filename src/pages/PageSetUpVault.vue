@@ -57,11 +57,7 @@ const setupVault = async () => {
 
 <template>
     <q-page>
-        <section
-            id="setup-vault"
-            class="flex flex-center relative-position"
-            style="padding-top: 4.625em; padding-bottom: 8.5em; min-height: calc(100svh - 4.625em)"
-        >
+        <section id="setup-vault" class="flex flex-center relative-position">
             <div class="q-px-md" style="max-width: 40.25rem; width: 100%">
                 <q-form
                     ref="setup-vault-form"
@@ -192,3 +188,11 @@ const setupVault = async () => {
             </div></section
     ></q-page>
 </template>
+
+<style lang="scss" scoped>
+#setup-vault {
+    padding-top: 4.625em;
+    padding-bottom: 8.5em;
+    min-height: calc(100svh - 4.625em);
+}
+</style>

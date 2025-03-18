@@ -3,7 +3,7 @@ import { useStoreGoods, type Good } from 'src/stores/storeGoods';
 import { useManageStash } from 'src/use/useManageStash';
 import { useTransition } from 'src/use/useTransition';
 import { delay } from 'src/utils/delay';
-import { ref, watch, watchEffect } from 'vue';
+import { ref, watch } from 'vue';
 
 const { transitionName, applyTransition } = useTransition();
 

@@ -6,11 +6,7 @@ import VaultHeader from 'src/components/vault/VaultHeader.vue';
 
 <template>
     <q-page>
-        <section
-            id="vault"
-            class="flex flex-center"
-            style="padding-top: 4.625em; padding-bottom: 8.5em; min-height: calc(100svh - 4.625em)"
-        >
+        <section id="vault" class="flex flex-center">
             <h1 class="sr-only">Vault</h1>
             <div class="bg"></div>
 
@@ -28,6 +24,12 @@ import VaultHeader from 'src/components/vault/VaultHeader.vue';
 </template>
 
 <style lang="scss" scoped>
+#vault {
+    padding-top: 4.625em;
+    padding-bottom: 8.5em;
+    min-height: calc(100svh - 4.625em);
+}
+
 .inventory {
     position: relative;
     background: linear-gradient(180deg, #25211f 0%, #100f0d 100%);

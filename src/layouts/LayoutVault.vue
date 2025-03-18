@@ -1,5 +1,3 @@
-<script setup lang="ts"></script>
-
 <template>
     <div>
         <q-layout class="relative-position">

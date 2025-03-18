@@ -1,10 +1,7 @@
 <script setup lang="ts"></script>
 
 <template>
-    <section
-        id="black-market"
-        style="position: relative; padding-top: 9.8125em; padding-bottom: 8.5em"
-    >
+    <section id="black-market">
         <h1 class="sr-only">The Black Market</h1>
 
         <div class="flex flex-center q-px-md">
@@ -42,6 +39,11 @@
 <style lang="scss" scoped>
 @use 'sass:map';
 
+#black-market {
+    position: relative;
+    padding-top: 9.8125em;
+    padding-bottom: 8.5em;
+}
 .content {
     display: flex;
     gap: 2.8rem;

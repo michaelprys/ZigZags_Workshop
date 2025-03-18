@@ -3,11 +3,14 @@ import { useStoreAuth } from 'src/stores/storeAuth';
 import { useStoreBalance } from 'src/stores/storeBalance';
 import { useStoreGoods } from 'src/stores/storeGoods';
 import supabase from 'src/utils/supabase';
-import { ref } from 'vue';
+import { computed, ref } from 'vue';
 
 export const useStoreInventory = defineStore('inventory', () => {
     const pending = ref(false),
+        totalInventoryGoods = ref(0),
         inventoryGoods = ref([]);
+
+    const totalInventoryPages = computed(() => Math.ceil(totalInventoryGoods.value / 55));
 
     const saveGoodsToInventory = async () => {
         pending.value = true;
@@ -36,6 +39,7 @@ export const useStoreInventory = defineStore('inventory', () => {
                 if (error) {
                     throw new Error(error.message);
                 }
+
                 inventoryGoods.value = data;
             }
         } catch (error) {
@@ -45,7 +49,7 @@ export const useStoreInventory = defineStore('inventory', () => {
         }
     };
 
-    const loadInventoryGoods = async () => {
+    const loadInventoryGoods = async (currentPage: number, inventoryGoodsPerPage: number) => {
         pending.value = true;
 
         try {
@@ -55,15 +59,38 @@ export const useStoreInventory = defineStore('inventory', () => {
                 await storeAuth.checkSession();
             }
 
-            const { data, error } = await supabase
+            const countQuery = supabase
                 .from('user_goods')
                 .select(
-                    `
-                        good_id, quantity, slot,
-                        goods (id, name, image_url, price, short_description, category)`
+                    `good_id,
+                        goods (id)`,
+                    { count: 'exact' }
+                )
+                .eq('user_id', storeAuth.session?.id);
+
+            const { count } = await countQuery;
+
+            totalInventoryGoods.value = count;
+
+            if (currentPage > totalInventoryPages.value) {
+                currentPage = 1;
+            }
+
+            const start = (currentPage - 1) * inventoryGoodsPerPage;
+            const end = Math.min(start + inventoryGoodsPerPage - 1, count - 1);
+
+            const query = supabase
+                .from('user_goods')
+                .select(
+                    `good_id, quantity, slot,
+                        goods (id, name, image_url, price, short_description, category)`,
+                    { count: 'exact' }
                 )
                 .eq('user_id', storeAuth.session?.id)
-                .order('slot', { ascending: true });
+                .range(start, end)
+                .order('good_id');
+
+            const { data, error } = await query;
 
             if (error) {
                 throw new Error(error.message);
@@ -98,7 +125,7 @@ export const useStoreInventory = defineStore('inventory', () => {
             }
 
             inventoryGoods.value[selectedGood] = null;
-            await loadInventoryGoods();
+            await loadInventoryGoods(1, 55);
         } catch (error) {
             console.error(error);
         } finally {
@@ -110,7 +137,6 @@ export const useStoreInventory = defineStore('inventory', () => {
         pending.value = true;
 
         try {
-            // get current good's slot
             const { data: currentSlot, error: currentSlotError } = await supabase
                 .from('user_goods')
                 .select('slot')
@@ -120,10 +146,8 @@ export const useStoreInventory = defineStore('inventory', () => {
                 throw new Error('currentSlotError: ', currentSlotError.message);
             }
 
-            // record current good's slot as the previous slot
             const prevSlot = currentSlot.slot;
 
-            // check if any good exist in the next slot
             const { data: nextGood, error: nextGoodError } = await supabase
                 .from('user_goods')
                 .select('good_id')
@@ -133,7 +157,6 @@ export const useStoreInventory = defineStore('inventory', () => {
                 throw new Error('nextGoodError: ', nextGoodError.message);
             }
 
-            // if good exists in the next slot, then put it in the slot of a current good
             if (nextGood) {
                 const { error: updateNextGoodError } = await supabase
                     .from('user_goods')
@@ -145,7 +168,6 @@ export const useStoreInventory = defineStore('inventory', () => {
                 }
             }
 
-            // replace the current one with the next one
             const { error: updateCurrentGoodError } = await supabase
                 .from('user_goods')
                 .update({ slot: nextSlot })
@@ -163,6 +185,8 @@ export const useStoreInventory = defineStore('inventory', () => {
     return {
         pending,
         inventoryGoods,
+        totalInventoryGoods,
+        totalInventoryPages,
         saveGoodsToInventory,
         loadInventoryGoods,
         removeGoodFromInventory,

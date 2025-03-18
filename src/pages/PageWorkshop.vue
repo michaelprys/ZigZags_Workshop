@@ -59,7 +59,7 @@ watch(
 
 <template>
     <q-page>
-        <section id="workshop" style="padding-top: 4.625em; padding-bottom: 8.5em">
+        <section id="workshop">
             <h1 class="title text-center text-h3">Explore goods</h1>
 
             <ItemCategories
@@ -218,6 +218,8 @@ watch(
 
 #workshop {
     min-height: 75rem;
+    padding-top: 4.625em;
+    padding-bottom: 8.5em;
 }
 .skeleton-img {
     position: absolute;

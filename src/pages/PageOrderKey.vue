@@ -20,7 +20,7 @@ const orderKey = async () => {
                 supabase.auth.resetPasswordForEmail(mailbox.value, {
                     redirectTo: 'http://localhost:9000/set-new-vault-key'
                 }),
-                delay(500)
+                await delay(500)
             ]);
 
             if (error) {
@@ -50,11 +50,7 @@ const orderKey = async () => {
 
 <template>
     <q-page>
-        <section
-            id="order-key"
-            class="flex flex-center relative-position"
-            style="padding-top: 4.625em; padding-bottom: 8.5em; min-height: calc(100svh - 4.625em)"
-        >
+        <section id="order-key" class="flex flex-center relative-position">
             <div class="q-px-md" style="max-width: 40.25rem; width: 100%">
                 <q-form
                     ref="order-key-form"
@@ -117,3 +113,11 @@ const orderKey = async () => {
             </div></section
     ></q-page>
 </template>
+
+<style lang="scss" scoped>
+#order-key {
+    padding-top: 4.625em;
+    padding-bottom: 8.5em;
+    min-height: calc(100svh - 4.625em);
+}
+</style>

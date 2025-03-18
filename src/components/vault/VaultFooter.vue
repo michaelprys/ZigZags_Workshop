@@ -1,14 +1,18 @@
 <script setup lang="ts">
 import ItemBalance from 'src/components/items/ItemBalance.vue';
 import { useStoreBalance } from 'src/stores/storeBalance';
+import { useStoreInventory } from 'src/stores/storeInventory';
+import { usePaginatedInventoryGoods } from 'src/use/usePaginatedInventoryGoods';
 import { useTopUpPayment } from 'src/use/useTopUpPayment';
 import { useTopUpState } from 'src/use/useTopUpState';
 import { onMounted, ref, useTemplateRef, watchEffect } from 'vue';
 import { useRoute } from 'vue-router';
 
+const { currentPage, loadPaginatedInventoryGoods } = usePaginatedInventoryGoods();
+
+const storeInventory = useStoreInventory();
 const storeBalance = useStoreBalance();
 const route = useRoute();
-const currentPage = ref(1);
 
 const preventIncorrectChars = (e) => {
     if (!/[\d.]/.test(e.key)) {
@@ -60,7 +64,7 @@ watchEffect(async () => {
     <div class="footer q-mt-lg">
         <Teleport to="body">
             <q-dialog v-model="isOpen" backdrop-filter="blur(8px); brightness(60%)">
-                <q-card dark class="inner q-pa-md" style="max-width: 22.25rem; width: 100%">
+                <q-card dark class="card-inner q-pa-md" style="max-width: 22.25rem; width: 100%">
                     <q-card-section class="q-pt-none">
                         <div class="text-h6 text-primary">Add funds</div>
                     </q-card-section>
@@ -132,24 +136,30 @@ watchEffect(async () => {
             </q-dialog>
         </Teleport>
 
-        <q-pagination
-            v-model="currentPage"
-            class="nav"
-            :max="3"
-            direction-links
-            flat
-            input
-            input-class="text-primary"
-        />
+        <div class="inner flex">
+            <q-pagination
+                v-model="currentPage"
+                class="nav"
+                direction-links
+                flat
+                input
+                input-class="text-primary"
+                :boundary-numbers="false"
+                :max="storeInventory.totalInventoryPages"
+                @update:model-value="loadPaginatedInventoryGoods"
+            />
 
-        <ItemBalance class="balance-panel">
-            <q-btn class="btn" icon="add" flat dense @click="isOpen = true"></q-btn>
-        </ItemBalance>
+            <ItemBalance class="balance-panel">
+                <q-btn class="btn" icon="add" flat dense @click="isOpen = true"></q-btn>
+            </ItemBalance>
+        </div>
     </div>
 </template>
 
 <style lang="scss" scoped>
-.inner {
+@use 'sass:map';
+
+.card-inner {
     border-radius: $rounded !important;
 }
 .balance-panel {
@@ -161,7 +171,7 @@ watchEffect(async () => {
     height: 100%;
     border-radius: $rounded;
 }
-.footer {
+.inner {
     display: grid;
     place-items: center;
     grid-template-columns: repeat(3, 1fr);
@@ -192,5 +202,16 @@ watchEffect(async () => {
 :deep(.nav label) {
     pointer-events: none !important;
     user-select: none !important;
+}
+
+@media (width <= 61.25rem) {
+    .inner {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+    }
+    .balance-panel {
+        margin-top: 2rem;
+    }
 }
 </style>

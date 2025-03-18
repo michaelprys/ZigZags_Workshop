@@ -78,11 +78,7 @@ onMounted(async () => {
                 </div>
             </q-dialog>
         </Teleport>
-        <section
-            id="black-market-access"
-            class="column flex-center relative-position"
-            style="padding-bottom: 8.5em; min-height: calc(100svh - 4.625em)"
-        >
+        <section id="black-market-access" class="column flex-center relative-position">
             <div class="q-mt-lg q-px-md" style="width: 100%; max-width: 43rem">
                 <div class="wrapper bg-dark column shadow-10">
                     <q-img
@@ -161,6 +157,10 @@ onMounted(async () => {
 <style lang="scss" scoped>
 @use 'sass:map';
 
+#black-market-access {
+    padding-bottom: 8.5em;
+    min-height: calc(100svh - 4.625em);
+}
 :deep(.q-img__image) {
     object-fit: 100% !important;
     object-position: 20% 45% !important;

@@ -76,9 +76,11 @@ export const useStoreGoods = defineStore(
                 }
 
                 const { data, error } = await query;
+
                 if (error) {
                     throw new Error(error.message);
                 }
+
                 return data || [];
             } catch (error) {
                 console.error(error);

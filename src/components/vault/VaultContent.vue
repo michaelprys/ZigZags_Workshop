@@ -1,11 +1,13 @@
 <script setup lang="ts">
 import { useQuasar } from 'quasar';
 import { useStoreInventory } from 'src/stores/storeInventory';
-import { computed, onMounted } from 'vue';
+import { usePaginatedInventoryGoods } from 'src/use/usePaginatedInventoryGoods';
+import { computed } from 'vue';
 import { vDraggable } from 'vue-draggable-plus';
 
 const storeInventory = useStoreInventory();
-const { updateGoodSlot, removeGoodFromInventory, loadInventoryGoods } = storeInventory;
+const { updateGoodSlot, removeGoodFromInventory } = storeInventory;
+const { inventoryGoodsPerPage } = usePaginatedInventoryGoods();
 
 const inventoryGoods = computed(() => storeInventory.inventoryGoods);
 
@@ -45,10 +47,6 @@ const handleRemoveItem = async (selectedGood) => {
 //     await updateGoodSlot(goodId, nextSlot);
 //     await loadInventoryGoods();
 // };
-
-onMounted(async () => {
-    await loadInventoryGoods();
-});
 </script>
 
 <template>
@@ -62,13 +60,13 @@ onMounted(async () => {
         ]"
         class="q-mt-lg slots"
     >
-        <template v-for="(slot, idx) in 55" :key="idx">
+        <template v-for="(slot, idx) in inventoryGoodsPerPage" :key="idx">
             <li class="slot">
                 <div class="placeholder"></div>
 
                 <Transition name="remove">
                     <div v-if="inventoryGoods[idx] && inventoryGoods[idx].goods">
-                        <div
+                        <!-- <div
                             style="
                                 position: absolute;
                                 top: 15px;
@@ -79,7 +77,7 @@ onMounted(async () => {
                             "
                         >
                             {{ inventoryGoods[idx].slot }}
-                        </div>
+                        </div> -->
                         <q-tooltip
                             :delay="500"
                             anchor="bottom right"
@@ -107,7 +105,7 @@ onMounted(async () => {
                         </div>
 
                         <q-img
-                            class="image"
+                            class="img"
                             :src="inventoryGoods[idx].goods.image_url"
                             width="1024px"
                             height="1024px"
@@ -121,10 +119,11 @@ onMounted(async () => {
 </template>
 
 <style lang="scss" scoped>
+@use 'sass:map';
+
 .slots {
     display: grid;
     grid-template-columns: repeat(11, 1fr);
-    grid-template-rows: repeat(4, 1fr);
     gap: 1rem;
     width: 100%;
     place-items: center;
@@ -188,7 +187,7 @@ onMounted(async () => {
         border-radius: 0.18rem;
     }
 }
-.image {
+.img {
     position: absolute;
     top: 50%;
     left: 50%;
@@ -204,6 +203,27 @@ onMounted(async () => {
         inset: 0;
         border-radius: $rounded;
         z-index: 3;
+    }
+}
+
+@media (width <= 75rem) {
+    .slots {
+        grid-template-columns: repeat(8, 1fr);
+    }
+}
+@media (width <= 61.25rem) {
+    .slots {
+        grid-template-columns: repeat(6, 1fr);
+    }
+}
+@media (width <= $breakpoint-sm) {
+    .slots {
+        grid-template-columns: repeat(5, 1fr);
+    }
+}
+@media (width <= $breakpoint-xs) {
+    .slots {
+        grid-template-columns: repeat(3, 1fr);
     }
 }
 </style>

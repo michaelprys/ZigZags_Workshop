@@ -1,23 +1,32 @@
 <script setup lang="ts">
 import { useQuasar } from 'quasar';
 import { useStoreAuth } from 'src/stores/storeAuth';
+import { useStoreInventory } from 'src/stores/storeInventory';
 import { callToast } from 'src/utils/callToast';
+import { delay } from 'src/utils/delay';
 import supabase from 'src/utils/supabase';
-import { computed, onMounted } from 'vue';
+import { computed, onMounted, ref, watch, watchEffect } from 'vue';
 import { useRouter } from 'vue-router';
 
 const storeAuth = useStoreAuth();
+const storeInventory = useStoreInventory();
 const router = useRouter();
 const $q = useQuasar();
+
+const isLeft = ref(false);
 
 const leaveVault = async () => {
     const { error } = await supabase.auth.signOut();
 
     if (error) {
         callToast(error ? 'Unable to leave the vault' : 'Something went wrong', false);
+        return;
     } else {
         await storeAuth.checkSession();
+        await delay(150);
         callToast('Safe travels!', true);
+        storeInventory.inventoryGoods = [];
+        isLeft.value = true;
     }
 };
 
@@ -51,25 +60,38 @@ const alert = () => {
         .onDismiss(() => {});
 };
 
-const determineFaction = computed(() => {
+const userFaction = ref('');
+
+const determineFaction = async () => {
     const faction = storeAuth.session?.user_metadata.faction;
 
     if (faction === 'Horde') {
-        return 'horde';
+        userFaction.value = 'horde';
     } else if (faction === 'Alliance') {
-        return 'alliance';
+        userFaction.value = 'alliance';
+    } else if (faction === 'No faction (Outsiders)') {
+        userFaction.value = 'outsiders';
     } else {
-        return 'outsiders';
+        await delay(150);
+        userFaction.value = null;
     }
-});
+};
 
 const imgSrc = (ext) => {
-    return new URL(`/src/assets/vault/${determineFaction.value}.${ext}`, import.meta.url).href;
+    return new URL(`/src/assets/vault/${userFaction.value}.${ext}`, import.meta.url).href;
 };
 
 onMounted(async () => {
     await storeAuth.checkSession();
 });
+
+watch(
+    () => storeAuth.session?.user_metadata.faction,
+    () => {
+        determineFaction();
+    },
+    { immediate: true }
+);
 </script>
 
 <template>
@@ -77,10 +99,10 @@ onMounted(async () => {
         <div class="title-wrapper">
             <div class="q-ma-none" style="cursor: pointer">
                 <q-img
+                    class="faction-img"
                     :src="`${imgSrc('avif')}`"
                     width="819px"
                     height="819px"
-                    style="width: 2.2rem; height: 2.5rem"
                 />
                 <q-tooltip
                     :delay="500"
@@ -88,19 +110,22 @@ onMounted(async () => {
                     anchor="center start"
                     self="bottom end"
                 >
-                    <span class="text-caption text-negative">{{ determineFaction }}</span>
+                    <span class="text-caption text-negative">{{ userFaction }}</span>
                 </q-tooltip>
             </div>
+
             <h2 class="title text-center text-h6">
                 {{ storeAuth.session?.user_metadata.first_name }}'s Inventory
             </h2>
         </div>
 
-        <q-btn class="alert-btn" icon="close" color="primary" flat dense @click="alert"></q-btn>
+        <q-btn class="alert-btn" icon="logout" color="primary" flat dense @click="alert"></q-btn>
     </div>
 </template>
 
 <style lang="scss" scoped>
+@use 'sass:map';
+
 .header {
     display: grid;
     place-items: center;
@@ -109,6 +134,10 @@ onMounted(async () => {
     font-size: 1.2rem;
     text-align: center;
     position: relative;
+}
+.faction-img {
+    width: 2.2rem !important;
+    height: 2.5rem !important;
 }
 .title {
     grid-column-start: 2;
@@ -122,5 +151,26 @@ onMounted(async () => {
 .alert-btn {
     justify-self: end;
     grid-column-start: 3;
+}
+
+@media (width <= $breakpoint-md) {
+    .title {
+        font-size: map.get($subtitle1, 'size');
+    }
+    .faction-img {
+        width: 1.8rem !important;
+        height: 2rem !important;
+    }
+}
+@media (width <= $breakpoint-sm) {
+    .header {
+        display: flex;
+        justify-content: space-between;
+    }
+}
+@media (width <= $breakpoint-xs) {
+    .title {
+        font-size: map.get($subtitle2, 'size');
+    }
 }
 </style>

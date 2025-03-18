@@ -23,6 +23,7 @@ defineProps<{
                     v-model="category.active"
                     :label="category.label"
                     size="md"
+                    left-label
                     @click="updateSelectedCategories"
                 ></q-checkbox>
             </li>
@@ -47,6 +48,7 @@ defineProps<{
 @media (width <= 63.8125rem) {
     .inner {
         grid-template-columns: repeat(3, 1fr);
+        place-items: end;
     }
 }
 @media (width <= 42.8125rem) {

@@ -3,7 +3,7 @@
 <template>
     <Transition name="fade" mode="out-in">
         <q-page>
-            <section id="guide" style="padding-bottom: 4rem">
+            <section id="guide">
                 <h1 class="sr-only">Guide</h1>
 
                 <section id="backstory">
@@ -86,7 +86,7 @@
 
                 <div class="separator"></div>
 
-                <section id="the-black-market" style="padding-top: 6.625em">
+                <section id="the-black-market">
                     <h2 class="title text-h3 text-primary" style="text-align: center">
                         The Black Market
                     </h2>
@@ -175,6 +175,12 @@
 <style lang="scss" scoped>
 @use 'sass:map';
 
+#guide {
+    padding-bottom: 4rem;
+}
+#black-market {
+    padding-top: 6.625em;
+}
 .parallax {
     width: 100%;
     height: 29rem;

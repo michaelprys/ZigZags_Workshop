@@ -19,11 +19,7 @@ const { moveImage, resetImage } = useMoveImage(imgRef);
 
 <template>
     <q-page class="">
-        <section
-            id="good-details"
-            class="relative-position"
-            style="padding-top: 5.3em; padding-bottom: 8.5em; min-height: calc(100svh - 5.3em)"
-        >
+        <section id="good-details" class="relative-position">
             <h1 class="sr-only">Item details</h1>
 
             <div class="bg" :class="isAuth ? 'bg-black-market' : 'bg-workshop'"></div>
@@ -103,6 +99,9 @@ const { moveImage, resetImage } = useMoveImage(imgRef);
 @use 'sass:map';
 
 #good-details {
+    padding-top: 5.3em;
+    padding-bottom: 8.5em;
+    min-height: calc(100svh - 5.3em);
     overflow: hidden;
 }
 .bg {

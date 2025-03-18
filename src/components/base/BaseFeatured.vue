@@ -2,7 +2,7 @@
 import { useQuery } from '@pinia/colada';
 import { useStoreGoods } from 'src/stores/storeGoods';
 import { delay } from 'src/utils/delay';
-import { computed, ref, watch } from 'vue';
+import { computed, onBeforeUnmount, ref, watch, watchEffect } from 'vue';
 
 const storeGoods = useStoreGoods();
 const activeSlide = ref(1);
@@ -45,10 +45,26 @@ watch(
     },
     { immediate: true }
 );
+
+const isAutoplaying = ref(false);
+
+const toggleAutoplay = () => {
+    isAutoplaying.value = window.innerWidth > 1111 ? true : false;
+};
+
+watchEffect(() => {
+    toggleAutoplay();
+});
+
+window.addEventListener('resize', toggleAutoplay);
+
+onBeforeUnmount(() => {
+    window.removeEventListener('resize', toggleAutoplay);
+});
 </script>
 
 <template>
-    <section id="featured" style="padding-top: 6.625em; padding-bottom: 8.5em">
+    <section id="featured">
         <h1 class="sr-only">Featured</h1>
         <div class="wrapper flex flex-center q-px-md">
             <div>
@@ -70,7 +86,7 @@ watch(
                         control-color="secondary"
                         padding
                         navigation
-                        autoplay
+                        :autoplay="isAutoplaying"
                         infinite
                         arrows
                         height="24rem"
@@ -120,6 +136,11 @@ watch(
 <style lang="scss" scoped>
 @use 'sass:map';
 
+#featured {
+    padding-top: 6.625em;
+    padding-bottom: 8.5em;
+}
+
 :deep(.q-carousel__control) {
     margin-top: -2rem;
 }
@@ -150,6 +171,9 @@ watch(
 }
 
 @media (width <= $breakpoint-md) {
+    #featured {
+        padding-bottom: 5em;
+    }
     .title {
         font-size: map.get($h4, 'size');
     }

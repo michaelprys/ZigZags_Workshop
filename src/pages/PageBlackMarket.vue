@@ -62,7 +62,7 @@ watch(
     <q-page>
         <div class="overlay"></div>
 
-        <section id="black-market" style="padding-top: 4.625em; padding-bottom: 8.5em">
+        <section id="black-market">
             <h1 class="text-center text-h3 title">Hunt treasures</h1>
 
             <ItemCategories
@@ -233,6 +233,8 @@ watch(
 
 #black-market {
     min-height: 75rem;
+    padding-top: 4.625em;
+    padding-bottom: 8.5em;
 }
 .skeleton-img {
     position: absolute;
