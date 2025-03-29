@@ -33,20 +33,20 @@ const handleRemoveItem = async (selectedGood) => {
         .onOk(async () => {
             try {
                 await removeGoodFromInventory(selectedGood);
-            } catch (error) {
-                console.error('Error removing good from inventory: ', error);
+            } catch (err) {
+                console.error('Error removing good from inventory: ', err);
             }
         })
         .onCancel(() => {})
         .onDismiss(() => {});
 };
 
-// const handleSlots = async (event) => {
-//     const goodId = inventoryGoods[event.newIndex].good_id;
-//     const nextSlot = event.newIndex;
-//     await updateGoodSlot(goodId, nextSlot);
-//     await loadInventoryGoods();
-// };
+const handleSlots = async (event) => {
+    const goodId = inventoryGoods[event.newIndex].good_id;
+    const nextSlot = event.newIndex;
+    await updateGoodSlot(goodId, nextSlot);
+    await loadInventoryGoods();
+};
 </script>
 
 <template>

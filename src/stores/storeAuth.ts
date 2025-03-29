@@ -16,7 +16,12 @@ export const useStoreAuth = defineStore('auth', () => {
     const session = ref<AuthSession | null>(null);
 
     const checkSession = async () => {
-        const { data } = await supabase.auth.getSession();
+        const { data, error } = await supabase.auth.getSession();
+        if (error) {
+            console.error('Session fetch error:', error);
+            return;
+        }
+
         session.value = data.session?.user || null;
     };
 

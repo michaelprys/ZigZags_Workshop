@@ -8,7 +8,8 @@ import { computed, ref } from 'vue';
 export const useStoreInventory = defineStore('inventory', () => {
     const pending = ref(false),
         totalInventoryGoods = ref(0),
-        inventoryGoods = ref([]);
+        inventoryGoods = ref([]),
+        invitation = ref(null);
 
     const totalInventoryPages = computed(() => Math.ceil(totalInventoryGoods.value / 55));
 
@@ -42,8 +43,8 @@ export const useStoreInventory = defineStore('inventory', () => {
 
                 inventoryGoods.value = data;
             }
-        } catch (error) {
-            console.error(error);
+        } catch (err) {
+            console.error(err);
         } finally {
             pending.value = false;
         }
@@ -97,8 +98,8 @@ export const useStoreInventory = defineStore('inventory', () => {
             }
 
             inventoryGoods.value = data || [];
-        } catch (error) {
-            console.error(error);
+        } catch (err) {
+            console.error(err);
         } finally {
             pending.value = false;
         }
@@ -126,8 +127,8 @@ export const useStoreInventory = defineStore('inventory', () => {
 
             inventoryGoods.value[selectedGood] = null;
             await loadInventoryGoods(1, 55);
-        } catch (error) {
-            console.error(error);
+        } catch (err) {
+            console.error(err);
         } finally {
             pending.value = false;
         }
@@ -176,9 +177,36 @@ export const useStoreInventory = defineStore('inventory', () => {
             if (updateCurrentGoodError) {
                 throw new Error('updateCurrentGoodError: ', updateCurrentGoodError.message);
             }
-        } catch (error) {
+        } catch (err) {
             pending.value = false;
-            console.error(error);
+            console.error(err);
+        }
+    };
+
+    const checkInvitation = async () => {
+        pending.value = true;
+
+        try {
+            const storeAuth = useStoreAuth();
+            if (!storeAuth.session) await storeAuth.checkSession();
+
+            const { data, error } = await supabase
+                .from('user_goods')
+                .select('goods!inner(slug)')
+                .eq('user_id', storeAuth.session?.id)
+                .eq('goods.slug', 'invitation');
+
+            if (error) {
+                console.error('No invitation found', error.message);
+                invitation.value = null;
+                return;
+            }
+
+            invitation.value = data;
+        } catch (err) {
+            console.error(err);
+        } finally {
+            pending.value = false;
         }
     };
 
@@ -190,7 +218,9 @@ export const useStoreInventory = defineStore('inventory', () => {
         saveGoodsToInventory,
         loadInventoryGoods,
         removeGoodFromInventory,
-        updateGoodSlot
+        updateGoodSlot,
+        checkInvitation,
+        invitation
     };
 });
 

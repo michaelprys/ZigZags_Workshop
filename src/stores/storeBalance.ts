@@ -20,8 +20,10 @@ export const useStoreBalance = defineStore(
             return currentBalance >= amount ? currentBalance - amount : currentBalance;
         };
 
-        const topUpBalance = async (sessionId, transactionStatus, amount, paymentType) => {
-            if (sessionId.value === sessionId) return;
+        const topUpBalance = async (urlSessionId, transactionStatus, amount, paymentType) => {
+            if (sessionId.value === urlSessionId) {
+                return;
+            }
 
             pending.value = true;
             const storeAuth = useStoreAuth();
@@ -34,7 +36,7 @@ export const useStoreBalance = defineStore(
                 const { error: transactionError } = await supabase.from('transactions').insert(
                     {
                         user_id: storeAuth.session?.id,
-                        session_id: sessionId,
+                        session_id: urlSessionId,
                         status: transactionStatus,
                         amount: amount,
                         payment_type: paymentType
@@ -58,9 +60,9 @@ export const useStoreBalance = defineStore(
                     }
                 }
 
-                sessionId.value = sessionId;
-            } catch (error) {
-                console.error('Error updating balance: ', error);
+                sessionId.value = urlSessionId;
+            } catch (err) {
+                console.error('Error updating balance:', err);
             } finally {
                 pending.value = false;
             }
@@ -92,8 +94,8 @@ export const useStoreBalance = defineStore(
                         }
                     }
                 }
-            } catch (error) {
-                console.error(error);
+            } catch (err) {
+                console.error(err);
             } finally {
                 pending.value = false;
             }
@@ -129,7 +131,6 @@ export const useStoreBalance = defineStore(
                     if (updateError) {
                         throw new Error(updateError.message);
                     }
-
                     purchaseStatus.value = 'purchased';
                 } else {
                     const { error: insertError } = await supabase.from('user_balances').insert([
@@ -145,8 +146,8 @@ export const useStoreBalance = defineStore(
 
                     purchaseStatus.value = 'purchased';
                 }
-            } catch (error) {
-                console.error('Error during balance update:', error);
+            } catch (err) {
+                console.error('Error during balance update:', err);
             } finally {
                 pending.value = false;
             }

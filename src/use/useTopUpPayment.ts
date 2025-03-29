@@ -36,7 +36,7 @@ export const useTopUpPayment = (paymentType, topUpAmount, minAmounts) => {
                 } = await supabase.auth.getSession();
 
                 if (error || !session) {
-                    console.error(error);
+                    console.error(err);
                     return;
                 }
 
@@ -73,7 +73,7 @@ export const useTopUpPayment = (paymentType, topUpAmount, minAmounts) => {
                         });
 
                         if (error) {
-                            console.error(error);
+                            console.error(err);
                         }
                     }
                 } else {

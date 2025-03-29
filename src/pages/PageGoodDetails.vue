@@ -183,8 +183,15 @@ const { moveImage, resetImage } = useMoveImage(imgRef);
     .wrapper {
         flex-direction: column;
         align-items: center;
-        max-width: 800px;
+        max-width: 50rem;
         width: 100%;
+        gap: 1.5rem;
+    }
+    .img-wrapper {
+        width: 24.9375rem;
+        height: 16.5rem;
+        margin-left: auto;
+        margin-right: 5rem;
     }
     .bg {
         left: 50%;
@@ -202,8 +209,9 @@ const { moveImage, resetImage } = useMoveImage(imgRef);
 }
 @media (width <= $breakpoint-xs) {
     .img-wrapper {
-        width: 100%;
-        max-width: 100%;
+        width: 18.9375rem;
+        height: 13.5rem;
+        margin-inline: auto;
     }
     .panel-top-wrapper {
         flex-direction: column-reverse;

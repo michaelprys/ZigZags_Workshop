@@ -1,8 +1,11 @@
-import { acceptHMRUpdate, defineStore } from 'pinia';
-import { useStoreAuth } from 'src/stores/storeAuth';
-import supabase from 'src/utils/supabase';
-import { computed, ref } from 'vue';
-
+import { acceptHMRUpdate, acceptHMRUpdate, defineStore, defineStore } from 'pinia';
+import { Notify } from 'quasar';
+import { useStoreAuth, useStoreAuth } from 'src/stores/storeAuth';
+import { useStoreBalance } from 'src/stores/storeBalance';
+import { useStoreInventory } from 'src/stores/storeInventory';
+import { default as supabase, default as supabase } from 'src/utils/supabase';
+import { computed, ref, ref } from 'vue';
+import { useRouter } from 'vue-router';
 export type Good = {
     id: number;
     name: string;
@@ -29,6 +32,8 @@ export const useStoreGoods = defineStore(
         const stashGoods = ref<Good[]>([]);
 
         const totalPages = computed(() => Math.ceil(totalGoods.value / 8));
+
+        const router = useRouter();
 
         const loadGoods = async (
             currentPage: number,
@@ -82,8 +87,8 @@ export const useStoreGoods = defineStore(
                 }
 
                 return data || [];
-            } catch (error) {
-                console.error(error);
+            } catch (err) {
+                console.error(err);
             } finally {
                 pending.value = false;
             }
@@ -112,8 +117,8 @@ export const useStoreGoods = defineStore(
                 }
 
                 return data;
-            } catch (error) {
-                console.error(error);
+            } catch (err) {
+                console.error(err);
             } finally {
                 pending.value = false;
             }
@@ -137,8 +142,103 @@ export const useStoreGoods = defineStore(
                 }
 
                 return data;
-            } catch (error) {
-                console.error(error);
+            } catch (err) {
+                console.error(err);
+            }
+        };
+
+        const purchaseInvitation = async () => {
+            pending.value = true;
+
+            try {
+                const storeBalance = useStoreBalance();
+                const storeInventory = useStoreInventory();
+                const storeAuth = useStoreAuth();
+
+                if (!storeAuth.session) await storeAuth.checkSession();
+
+                const { data: invitationInGoods, error: invitationInGoodsError } = await supabase
+                    .from('goods')
+                    .select('id, name, image_url, short_description')
+                    .eq('slug', 'invitation')
+                    .single();
+
+                if (invitationInGoodsError) throw new Error(invitationInGoodsError.message);
+
+                const { data: existingInvitation, error: existingInvitationError } = await supabase
+                    .from('user_goods')
+                    .select('good_id')
+                    .eq('user_id', storeAuth.session?.id)
+                    .eq('good_id', invitationInGoods.id)
+                    .maybeSingle();
+
+                if (existingInvitationError) throw new Error(existingInvitationError.message);
+
+                if (existingInvitation) {
+                    Notify.create({
+                        type: 'negative',
+                        textColor: 'primary',
+                        message: 'You already got the invite!',
+                        position: 'bottom',
+                        classes: 'toast',
+                        actions: [{ icon: 'close', color: 'primary', dense: true, size: 'xs' }]
+                    });
+                    return;
+                }
+
+                const { data: userBalance, error: userBalanceError } = await supabase
+                    .from('user_balances')
+                    .select('gold')
+                    .eq('user_id', storeAuth.session?.id)
+                    .single();
+
+                if (userBalanceError) throw new Error(userBalanceError.message);
+
+                if (userBalance.gold < 20000) {
+                    Notify.create({
+                        type: 'negative',
+                        textColor: 'primary',
+                        message: 'Not enough gold! Top up balance',
+                        position: 'bottom',
+                        classes: 'toast',
+                        actions: [{ icon: 'close', color: 'primary', dense: true, size: 'xs' }]
+                    });
+                    return;
+                }
+
+                await storeBalance.updateBalance('gold', 20000);
+
+                const { error: insertError } = await supabase.from('user_goods').insert([
+                    {
+                        user_id: storeAuth.session?.id,
+                        good_id: invitationInGoods.id,
+                        quantity: 1,
+                        status: 'purchased'
+                    }
+                ]);
+
+                if (insertError) throw new Error(insertError.message);
+
+                storeInventory.inventoryGoods.push(invitationInGoods);
+
+                sessionStorage.setItem('purchaseCompleted', 'true');
+
+                await router.push('purchase-success');
+
+                storeBalance.purchaseStatus = '';
+
+                Notify.create({
+                    type: 'positive',
+                    textColor: 'dark',
+                    message: "You got the invite! Now, don't get caught!",
+                    position: 'bottom-right',
+                    classes: 'toast',
+                    actions: [{ icon: 'close', color: 'dark', dense: true, size: 'xs' }]
+                });
+            } catch (err) {
+                console.error(err);
+            } finally {
+                pending.value = false;
             }
         };
 
@@ -157,7 +257,8 @@ export const useStoreGoods = defineStore(
             loadGoods,
             loadSuggestedGoods,
             loadFeaturedGoods,
-            selectGood
+            selectGood,
+            purchaseInvitation
         };
     },
     {

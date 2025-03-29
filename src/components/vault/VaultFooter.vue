@@ -47,7 +47,10 @@ const isOpen = ref(false);
 onMounted(async () => {
     const { session_id, status, amount, paymentType } = route.query;
 
-    if (!session_id && !status && !amount && !paymentType) return;
+    if (!session_id || !status || !amount || !paymentType) {
+        return;
+    }
+
     await storeBalance.topUpBalance(session_id, status, amount, paymentType);
 });
 

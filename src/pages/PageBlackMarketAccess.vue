@@ -1,25 +1,28 @@
 <script setup lang="ts">
 import { useStoreAuth } from 'src/stores/storeAuth';
 import { useStoreBalance } from 'src/stores/storeBalance';
-import { useStoreInventory } from 'src/stores/storeInventory';
+import { useStoreGoods } from 'src/stores/storeGoods';
 import { delay } from 'src/utils/delay';
-import { computed, onMounted, ref } from 'vue';
+import { onMounted, ref } from 'vue';
 
 const storeAuth = useStoreAuth();
 const storeBalance = useStoreBalance();
 
 const hasInvitation = ref(false);
 const dialog = ref(false);
-const storeInventory = useStoreInventory();
-const inventoryGoods = computed(() => storeInventory.inventoryGoods);
+const storeGoods = useStoreGoods();
+const pending = ref(false);
 
 const handleTrade = async () => {
-    await Promise.all([delay(3000), trade()]);
+    pending.value = true;
+    await delay(3000);
+    await storeGoods.purchaseInvitation();
+    pending.value = false;
 };
 
 onMounted(async () => {
-    // if (!storeAuth.session) await storeAuth.checkSession();
-    // await storeBalance.displayBalance();
+    if (!storeAuth.session) await storeAuth.checkSession();
+    await storeBalance.displayBalance();
 });
 </script>
 
