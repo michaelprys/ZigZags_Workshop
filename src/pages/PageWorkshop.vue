@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import ItemCategories from 'src/components/items/ItemCategories.vue';
 import { useStoreGoods } from 'src/stores/storeGoods';
+import type { Category } from 'src/types';
 import { useFilters } from 'src/use/useFilters';
 import { useManageStash } from 'src/use/useManageStash';
 import { usePaginatedGoods } from 'src/use/usePaginatedGoods';
@@ -15,7 +16,7 @@ const route = useRoute();
 const router = useRouter();
 const { addToStash } = useManageStash();
 
-const categories = ref([
+const categories = ref<Category[]>([
     { label: 'gadgets', active: false },
     { label: 'trinkets', active: false },
     { label: 'weapons', active: false },
@@ -23,7 +24,7 @@ const categories = ref([
     { label: 'mounts', active: false }
 ]);
 
-const { currentPage, queryData, isPending, loadPaginatedGoods } = usePaginatedGoods(false, router);
+const { currentPage, queryData, isPending, loadPaginatedGoods } = usePaginatedGoods(false);
 
 const { updateSelectedCategories, resetCategories } = useFilters(
     categories,
@@ -33,7 +34,7 @@ const { updateSelectedCategories, resetCategories } = useFilters(
     currentPage
 );
 
-const imgLoaded = ref({});
+const imgLoaded = ref<Record<string | number, boolean>>({});
 
 watch(
     () => queryData.value,

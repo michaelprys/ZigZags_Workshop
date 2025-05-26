@@ -1,12 +1,16 @@
 <script setup lang="ts">
+import type { QForm } from 'quasar';
 import ItemBalance from 'src/components/items/ItemBalance.vue';
+import type { PaymentType } from 'src/stores/storeBalance';
 import { useStoreBalance } from 'src/stores/storeBalance';
 import { useStoreInventory } from 'src/stores/storeInventory';
 import { usePaginatedInventoryGoods } from 'src/use/usePaginatedInventoryGoods';
 import { useTopUpPayment } from 'src/use/useTopUpPayment';
 import { useTopUpState } from 'src/use/useTopUpState';
-import { onMounted, ref, useTemplateRef, watchEffect } from 'vue';
-import { useRoute } from 'vue-router';
+import { onMounted, ref, watchEffect } from 'vue';
+import { useRoute, type LocationQueryValue } from 'vue-router';
+
+const topUpForm = ref<QForm | null>(null);
 
 const { currentPage, loadPaginatedInventoryGoods } = usePaginatedInventoryGoods();
 
@@ -14,20 +18,24 @@ const storeInventory = useStoreInventory();
 const storeBalance = useStoreBalance();
 const route = useRoute();
 
-const preventIncorrectChars = (e) => {
-    if (!/[\d.]/.test(e.key)) {
-        e.preventDefault();
-    }
-};
-const handlePaste = (e) => {
-    const pastedVal = e.clipboardData.getData('text');
-
-    if (!/^\d+$/.test(pastedVal)) {
-        event.preventDefault();
-    }
+const preventIncorrectChars = (e: KeyboardEvent) => {
+    if (!/[\d.]/.test(e.key)) e.preventDefault();
 };
 
-const topUpForm = useTemplateRef('topup-form');
+const handlePaste = (e: ClipboardEvent) => {
+    const pastedVal = e.clipboardData?.getData('text');
+    if (pastedVal && !/^\d+$/.test(pastedVal)) e.preventDefault();
+};
+
+const getString = (
+    val: LocationQueryValue | LocationQueryValue[] | null | undefined
+): string | undefined => {
+    if (val == null) return undefined;
+    const result = Array.isArray(val) ? val[0] : val;
+    return result ?? undefined;
+};
+
+const isOpen = ref(false);
 
 const {
     paymentTypes,
@@ -42,40 +50,58 @@ const {
 
 const { pending, handlePayment } = useTopUpPayment(paymentType, topUpAmount, minAmounts);
 
-const isOpen = ref(false);
-
 onMounted(async () => {
-    const { session_id, status, amount, paymentType } = route.query;
+    const session_id = getString(route.query.session_id);
+    const status = getString(route.query.status);
+    const amountStr = getString(route.query.amount);
+    const paymentTypeQuery = getString(route.query.paymentType);
 
-    if (!session_id || !status || !amount || !paymentType) {
+    if (!session_id || !status || !amountStr || !paymentTypeQuery) return;
+
+    const amount = Number(amountStr);
+    if (isNaN(amount)) {
+        console.error('Invalid amount:', amountStr);
         return;
     }
 
-    await storeBalance.topUpBalance(session_id, status, amount, paymentType);
+    const isValidPaymentType = (val: string): val is (typeof paymentTypes)[number]['value'] =>
+        paymentTypes.some((pt) => pt.value === val);
+
+    if (!isValidPaymentType(paymentTypeQuery)) {
+        console.error('Invalid paymentType:', paymentTypeQuery);
+        return;
+    }
+
+    await storeBalance.topUpBalance(session_id, status, amount, paymentTypeQuery as PaymentType);
 });
 
 watchEffect(async () => {
-    for (const paymentType in storeBalance.balance) {
-        if (Object.prototype.hasOwnProperty.call(storeBalance.balance, paymentType)) {
+    for (const pt in storeBalance.balance) {
+        if (Object.prototype.hasOwnProperty.call(storeBalance.balance, pt)) {
             await storeBalance.displayBalance();
         }
     }
 });
+
+const onSubmit = async () => {
+    if (!topUpForm.value) return;
+    await handlePayment(topUpForm.value);
+};
 </script>
 
 <template>
     <div class="footer q-mt-lg">
         <Teleport to="body">
-            <q-dialog v-model="isOpen" backdrop-filter="blur(8px); brightness(60%)">
+            <q-dialog v-model="isOpen" backdrop-filter="blur(8px) brightness(60%)">
                 <q-card dark class="card-inner q-pa-md" style="max-width: 22.25rem; width: 100%">
                     <q-card-section class="q-pt-none">
                         <div class="text-h6 text-primary">Add funds</div>
                     </q-card-section>
 
                     <q-form
-                        ref="topup-form"
-                        @submit.prevent="handlePayment(topUpForm)"
-                        @keydown.enter.prevent="handlePayment(topUpForm)"
+                        ref="topUpForm"
+                        @submit.prevent="onSubmit"
+                        @keydown.enter.prevent="onSubmit"
                     >
                         <q-card-actions class="q-pb-none" align="center">
                             <q-select
@@ -88,7 +114,9 @@ watchEffect(async () => {
                                 input-class="text-primary"
                                 label="Currency of choice *"
                                 lazy-rules="ondemand"
-                                :rules="[(val) => val.value !== '' || 'Choose paymentType']"
+                                :rules="[
+                                    (val) => (val && val.value !== '') || 'Choose paymentType'
+                                ]"
                                 @update:model-value="resetAmount"
                             />
                         </q-card-actions>
@@ -97,7 +125,11 @@ watchEffect(async () => {
                             <span class="text-secondary">Cost: ${{ calculatedAmount }}</span>
                             <div class="flex items-center q-mt-md" style="gap: 0.5rem">
                                 <q-btn
-                                    :disable="topUpAmount <= minAmounts[paymentType.value]"
+                                    :disable="
+                                        !paymentType?.value ||
+                                        topUpAmount <=
+                                            (paymentType ? (minAmounts[paymentType.value] ?? 0) : 0)
+                                    "
                                     icon="remove"
                                     color="primary"
                                     flat
@@ -114,8 +146,11 @@ watchEffect(async () => {
                                     lazy-rules="ondemand"
                                     :rules="[
                                         (val) =>
-                                            val >= minAmounts[paymentType.value] ||
-                                            `Minimal: ${minAmounts[paymentType.value]}`
+                                            val >=
+                                                (paymentType
+                                                    ? (minAmounts[paymentType.value] ?? 0)
+                                                    : 0) ||
+                                            `Minimal: ${paymentType ? (minAmounts[paymentType.value] ?? 0) : 0}`
                                     ]"
                                     @keypress="preventIncorrectChars"
                                     @paste="handlePaste"
@@ -131,8 +166,7 @@ watchEffect(async () => {
                                 outline
                                 style="width: 100%"
                                 :loading="pending"
-                            >
-                            </q-btn>
+                            />
                         </q-card-actions>
                     </q-form>
                 </q-card>
@@ -153,7 +187,7 @@ watchEffect(async () => {
             />
 
             <ItemBalance class="balance-panel">
-                <q-btn class="btn" icon="add" flat dense @click="isOpen = true"></q-btn>
+                <q-btn class="btn" icon="add" flat dense @click="isOpen = true" />
             </ItemBalance>
         </div>
     </div>

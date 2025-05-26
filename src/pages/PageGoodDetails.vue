@@ -14,7 +14,7 @@ const { addToStash } = useManageStash();
 
 const imgRef = useTemplateRef('img-ref');
 
-const { moveImage, resetImage } = useMoveImage(imgRef);
+const { moveImage, resetImage } = useMoveImage(imgRef.value);
 </script>
 
 <template>
@@ -30,7 +30,7 @@ const { moveImage, resetImage } = useMoveImage(imgRef);
                         <img
                             ref="img-ref"
                             class="img"
-                            :src="storeGoods.selectedGood.image_url"
+                            :src="storeGoods.selectedGood?.image_url || ''"
                             @mousemove="moveImage"
                             @mouseleave="resetImage"
                         />
@@ -47,7 +47,7 @@ const { moveImage, resetImage } = useMoveImage(imgRef);
                                 style="gap: 1.5rem"
                             >
                                 <h2 class="name text-bold text-h4">
-                                    {{ storeGoods.selectedGood.name }}
+                                    {{ storeGoods.selectedGood?.name }}
                                 </h2>
 
                                 <q-btn
@@ -61,22 +61,26 @@ const { moveImage, resetImage } = useMoveImage(imgRef);
                             </div>
 
                             <h3 class="category q-mt-md text-bold text-h6 text-secondary">
-                                Category: {{ storeGoods.selectedGood.category }}
+                                Category: {{ storeGoods.selectedGood?.category }}
                             </h3>
 
                             <p class="q-mt-md text-body2" style="text-align: justify">
-                                {{ storeGoods.selectedGood.description }}
+                                {{ storeGoods.selectedGood?.description }}
                             </p>
 
                             <span class="q-mt-lg text-secondary text-subtitle1"
-                                >Price: {{ storeGoods.selectedGood.price }} gold</span
+                                >Price: {{ storeGoods.selectedGood?.price }} gold</span
                             >
 
                             <q-btn
                                 class="purchase-btn q-mt-lg"
                                 outline
                                 color="primary"
-                                @click="addToStash(storeGoods.selectedGood)"
+                                @click="
+                                    storeGoods.selectedGood
+                                        ? addToStash(storeGoods.selectedGood)
+                                        : null
+                                "
                                 >Purchase</q-btn
                             >
                         </div>
@@ -85,7 +89,7 @@ const { moveImage, resetImage } = useMoveImage(imgRef);
                             <h2 class="text-bold text-h6 text-secondary">More about this item</h2>
 
                             <p class="q-mt-md text-body2" style="text-align: justify">
-                                {{ storeGoods.selectedGood.source }}
+                                {{ storeGoods.selectedGood?.source }}
                             </p>
                         </div>
                     </div>

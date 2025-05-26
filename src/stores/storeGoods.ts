@@ -1,11 +1,12 @@
-import { acceptHMRUpdate, acceptHMRUpdate, defineStore, defineStore } from 'pinia';
+import { acceptHMRUpdate, defineStore } from 'pinia';
 import { Notify } from 'quasar';
-import { useStoreAuth, useStoreAuth } from 'src/stores/storeAuth';
+import { useStoreAuth } from 'src/stores/storeAuth';
 import { useStoreBalance } from 'src/stores/storeBalance';
 import { useStoreInventory } from 'src/stores/storeInventory';
-import { default as supabase, default as supabase } from 'src/utils/supabase';
-import { computed, ref, ref } from 'vue';
+import { default as supabase } from 'src/utils/supabase';
+import { computed, ref } from 'vue';
 import { useRouter } from 'vue-router';
+
 export type Good = {
     id: number;
     name: string;
@@ -57,14 +58,14 @@ export const useStoreGoods = defineStore(
 
                 const { count } = await countQuery;
 
-                totalGoods.value = count;
+                totalGoods.value = count ?? 0;
 
                 if (currentPage > totalPages.value) {
                     currentPage = 1;
                 }
 
                 const start = (currentPage - 1) * goodsPerPage;
-                const end = Math.min(start + goodsPerPage - 1, count - 1);
+                const end = Math.min(start + goodsPerPage - 1, (count ?? 0) - 1);
 
                 let query = supabase
                     .from('goods')
@@ -102,15 +103,13 @@ export const useStoreGoods = defineStore(
 
                 const query = supabase.from('goods').select('*').order('id');
 
-                let filteredData = [];
+                let data, error;
 
                 if (!storeAuth.session) {
-                    filteredData = await query.eq('requires_access', false);
+                    ({ data, error } = await query.eq('requires_access', false));
                 } else {
-                    filteredData = await query;
+                    ({ data, error } = await query);
                 }
-
-                const { data, error } = filteredData;
 
                 if (error) {
                     throw new Error(error.message);
@@ -159,7 +158,7 @@ export const useStoreGoods = defineStore(
 
                 const { data: invitationInGoods, error: invitationInGoodsError } = await supabase
                     .from('goods')
-                    .select('id, name, image_url, short_description')
+                    .select('id, name, image_url, short_description, price, category')
                     .eq('slug', 'invitation')
                     .single();
 
@@ -219,7 +218,13 @@ export const useStoreGoods = defineStore(
 
                 if (insertError) throw new Error(insertError.message);
 
-                storeInventory.inventoryGoods.push(invitationInGoods);
+                storeInventory.inventoryGoods.push({
+                    good_id: invitationInGoods.id,
+                    user_id: Number(storeAuth.session!.id),
+                    status: 'purchased',
+                    quantity: 1,
+                    goods: [invitationInGoods]
+                });
 
                 sessionStorage.setItem('purchaseCompleted', 'true');
 

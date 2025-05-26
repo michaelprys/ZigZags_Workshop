@@ -7,7 +7,8 @@ export const usePaginatedInventoryGoods = () => {
     const route = useRoute();
     const router = useRouter();
 
-    const currentPage = ref(parseInt(route.query.page) || 1);
+    const pageStr = Array.isArray(route.query.page) ? route.query.page[0] : route.query.page;
+    const currentPage = ref(parseInt(pageStr ?? '') || 1);
     const inventoryGoodsPerPage = 55;
 
     const loadPaginatedInventoryGoods = async () => {
@@ -23,7 +24,8 @@ export const usePaginatedInventoryGoods = () => {
     watch(
         () => route.query.page,
         async (newPage) => {
-            const page = parseInt(newPage) || 1;
+            const pageStr = Array.isArray(newPage) ? newPage[0] : newPage;
+            const page = parseInt(pageStr ?? '') || 1;
 
             if (page !== currentPage.value) {
                 currentPage.value = page;
@@ -33,8 +35,13 @@ export const usePaginatedInventoryGoods = () => {
     );
 
     watch(currentPage, async (newPage) => {
-        if (newPage !== parseInt(route.query.page)) {
-            await router.push({ query: { ...route.query, page: newPage } });
+        const pageParam = route.query.page;
+        const pageStr = Array.isArray(pageParam) ? pageParam[0] : pageParam;
+
+        if (pageStr == null || typeof pageStr !== 'string') return;
+
+        if (newPage !== parseInt(pageStr)) {
+            await router.push({ query: { ...route.query, page: newPage.toString() } });
         }
     });
 

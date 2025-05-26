@@ -1,4 +1,5 @@
 <script setup lang="ts">
+import { QForm } from 'quasar';
 import { callToast } from 'src/utils/callToast';
 import { delay } from 'src/utils/delay';
 import supabase from 'src/utils/supabase';
@@ -7,20 +8,20 @@ import { ref, useTemplateRef } from 'vue';
 const mailbox = ref('');
 const pending = ref(false);
 
-const orderKeyForm = useTemplateRef('order-key-form');
+const orderKeyForm = useTemplateRef<QForm | null>('order-key-form');
 
 const orderKey = async () => {
     pending.value = true;
 
     try {
-        const valid = await orderKeyForm.value.validate();
+        const valid = await orderKeyForm.value?.validate();
 
         if (valid) {
-            const { error } = await Promise.all([
+            const [{ error }] = await Promise.all([
                 supabase.auth.resetPasswordForEmail(mailbox.value, {
                     redirectTo: 'http://localhost:9000/set-new-vault-key'
                 }),
-                await delay(500)
+                delay(500)
             ]);
 
             if (error) {

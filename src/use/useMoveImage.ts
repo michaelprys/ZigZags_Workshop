@@ -1,19 +1,19 @@
 export const useMoveImage = (image: HTMLImageElement | null) => {
     const moveImage = (e: MouseEvent) => {
-        if (!image.value) return;
+        if (!image) return;
 
-        const { left, top, width, height } = image.value.getBoundingClientRect();
+        const { left, top, width, height } = image.getBoundingClientRect();
 
         const x = ((e.clientX - left) / width) * 100;
         const y = ((e.clientY - top) / height) * 100;
 
-        image.value.style.transformOrigin = `${x}% ${y}%`;
+        image.style.transformOrigin = `${x}% ${y}%`;
     };
 
     const resetImage = () => {
-        if (!image.value) return;
+        if (!image) return;
 
-        image.value.style.transformOrigin = 'center center';
+        image.style.transformOrigin = 'center center';
     };
 
     return {

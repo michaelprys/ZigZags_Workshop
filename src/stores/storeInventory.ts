@@ -5,11 +5,30 @@ import { useStoreGoods } from 'src/stores/storeGoods';
 import supabase from 'src/utils/supabase';
 import { computed, ref } from 'vue';
 
+export type InventoryGood = {
+    good_id: number;
+    user_id: number;
+    status?: string;
+    quantity?: number;
+    slot?: number;
+};
+
+type InventoryGoodWithGoods = InventoryGood & {
+    goods: {
+        id: number;
+        name: string;
+        image_url: string;
+        price: number;
+        short_description: string;
+        category: string;
+    }[];
+};
+
 export const useStoreInventory = defineStore('inventory', () => {
-    const pending = ref(false),
-        totalInventoryGoods = ref(0),
-        inventoryGoods = ref([]),
-        invitation = ref(null);
+    const pending = ref(false);
+    const totalInventoryGoods = ref(0);
+    const inventoryGoods = ref<InventoryGoodWithGoods[]>([]);
+    const invitation = ref<any>(null);
 
     const totalInventoryPages = computed(() => Math.ceil(totalInventoryGoods.value / 55));
 
@@ -25,10 +44,12 @@ export const useStoreInventory = defineStore('inventory', () => {
                 await storeAuth.checkSession();
             }
 
+            const userId = Number(storeAuth.session?.id);
+
             if (storeBalance.purchaseStatus === 'purchased') {
                 const goodsToInsert = storeGoods.stashGoods.map((good) => ({
                     good_id: good.id,
-                    user_id: storeAuth.session?.id,
+                    user_id: userId,
                     quantity: good.quantity,
                     status: 'purchased'
                 }));
@@ -62,32 +83,28 @@ export const useStoreInventory = defineStore('inventory', () => {
 
             const countQuery = supabase
                 .from('user_goods')
-                .select(
-                    `good_id,
-                        goods (id)`,
-                    { count: 'exact' }
-                )
-                .eq('user_id', storeAuth.session?.id);
+                .select(`good_id, goods (id)`, { count: 'exact' })
+                .eq('user_id', storeAuth.session!.id);
 
             const { count } = await countQuery;
 
-            totalInventoryGoods.value = count;
+            totalInventoryGoods.value = count ?? 0;
 
             if (currentPage > totalInventoryPages.value) {
                 currentPage = 1;
             }
 
             const start = (currentPage - 1) * inventoryGoodsPerPage;
-            const end = Math.min(start + inventoryGoodsPerPage - 1, count - 1);
+            const end = Math.min(start + inventoryGoodsPerPage - 1, (count ?? 1) - 1);
 
             const query = supabase
                 .from('user_goods')
                 .select(
-                    `good_id, quantity, slot,
-                        goods (id, name, image_url, price, short_description, category)`,
+                    `good_id, user_id, quantity, slot,
+                    goods (id, name, image_url, price, short_description, category)`,
                     { count: 'exact' }
                 )
-                .eq('user_id', storeAuth.session?.id)
+                .eq('user_id', storeAuth.session!.id)
                 .range(start, end)
                 .order('good_id');
 
@@ -97,7 +114,7 @@ export const useStoreInventory = defineStore('inventory', () => {
                 throw new Error(error.message);
             }
 
-            inventoryGoods.value = data || [];
+            inventoryGoods.value = data ?? [];
         } catch (err) {
             console.error(err);
         } finally {
@@ -105,7 +122,7 @@ export const useStoreInventory = defineStore('inventory', () => {
         }
     };
 
-    const removeGoodFromInventory = async (selectedGood) => {
+    const removeGoodFromInventory = async (selectedGood: number) => {
         pending.value = true;
 
         try {
@@ -118,14 +135,18 @@ export const useStoreInventory = defineStore('inventory', () => {
             const { error } = await supabase
                 .from('user_goods')
                 .delete()
-                .eq('user_id', storeAuth.session?.id)
+                .eq('user_id', storeAuth.session!.id)
                 .eq('good_id', selectedGood);
 
             if (error) {
                 throw new Error(error.message);
             }
 
-            inventoryGoods.value[selectedGood] = null;
+            inventoryGoods.value.splice(
+                inventoryGoods.value.findIndex((g) => g.good_id === selectedGood),
+                1
+            );
+
             await loadInventoryGoods(1, 55);
         } catch (err) {
             console.error(err);
@@ -134,7 +155,7 @@ export const useStoreInventory = defineStore('inventory', () => {
         }
     };
 
-    const updateGoodSlot = async (goodId, nextSlot) => {
+    const updateGoodSlot = async (goodId: number, nextSlot: number) => {
         pending.value = true;
 
         try {
@@ -144,28 +165,33 @@ export const useStoreInventory = defineStore('inventory', () => {
                 .eq('good_id', goodId);
 
             if (currentSlotError) {
-                throw new Error('currentSlotError: ', currentSlotError.message);
+                throw new Error(`currentSlotError: ${currentSlotError.message}`);
             }
 
-            const prevSlot = currentSlot.slot;
+            const prevSlot = currentSlot?.[0]?.slot ?? 0;
 
-            const { data: nextGood, error: nextGoodError } = await supabase
+            const { data: nextGoods, error: nextGoodError } = await supabase
                 .from('user_goods')
                 .select('good_id')
                 .eq('slot', nextSlot);
 
             if (nextGoodError) {
-                throw new Error('nextGoodError: ', nextGoodError.message);
+                throw new Error(`nextGoodError: ${nextGoodError.message}`);
             }
 
-            if (nextGood) {
+            if (nextGoods && nextGoods.length > 0) {
+                const nextGoodId = nextGoods[0]?.good_id;
+                if (nextGoodId === undefined) {
+                    throw new Error('nextGoodId is undefined');
+                }
+
                 const { error: updateNextGoodError } = await supabase
                     .from('user_goods')
                     .update({ slot: prevSlot })
-                    .eq('good_id', nextGood.good_id);
+                    .eq('good_id', nextGoodId);
 
                 if (updateNextGoodError) {
-                    throw new Error('updateNextGoodError: ', updateNextGoodError.message);
+                    throw new Error(`updateNextGoodError: ${updateNextGoodError.message}`);
                 }
             }
 
@@ -175,11 +201,12 @@ export const useStoreInventory = defineStore('inventory', () => {
                 .eq('good_id', goodId);
 
             if (updateCurrentGoodError) {
-                throw new Error('updateCurrentGoodError: ', updateCurrentGoodError.message);
+                throw new Error(`updateCurrentGoodError: ${updateCurrentGoodError.message}`);
             }
         } catch (err) {
-            pending.value = false;
             console.error(err);
+        } finally {
+            pending.value = false;
         }
     };
 
@@ -193,11 +220,11 @@ export const useStoreInventory = defineStore('inventory', () => {
             const { data, error } = await supabase
                 .from('user_goods')
                 .select('goods!inner(slug)')
-                .eq('user_id', storeAuth.session?.id)
+                .eq('user_id', storeAuth.session!.id)
                 .eq('goods.slug', 'invitation');
 
-            if (error) {
-                console.error('No invitation found', error.message);
+            if (error || !data?.length) {
+                console.error('No invitation found', error?.message);
                 invitation.value = null;
                 return;
             }

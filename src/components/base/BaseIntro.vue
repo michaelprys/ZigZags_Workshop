@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import { useQuery } from '@pinia/colada';
 import { useStoreAuth } from 'src/stores/storeAuth';
+import type { Good } from 'src/stores/storeGoods';
 import { useStoreGoods } from 'src/stores/storeGoods';
 import { computed, ref } from 'vue';
 import { useRouter } from 'vue-router';
@@ -12,7 +13,7 @@ const router = useRouter();
 const model = ref(null);
 
 const { data: queryData } = useQuery({
-    key: () => ['suggestions', storeAuth.session],
+    key: () => (storeAuth.session ? ['suggestions', storeAuth.session.id] : ['suggestions']),
     query: () => storeGoods.loadSuggestedGoods(),
     staleTime: 1000 * 60 * 5
 });
@@ -27,7 +28,7 @@ const suggestions = ref<Suggestion[]>([]);
 
 const formattedSuggestions = computed(() => {
     return (
-        queryData?.value?.map((good) => ({
+        queryData?.value?.map((good: Good) => ({
             label: good.name,
             value: good.slug,
             link: `/goods/${good.category}/${good.slug}`
@@ -36,9 +37,7 @@ const formattedSuggestions = computed(() => {
 });
 
 const filterFn = (val: string, update: (fn: () => void) => void) => {
-    if (val.length < 1) {
-        return;
-    }
+    if (val.length < 1) return;
 
     if (val === '') {
         update(() => {
@@ -50,14 +49,14 @@ const filterFn = (val: string, update: (fn: () => void) => void) => {
     update(() => {
         const needle = val.toLowerCase();
         suggestions.value = formattedSuggestions.value.filter(
-            (v) => v.label.toLowerCase().indexOf(needle) > -1
+            (v: Suggestion) => v.label.toLowerCase().indexOf(needle) > -1
         );
     });
 };
 
 const goToLink = async (option: Suggestion) => {
     const foundSuggestion = queryData?.value?.find(
-        (suggestion) => suggestion.slug === option.value
+        (suggestion: Good) => suggestion.slug === option.value
     );
 
     if (foundSuggestion) {

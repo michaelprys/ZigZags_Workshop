@@ -8,11 +8,20 @@ export const usePaginatedGoods = (requiresAccess: boolean) => {
     const route = useRoute();
     const router = useRouter();
 
-    const currentPage = ref(parseInt(route.query.page) || 1);
+    const pageStr = Array.isArray(route.query.page) ? route.query.page[0] : route.query.page;
+    const currentPage = ref(parseInt(pageStr ?? '1') || 1);
     const goodsPerPage = 8;
 
     const { data: queryData, isPending } = useQuery({
-        key: () => ['paginatedGoods', route.query.categories, route.query.page, requiresAccess],
+        key: () => [
+            'paginatedGoods',
+            Array.isArray(route.query.categories)
+                ? route.query.categories.join(',')
+                : String(route.query.categories ?? ''),
+            String(route.query.page ?? '1'),
+            requiresAccess.toString()
+        ],
+
         query: () => storeGoods.loadGoods(currentPage.value, goodsPerPage, requiresAccess),
         staleTime: 1000 * 60 * 5
     });
@@ -28,7 +37,8 @@ export const usePaginatedGoods = (requiresAccess: boolean) => {
     watch(
         () => route.query.page,
         async (newPage) => {
-            const page = parseInt(newPage) || 1;
+            const pageStr = Array.isArray(newPage) ? newPage[0] : newPage;
+            const page = parseInt(pageStr ?? '') || 1;
 
             if (page !== currentPage.value) {
                 currentPage.value = page;
@@ -38,7 +48,8 @@ export const usePaginatedGoods = (requiresAccess: boolean) => {
     );
 
     watch(currentPage, async (newPage) => {
-        if (newPage !== parseInt(route.query.page)) {
+        const pageStr = Array.isArray(route.query.page) ? route.query.page[0] : route.query.page;
+        if (newPage !== parseInt(pageStr ?? '')) {
             await router.push({ query: { ...route.query, page: newPage } });
         }
     });

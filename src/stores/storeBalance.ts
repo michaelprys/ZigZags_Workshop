@@ -3,24 +3,31 @@ import { useStoreAuth } from 'src/stores/storeAuth';
 import supabase from 'src/utils/supabase';
 import { reactive, ref } from 'vue';
 
+export type PaymentType = 'gold' | 'emberheart_rubies' | 'gamblers_lootbox';
+
 export const useStoreBalance = defineStore(
     'balance',
     () => {
-        const pending = ref(false),
-            sessionId = ref(null),
-            purchaseStatus = ref(''),
-            balance = reactive({
-                gold: 0,
-                emberheart_rubies: 0,
-                gamblers_lootbox: 0
-            });
+        const pending = ref(false);
+        const sessionId = ref<string | null>(null);
+        const purchaseStatus = ref('');
+        const balance = reactive<Record<PaymentType, number>>({
+            gold: 0,
+            emberheart_rubies: 0,
+            gamblers_lootbox: 0
+        });
 
-        const balanceAfterTrade = (paymentType, amount) => {
+        const balanceAfterTrade = (paymentType: PaymentType, amount: number): number => {
             const currentBalance = balance[paymentType] ?? 0;
             return currentBalance >= amount ? currentBalance - amount : currentBalance;
         };
 
-        const topUpBalance = async (urlSessionId, transactionStatus, amount, paymentType) => {
+        const topUpBalance = async (
+            urlSessionId: string,
+            transactionStatus: string,
+            amount: number,
+            paymentType: PaymentType
+        ) => {
             if (sessionId.value === urlSessionId) {
                 return;
             }
@@ -33,15 +40,15 @@ export const useStoreBalance = defineStore(
                     await storeAuth.checkSession();
                 }
 
-                const { error: transactionError } = await supabase.from('transactions').insert(
+                const { error: transactionError } = await supabase.from('transactions').upsert(
                     {
                         user_id: storeAuth.session?.id,
                         session_id: urlSessionId,
                         status: transactionStatus,
-                        amount: amount,
+                        amount,
                         payment_type: paymentType
                     },
-                    { onConflict: ['session_id'] }
+                    { onConflict: 'session_id' }
                 );
 
                 if (transactionError && transactionError.code !== '23505') {
@@ -51,7 +58,7 @@ export const useStoreBalance = defineStore(
                 if (transactionStatus === 'success') {
                     const { error: balanceError } = await supabase.rpc('increment_balance', {
                         user_id: storeAuth.session?.id,
-                        amount: amount,
+                        amount,
                         payment_type: paymentType
                     });
 
@@ -88,8 +95,12 @@ export const useStoreBalance = defineStore(
 
                 if (retrievedBalance && retrievedBalance.length > 0) {
                     const balanceData = retrievedBalance[0];
-                    for (const paymentType in balanceData) {
-                        if (Object.prototype.hasOwnProperty.call(balanceData, paymentType)) {
+                    for (const key in balanceData) {
+                        if (
+                            Object.prototype.hasOwnProperty.call(balanceData, key) &&
+                            ['gold', 'emberheart_rubies', 'gamblers_lootbox'].includes(key)
+                        ) {
+                            const paymentType = key as PaymentType;
                             balance[paymentType] = balanceData[paymentType];
                         }
                     }
@@ -101,7 +112,7 @@ export const useStoreBalance = defineStore(
             }
         };
 
-        const updateBalance = async (paymentType, amount) => {
+        const updateBalance = async (paymentType: PaymentType, amount: number) => {
             pending.value = true;
             const storeAuth = useStoreAuth();
 

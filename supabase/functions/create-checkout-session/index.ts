@@ -1,3 +1,4 @@
+// @ts-nocheck
 import Stripe from 'https://esm.sh/stripe@12.0.0';
 import 'jsr:@supabase/functions-js/edge-runtime.d.ts';
 import { createClient } from 'jsr:@supabase/supabase-js@2';
@@ -69,7 +70,8 @@ Deno.serve(async (req: Request) => {
             headers: { ...corsHeaders, 'Content-Type': 'application/json' }
         });
     } catch (err) {
-        return new Response(JSON.stringify({ error: err.message }), {
+        const errorMessage = err instanceof Error ? err.message : String(err);
+        return new Response(JSON.stringify({ error: errorMessage }), {
             status: 500,
             headers: { ...corsHeaders, 'Content-Type': 'application/json' }
         });

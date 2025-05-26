@@ -40,15 +40,15 @@ export default defineRouter(function () {
     Router.beforeEach(async (to, from, next) => {
         const storeAuth = useStoreAuth();
         const storeInventory = useStoreInventory();
+        await storeAuth.checkSession();
 
         if (!storeAuth.session) {
-            await storeAuth.checkSession();
+            if (to.name === 'vault') {
+                return next({ name: 'access-vault' });
+            }
 
             if (to.name === 'black-market' || to.name === 'black-market-details') {
                 return next({ name: 'black-market-access' });
-            }
-            if (to.name === 'vault') {
-                return next({ name: 'access-vault' });
             }
         } else {
             if (to.name === 'black-market' || to.name === 'good-details') {

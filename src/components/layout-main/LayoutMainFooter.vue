@@ -31,15 +31,21 @@ const quotes = [
     'Some locks are meant to be opened, some secrets are meant to be kept.'
 ];
 const quote = ref<string>('');
-const lastQuoteIdx = ref(null);
-const randomizeQuote = () => {
+
+const lastQuoteIdx = ref<number | null>(null);
+
+const randomizeQuote = (): string => {
+    if (quotes.length === 0) return '';
+
     let randIdx = Math.floor(Math.random() * quotes.length);
     if (randIdx === lastQuoteIdx.value) {
         randIdx = Math.floor(Math.random() * quotes.length);
     }
     lastQuoteIdx.value = randIdx;
-    return quotes[randIdx];
+
+    return quotes[randIdx] ?? '';
 };
+
 const route = useRoute();
 watch(
     () => route.name,

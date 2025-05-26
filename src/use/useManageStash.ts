@@ -1,12 +1,8 @@
-import { Dialog, Notify } from 'quasar';
-import { useStoreAuth } from 'src/stores/storeAuth';
+import { Notify } from 'quasar';
 import { type Good, useStoreGoods } from 'src/stores/storeGoods';
 import { computed } from 'vue';
-import { useRoute } from 'vue-router';
 
 export const useManageStash = () => {
-    const route = useRoute();
-    const storeAuth = useStoreAuth();
     const storeGoods = useStoreGoods();
 
     const showToast = (message: string, color: 'positive' | 'negative') => {
@@ -29,50 +25,33 @@ export const useManageStash = () => {
         });
     };
 
-    const addToStash = async (selected: Good[]) => {
-        if (!storeAuth.session) {
-            await storeAuth.checkSession();
-        }
+    const addToStash = async (selected: Good) => {
+        let existingGood = storeGoods.stashGoods.find((good) => good.slug === selected.slug);
 
-        if (
-            !storeAuth.session &&
-            route.name !== 'black-market' &&
-            route.name !== 'black-market-access'
-        ) {
-            Dialog.create({
-                dark: true,
-                title: 'Access required',
-                message: 'Please, access the vault before purchasing',
-                ok: {
-                    label: 'Ok',
-                    color: 'secondary',
-                    'text-color': 'dark'
-                },
-                style: 'padding: 1rem; border-radius: 0.5em'
-            });
+        if (!existingGood) {
+            existingGood = {
+                id: selected.id,
+                quantity: 1,
+                name: selected.name,
+                slug: selected.slug,
+                category: selected.category,
+                image_url: selected.image_url,
+                price: selected.price,
+                short_description: selected.short_description,
+                description: selected.description,
+                source: selected.source,
+                requires_access: selected.requires_access,
+                debuff: selected.debuff ?? ''
+            };
+            storeGoods.stashGoods.push(existingGood);
+            showToast('Item added to stash', 'positive');
         } else {
-            let existingGood = storeGoods.stashGoods.find((good) => good.slug === selected.slug);
-
-            if (!existingGood) {
-                existingGood = {
-                    id: selected.id,
-                    quantity: 1,
-                    name: selected.name,
-                    slug: selected.slug,
-                    category: selected.category,
-                    image_url: selected.image_url,
-                    price: selected.price
-                };
-                storeGoods.stashGoods.push(existingGood);
-
+            const currentQty = existingGood.quantity ?? 0;
+            if (currentQty < 5) {
+                existingGood.quantity = currentQty + 1;
                 showToast('Item added to stash', 'positive');
             } else {
-                if (existingGood.quantity < 5) {
-                    existingGood.quantity++;
-                    showToast('Item added to stash', 'positive');
-                } else {
-                    showToast('Limit per item reached (max 5)', 'negative');
-                }
+                showToast('Limit per item reached (max 5)', 'negative');
             }
         }
     };
@@ -82,10 +61,10 @@ export const useManageStash = () => {
     };
 
     const basePrice = computed(() => {
-        return (basePrice.value = storeGoods.stashGoods.reduce(
-            (total, currentGood) => total + currentGood.price * currentGood.quantity,
+        return storeGoods.stashGoods.reduce(
+            (total, currentGood) => total + currentGood.price * (currentGood.quantity ?? 0),
             0
-        ));
+        );
     });
 
     const goblinTax = computed(() => {
@@ -97,14 +76,16 @@ export const useManageStash = () => {
     });
 
     const decreaseGoodQuantity = (good: Good) => {
-        if (good.quantity > 1) {
-            good.quantity--;
+        const currentQty = good.quantity ?? 0;
+        if (currentQty > 1) {
+            good.quantity = currentQty - 1;
         }
     };
 
     const increaseGoodQuantity = (good: Good) => {
-        if (good.quantity < 5) {
-            good.quantity++;
+        const currentQty = good.quantity ?? 0;
+        if (currentQty < 5) {
+            good.quantity = currentQty + 1;
         }
     };
 

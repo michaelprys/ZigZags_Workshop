@@ -1,4 +1,5 @@
 <script setup lang="ts">
+import type { QForm } from 'quasar';
 import { useQuasar } from 'quasar';
 import ItemBalance from 'src/components/items/ItemBalance.vue';
 import { useStoreBalance } from 'src/stores/storeBalance';
@@ -6,11 +7,11 @@ import { useStoreGoods } from 'src/stores/storeGoods';
 import { useStoreInventory } from 'src/stores/storeInventory';
 import { useManageStash } from 'src/use/useManageStash';
 import { delay } from 'src/utils/delay';
-import { computed, reactive, ref, useTemplateRef, watchEffect } from 'vue';
+import { computed, reactive, ref, watchEffect } from 'vue';
 import { useRouter } from 'vue-router';
 
 const $q = useQuasar();
-const myForm = useTemplateRef('my-form');
+const myForm = ref<QForm | null>(null);
 const pending = ref(false);
 const router = useRouter();
 const storeGoods = useStoreGoods();
@@ -26,25 +27,25 @@ const { finalPrice } = useManageStash();
 const emberheartRubies = computed(() => Math.floor(finalPrice.value * 0.01));
 const gamblersLootbox = computed(() => Math.ceil(finalPrice.value * 0.001));
 
-const paymentTypes = computed(() => {
-    return [
-        { label: `Gold (${finalPrice.value})`, value: 'gold' },
-        { label: `Emberheart Rubies (${emberheartRubies.value})`, value: 'emberheart_rubies' },
-        { label: `Gambler's Lootbox (${gamblersLootbox.value})`, value: 'gamblers_lootbox' }
-    ];
-});
+const paymentTypes = computed(() => [
+    { label: `Gold (${finalPrice.value})`, value: 'gold' },
+    { label: `Emberheart Rubies (${emberheartRubies.value})`, value: 'emberheart_rubies' },
+    { label: `Gambler's Lootbox (${gamblersLootbox.value})`, value: 'gamblers_lootbox' }
+]);
 
-const paymentType = ref(null);
+type PaymentKey = 'gold' | 'emberheart_rubies' | 'gamblers_lootbox';
 
-const paymentData = reactive({
+const paymentType = ref<{ value: PaymentKey } | null>(null);
+
+const paymentData = reactive<Record<PaymentKey, number>>({
     gold: finalPrice.value,
-    emberheart_rubies: emberheartRubies,
-    gamblers_lootbox: gamblersLootbox
+    emberheart_rubies: emberheartRubies.value,
+    gamblers_lootbox: gamblersLootbox.value
 });
 
-let selectedPaymentType = null;
+let selectedPaymentType: PaymentKey | null = null;
 
-const validateFunds = (selectedPaymentType) => {
+const validateFunds = (selectedPaymentType: PaymentKey) => {
     const amount = paymentData[selectedPaymentType];
     const balance = storeBalance.balance[selectedPaymentType];
 
@@ -57,6 +58,9 @@ const validateFunds = (selectedPaymentType) => {
 const tradeCancelled = ref(false);
 
 const trade = async () => {
+    if (!selectedPaymentType) {
+        throw new Error('Payment type not selected');
+    }
     await storeBalance.updateBalance(selectedPaymentType, paymentData[selectedPaymentType]);
     await storeInventory.saveGoodsToInventory();
 };
@@ -67,7 +71,7 @@ const handleTrade = async () => {
 
     if (!myForm.value) return;
     try {
-        const success = await myForm.value.validate();
+        const success = await myForm.value?.validate();
         if (!success) {
             $q.notify({
                 type: 'negative',

@@ -1,4 +1,5 @@
 <script setup lang="ts">
+import { QForm } from 'quasar';
 import { callToast } from 'src/utils/callToast';
 import supabase from 'src/utils/supabase';
 import { ref, useTemplateRef } from 'vue';
@@ -11,11 +12,11 @@ const vaultKey = ref('');
 
 const isPwd = ref(true);
 
-const accessVaultForm = useTemplateRef('access-vault-form');
+const accessVaultForm = useTemplateRef<QForm | null>('access-vault-form');
 
 const accessVault = async () => {
     try {
-        const valid = await accessVaultForm.value.validate();
+        const valid = await accessVaultForm.value?.validate();
 
         if (valid) {
             const { error } = await supabase.auth.signInWithPassword({

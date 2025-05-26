@@ -5,7 +5,7 @@ import { useStoreInventory } from 'src/stores/storeInventory';
 import { callToast } from 'src/utils/callToast';
 import { delay } from 'src/utils/delay';
 import supabase from 'src/utils/supabase';
-import { computed, onMounted, ref, watch, watchEffect } from 'vue';
+import { onMounted, ref, watch } from 'vue';
 import { useRouter } from 'vue-router';
 
 const storeAuth = useStoreAuth();
@@ -63,7 +63,7 @@ const alert = () => {
 const userFaction = ref('');
 
 const determineFaction = async () => {
-    const faction = storeAuth.session?.user_metadata.faction;
+    const faction = storeAuth.session?.user_metadata?.faction;
 
     if (faction === 'Horde') {
         userFaction.value = 'horde';
@@ -73,11 +73,11 @@ const determineFaction = async () => {
         userFaction.value = 'outsiders';
     } else {
         await delay(150);
-        userFaction.value = null;
+        userFaction.value = '';
     }
 };
 
-const imgSrc = (ext) => {
+const imgSrc = (ext: string) => {
     return new URL(`/src/assets/vault/${userFaction.value}.${ext}`, import.meta.url).href;
 };
 
@@ -86,7 +86,7 @@ onMounted(async () => {
 });
 
 watch(
-    () => storeAuth.session?.user_metadata.faction,
+    () => storeAuth.session?.user_metadata?.faction,
     () => {
         determineFaction();
     },
@@ -115,7 +115,7 @@ watch(
             </div>
 
             <h2 class="title text-center text-h6">
-                {{ storeAuth.session?.user_metadata.first_name }}'s Inventory
+                {{ storeAuth.session?.user_metadata?.first_name }}'s Inventory
             </h2>
         </div>
 

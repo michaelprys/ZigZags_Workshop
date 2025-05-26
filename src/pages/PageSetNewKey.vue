@@ -1,7 +1,8 @@
 <script setup lang="ts">
+import type { QForm } from 'quasar';
 import { callToast } from 'src/utils/callToast';
 import supabase from 'src/utils/supabase';
-import { ref, useTemplateRef } from 'vue';
+import { ref } from 'vue';
 import { useRouter } from 'vue-router';
 
 const router = useRouter();
@@ -11,12 +12,18 @@ const pending = ref(false);
 
 const isPwd = ref(true);
 
-const setNewKeyForm = useTemplateRef('set-new-key-form');
+const setNewKeyForm = ref<QForm | null>(null);
 
 const setNewKey = async () => {
     pending.value = true;
 
     try {
+        if (!setNewKeyForm.value) {
+            console.error('Form ref is null');
+            pending.value = false;
+            return;
+        }
+
         const valid = await setNewKeyForm.value.validate();
 
         if (valid) {

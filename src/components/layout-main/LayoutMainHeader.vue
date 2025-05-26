@@ -73,13 +73,13 @@ const emit = defineEmits(['toggle-drawer']);
 
             <div class="q-px-md">
                 <q-btn
-                    @click="emit('toggle-drawer')"
                     class="hamburger"
                     size="lg"
                     text-color="primary"
                     dense
                     flat
                     icon="menu"
+                    @click="emit('toggle-drawer')"
                 />
             </div>
         </div>

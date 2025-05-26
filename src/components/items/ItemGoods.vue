@@ -17,7 +17,7 @@ const props = defineProps<{
     isPending: boolean;
 }>();
 
-const imgLoaded = ref({});
+const imgLoaded = ref<Record<number, boolean>>({});
 
 watch(
     () => props.queryData,

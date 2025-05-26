@@ -1,7 +1,16 @@
 import { useStoreGoods } from 'src/stores/storeGoods';
+import type { Category } from 'src/types';
+import type { Ref } from 'vue';
 import { watch, watchEffect } from 'vue';
+import type { RouteLocationNormalizedLoaded, Router } from 'vue-router';
 
-export const useFilters = (categories, loadPaginatedGoods, route, router, currentPage) => {
+export const useFilters = (
+    categories: Ref<Category[]>,
+    loadPaginatedGoods: () => Promise<void>,
+    route: RouteLocationNormalizedLoaded,
+    router: Router,
+    currentPage: Ref<number>
+) => {
     const storeGoods = useStoreGoods();
 
     const updateSelectedCategories = async () => {
@@ -37,18 +46,20 @@ export const useFilters = (categories, loadPaginatedGoods, route, router, curren
     watch(
         () => route.query.categories,
         async (newCategories) => {
+            const categoriesStr = Array.isArray(newCategories) ? newCategories[0] : newCategories;
+
             if (route.name === 'workshop') {
-                storeGoods.selectedWorkshopCategories = newCategories
-                    ? newCategories.split(',')
+                storeGoods.selectedWorkshopCategories = categoriesStr
+                    ? categoriesStr.split(',')
                     : [];
             }
             if (route.name === 'black-market') {
-                storeGoods.selectedBlackMarketCategories = newCategories
-                    ? newCategories.split(',')
+                storeGoods.selectedBlackMarketCategories = categoriesStr
+                    ? categoriesStr.split(',')
                     : [];
             }
 
-            if (!newCategories || newCategories.length === 0) {
+            if (!categoriesStr || categoriesStr.length === 0) {
                 categories.value.forEach((cat) => (cat.active = false));
             }
 

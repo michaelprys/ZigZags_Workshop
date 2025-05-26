@@ -1,24 +1,37 @@
 import { loadStripe } from '@stripe/stripe-js';
+import { QForm } from 'quasar';
 import supabase from 'src/utils/supabase';
-import { ref } from 'vue';
+import { ref, Ref } from 'vue';
 
-export const useTopUpPayment = (paymentType, topUpAmount, minAmounts) => {
+type PaymentType = {
+    value: string;
+    label: string;
+    price: number | string;
+};
+
+export const useTopUpPayment = (
+    paymentType: Ref<PaymentType | undefined>,
+    topUpAmount: Ref<number>,
+    minAmounts: Record<string, number>
+) => {
     const stripePromise = loadStripe(import.meta.env.VITE_PUBLISHABLE_KEY);
     const pending = ref(false);
 
-    const handlePayment = async (topUpForm) => {
+    const handlePayment = async (topUpForm: QForm) => {
         pending.value = true;
         const stripe = await stripePromise;
 
         if (!stripe) return;
 
         try {
-            const valid = topUpForm.validate();
+            const valid = await topUpForm.validate();
 
-            const minAmount = minAmounts[paymentType.value.value];
+            const minAmount = paymentType.value ? minAmounts[paymentType.value.value] : 0;
 
-            if (topUpAmount.value < minAmount) {
-                console.error(`The minimal quantity is ${minAmount}`);
+            const safeMinAmount = minAmount ?? 0;
+
+            if (topUpAmount.value < safeMinAmount) {
+                console.error(`The minimal quantity is ${safeMinAmount}`);
                 return;
             }
 
@@ -36,15 +49,15 @@ export const useTopUpPayment = (paymentType, topUpAmount, minAmounts) => {
                 } = await supabase.auth.getSession();
 
                 if (error || !session) {
-                    console.error(err);
+                    console.error(error);
                     return;
                 }
 
                 const sessionData = {
                     sessionData: {
-                        price: paymentType.value?.price,
+                        price: paymentType.value?.value ?? 'defaultPrice',
                         quantity: topUpAmount.value,
-                        paymentType: paymentType.value.value
+                        paymentType: paymentType.value?.value ?? 'defaultPaymentType'
                     }
                 };
 
@@ -68,12 +81,12 @@ export const useTopUpPayment = (paymentType, topUpAmount, minAmounts) => {
                     const { sessionID } = jsonResponse;
 
                     if (sessionID) {
-                        const { error } = stripe.redirectToCheckout({
+                        const res = await stripe.redirectToCheckout({
                             sessionId: sessionID
                         });
 
-                        if (error) {
-                            console.error(err);
+                        if (res?.error) {
+                            console.error(res.error);
                         }
                     }
                 } else {

@@ -4,10 +4,16 @@ import { useStoreGoods } from 'src/stores/storeGoods';
 import { delay } from 'src/utils/delay';
 import { computed, onBeforeUnmount, ref, watch, watchEffect } from 'vue';
 
+type Good = {
+    id: number;
+    name: string;
+    image_url: string;
+};
+
 const storeGoods = useStoreGoods();
 const activeSlide = ref(1);
 
-const { data: queryData } = useQuery({
+const { data: queryData } = useQuery<Good[] | undefined>({
     key: ['featuredGoods'],
     query: () => storeGoods.loadFeaturedGoods(),
     staleTime: 1000 * 60 * 5
@@ -23,7 +29,7 @@ const slideGroup = computed(() => {
     ];
 });
 
-const imgLoaded = ref({});
+const imgLoaded = ref<Record<number, boolean>>({});
 
 watch(
     () => queryData.value,
@@ -34,13 +40,13 @@ watch(
             const img = new Image();
             img.onload = async () => {
                 if (img.complete) {
-                    imgLoaded.value[good?.id] = true;
+                    imgLoaded.value[good.id] = true;
                 } else {
                     await delay(200);
-                    imgLoaded.value[good?.id] = true;
+                    imgLoaded.value[good.id] = true;
                 }
             };
-            img.src = good?.image_url;
+            img.src = good.image_url;
         });
     },
     { immediate: true }
@@ -49,7 +55,7 @@ watch(
 const isAutoplaying = ref(false);
 
 const toggleAutoplay = () => {
-    isAutoplaying.value = window.innerWidth > 1111 ? true : false;
+    isAutoplaying.value = window.innerWidth > 1111;
 };
 
 watchEffect(() => {
@@ -106,7 +112,7 @@ onBeforeUnmount(() => {
                                 >
                                     <div style="position: relative; height: 100%">
                                         <q-skeleton
-                                            v-if="!imgLoaded[img?.id]"
+                                            v-if="img?.id && !imgLoaded[img.id]"
                                             class="skeleton"
                                             animation="wave"
                                             animation-speed="1800"
