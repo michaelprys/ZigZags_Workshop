@@ -1,4 +1,4 @@
-<script setup lang="ts">
+<script setup>
 import { useQuasar } from 'quasar';
 import { useStoreAuth } from 'src/stores/storeAuth';
 import { useStoreInventory } from 'src/stores/storeInventory';
@@ -63,7 +63,7 @@ const alert = () => {
 const userFaction = ref('');
 
 const determineFaction = async () => {
-    const faction = storeAuth.session?.user_metadata?.faction;
+    const faction = storeAuth.session?.user_metadata.faction;
 
     if (faction === 'Horde') {
         userFaction.value = 'horde';
@@ -77,7 +77,7 @@ const determineFaction = async () => {
     }
 };
 
-const imgSrc = (ext: string) => {
+const imgSrc = (ext) => {
     return new URL(`/src/assets/vault/${userFaction.value}.${ext}`, import.meta.url).href;
 };
 

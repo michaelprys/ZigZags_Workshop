@@ -13,7 +13,8 @@ const router = useRouter();
 const model = ref(null);
 
 const { data: queryData } = useQuery({
-    key: () => (storeAuth.session ? ['suggestions', storeAuth.session.id] : ['suggestions']),
+    key: () =>
+        storeAuth.session?.user?.id ? ['suggestions', storeAuth.session.user.id] : ['suggestions'],
     query: () => storeGoods.loadSuggestedGoods(),
     staleTime: 1000 * 60 * 5
 });

@@ -1,20 +1,17 @@
 <script setup lang="ts">
-import { QForm } from 'quasar'; // импорт компонента QForm
 import { callToast } from 'src/utils/callToast';
 import supabase from 'src/utils/supabase';
-import { ref, Ref } from 'vue';
+import { ref, useTemplateRef } from 'vue';
 import { useRouter } from 'vue-router';
 
 const router = useRouter();
 
-// Типизируем ref с null, так как на момент создания ref элемента еще нет
-const setupVaultForm: Ref<QForm | null> = ref(null);
-
+const setupVaultForm = useTemplateRef('setup-vault-form');
 const name = ref('');
 const mailbox = ref('');
 const vaultKey = ref('');
 const vaultConfirmKey = ref('');
-const faction = ref<string | null>(null);
+const faction = ref(null);
 
 const isPwd = ref(true);
 const isPwdConfirm = ref(true);
@@ -26,17 +23,13 @@ const setupVault = async () => {
     pending.value = true;
 
     try {
-        if (!setupVaultForm.value) {
-            console.error('Form ref is not set yet');
-            return;
-        }
-
         const valid = await setupVaultForm.value.validate();
 
         if (valid) {
             const { error } = await supabase.auth.signUp({
                 email: mailbox.value,
                 password: vaultKey.value,
+
                 options: {
                     data: {
                         first_name: name.value,
@@ -46,7 +39,7 @@ const setupVault = async () => {
             });
 
             if (error) {
-                callToast('This vault is already claimed', false);
+                callToast(error ? 'This vault is already claimed' : 'Something went wrong', false);
             } else {
                 callToast('Success! Please, check your mailbox', true);
                 await router.push({ name: 'access-vault' });

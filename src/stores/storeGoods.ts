@@ -167,7 +167,7 @@ export const useStoreGoods = defineStore(
                 const { data: existingInvitation, error: existingInvitationError } = await supabase
                     .from('user_goods')
                     .select('good_id')
-                    .eq('user_id', storeAuth.session?.id)
+                    .eq('user_id', storeAuth.session?.user?.id)
                     .eq('good_id', invitationInGoods.id)
                     .maybeSingle();
 
@@ -188,7 +188,7 @@ export const useStoreGoods = defineStore(
                 const { data: userBalance, error: userBalanceError } = await supabase
                     .from('user_balances')
                     .select('gold')
-                    .eq('user_id', storeAuth.session?.id)
+                    .eq('user_id', storeAuth.session?.user?.id)
                     .single();
 
                 if (userBalanceError) throw new Error(userBalanceError.message);
@@ -209,7 +209,7 @@ export const useStoreGoods = defineStore(
 
                 const { error: insertError } = await supabase.from('user_goods').insert([
                     {
-                        user_id: storeAuth.session?.id,
+                        user_id: storeAuth.session?.user?.id,
                         good_id: invitationInGoods.id,
                         quantity: 1,
                         status: 'purchased'
@@ -220,7 +220,7 @@ export const useStoreGoods = defineStore(
 
                 storeInventory.inventoryGoods.push({
                     good_id: invitationInGoods.id,
-                    user_id: Number(storeAuth.session!.id),
+                    user_id: Number(storeAuth.session!.user!.id),
                     status: 'purchased',
                     quantity: 1,
                     goods: [invitationInGoods]

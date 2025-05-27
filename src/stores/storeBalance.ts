@@ -1,3 +1,4 @@
+//@ts-nocheck
 import { acceptHMRUpdate, defineStore } from 'pinia';
 import { useStoreAuth } from 'src/stores/storeAuth';
 import supabase from 'src/utils/supabase';

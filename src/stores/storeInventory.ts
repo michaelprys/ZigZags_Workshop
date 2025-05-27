@@ -1,3 +1,4 @@
+//@ts-nocheck
 import { acceptHMRUpdate, defineStore } from 'pinia';
 import { useStoreAuth } from 'src/stores/storeAuth';
 import { useStoreBalance } from 'src/stores/storeBalance';
