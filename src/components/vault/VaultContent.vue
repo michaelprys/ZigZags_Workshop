@@ -1,20 +1,19 @@
-<script setup lang="ts">
+<script setup>
 import { useQuasar } from 'quasar';
-import type { Good } from 'src/stores/storeGoods';
 import { useStoreInventory } from 'src/stores/storeInventory';
 import { usePaginatedInventoryGoods } from 'src/use/usePaginatedInventoryGoods';
 import { computed } from 'vue';
 import { vDraggable } from 'vue-draggable-plus';
 
 const storeInventory = useStoreInventory();
-const { updateGoodSlot, loadInventoryGoods, removeGoodFromInventory } = storeInventory;
-const { currentPage, inventoryGoodsPerPage } = usePaginatedInventoryGoods();
+const { updateGoodSlot, removeGoodFromInventory } = storeInventory;
+const { inventoryGoodsPerPage } = usePaginatedInventoryGoods();
 
 const inventoryGoods = computed(() => storeInventory.inventoryGoods);
 
 const $q = useQuasar();
 
-const handleRemoveItem = async (selectedGood: Good) => {
+const handleRemoveItem = async (selectedGood) => {
     $q.dialog({
         dark: true,
         title: 'Remove item',
@@ -33,7 +32,7 @@ const handleRemoveItem = async (selectedGood: Good) => {
     })
         .onOk(async () => {
             try {
-                await removeGoodFromInventory(selectedGood.id);
+                await removeGoodFromInventory(selectedGood);
             } catch (err) {
                 console.error('Error removing good from inventory: ', err);
             }
@@ -42,23 +41,11 @@ const handleRemoveItem = async (selectedGood: Good) => {
         .onDismiss(() => {});
 };
 
-const onRemoveItem = (idx: number) => {
-    const good = inventoryGoods.value[idx]?.goods?.[0];
-    if (good) {
-        handleRemoveItem(good as Good);
-    }
-};
-
-type SlotEvent = {
-    newIndex: number;
-};
-
-const handleSlots = async (event: SlotEvent) => {
-    const goodId = inventoryGoods.value[event.newIndex]?.good_id;
-    if (!goodId) return;
+const handleSlots = async (event) => {
+    const goodId = inventoryGoods[event.newIndex].good_id;
     const nextSlot = event.newIndex;
     await updateGoodSlot(goodId, nextSlot);
-    await loadInventoryGoods(currentPage.value, inventoryGoodsPerPage);
+    await loadInventoryGoods();
 };
 </script>
 
@@ -78,13 +65,7 @@ const handleSlots = async (event: SlotEvent) => {
                 <div class="placeholder"></div>
 
                 <Transition name="remove">
-                    <div
-                        v-if="
-                            inventoryGoods[idx] &&
-                            inventoryGoods[idx].goods &&
-                            inventoryGoods[idx].goods.length > 0
-                        "
-                    >
+                    <div v-if="inventoryGoods[idx] && inventoryGoods[idx].goods">
                         <q-tooltip
                             :delay="500"
                             anchor="bottom right"
@@ -93,9 +74,9 @@ const handleSlots = async (event: SlotEvent) => {
                             style="width: 11.25rem"
                         >
                             <span class="text-caption text-negative">{{
-                                inventoryGoods[idx]?.goods?.[0]?.name
+                                inventoryGoods[idx].goods.name
                             }}</span>
-                            <span>{{ inventoryGoods[idx]?.goods?.[0]?.short_description }}</span>
+                            <span>{{ inventoryGoods[idx].goods.short_description }}</span>
                         </q-tooltip>
 
                         <q-btn
@@ -104,22 +85,15 @@ const handleSlots = async (event: SlotEvent) => {
                             flat
                             size="xs"
                             icon="close"
-                            @click="
-                                () => {
-                                    const good = inventoryGoods[idx]?.goods?.[0];
-                                    if (good) onRemoveItem(idx);
-                                }
-                            "
-                        />
+                            @click="handleRemoveItem(inventoryGoods[idx].good_id)"
+                        ></q-btn>
 
-                        <div class="quantity">{{ inventoryGoods[idx]?.quantity }}</div>
-
+                        <div class="quantity">
+                            {{ inventoryGoods[idx].quantity }}
+                        </div>
                         <q-img
-                            v-if="
-                                inventoryGoods[idx]?.goods && inventoryGoods[idx].goods.length > 0
-                            "
-                            :src="inventoryGoods[idx]?.goods?.[0]?.image_url || ''"
                             class="img"
+                            :src="inventoryGoods[idx].goods.image_url"
                             width="1024px"
                             height="1024px"
                             style="width: 100%; height: 100%"

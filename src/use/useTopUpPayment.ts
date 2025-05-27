@@ -55,11 +55,13 @@ export const useTopUpPayment = (
 
                 const sessionData = {
                     sessionData: {
-                        price: paymentType.value?.value ?? 'defaultPrice',
+                        price: price ?? 'defaultPrice',
                         quantity: topUpAmount.value,
                         paymentType: paymentType.value?.value ?? 'defaultPaymentType'
                     }
                 };
+                console.log('Sending checkout session data:', sessionData);
+                console.log('Resolved price:', paymentType.value?.price);
 
                 const res = await fetch(
                     `${import.meta.env.VITE_BASE_URL}/create-checkout-session`,
@@ -72,6 +74,7 @@ export const useTopUpPayment = (
                         body: JSON.stringify(sessionData)
                     }
                 );
+                console.log('Status:', res.status);
 
                 const contentType = res.headers.get('Content-Type');
 

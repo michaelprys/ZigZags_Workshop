@@ -18,9 +18,7 @@ const storeGoods = useStoreGoods();
 const storeInventory = useStoreInventory();
 const storeBalance = useStoreBalance();
 
-defineProps<{
-    modelValue: boolean;
-}>();
+defineProps<{ modelValue: boolean }>();
 const emit = defineEmits(['update:modelValue']);
 
 const { finalPrice } = useManageStash();
@@ -34,7 +32,6 @@ const paymentTypes = computed(() => [
 ]);
 
 type PaymentKey = 'gold' | 'emberheart_rubies' | 'gamblers_lootbox';
-
 const paymentType = ref<{ value: PaymentKey } | null>(null);
 
 const paymentData = reactive<Record<PaymentKey, number>>({
@@ -48,7 +45,6 @@ let selectedPaymentType: PaymentKey | null = null;
 const validateFunds = (selectedPaymentType: PaymentKey) => {
     const amount = paymentData[selectedPaymentType];
     const balance = storeBalance.balance[selectedPaymentType];
-
     if (amount > balance) {
         return `Not enough ${selectedPaymentType.replace('_', ' ')}, top up balance`;
     }
@@ -69,52 +65,66 @@ const handleTrade = async () => {
     tradeCancelled.value = false;
     pending.value = true;
 
-    if (!myForm.value) return;
+    if (!myForm.value) {
+        pending.value = false;
+        return;
+    }
+
+    if (!paymentType.value?.value) {
+        $q.notify({
+            type: 'negative',
+            message: 'Please select payment type.',
+            position: 'bottom-right',
+            classes: 'toast'
+        });
+        pending.value = false;
+        return;
+    }
+
     try {
-        const success = await myForm.value?.validate();
-        if (!success) {
+        const isValid = await myForm.value.validate();
+        if (!isValid) {
             $q.notify({
                 type: 'negative',
                 message: "Something went wrong. Where's my gold?!",
                 position: 'bottom-right',
-                classes: 'toast',
-                actions: [{ icon: 'close', color: 'dark', dense: true, size: 'xs' }]
+                classes: 'toast'
             });
             pending.value = false;
             return;
         }
 
-        if (tradeCancelled.value) {
-            return;
+        if (tradeCancelled.value) return;
+
+        await delay(3000);
+
+        if (!tradeCancelled.value) {
+            await trade();
+
+            sessionStorage.setItem('purchaseCompleted', 'true');
+            await router.push('purchase-success');
+
+            storeBalance.purchaseStatus = '';
+            storeGoods.stashGoods = [];
+
+            $q.notify({
+                type: 'positive',
+                textColor: 'dark',
+                message: "Pleasure doin' business!",
+                position: 'bottom-right',
+                classes: 'toast'
+            });
+
+            emit('update:modelValue', false);
         }
-
-        await Promise.all([
-            delay(3000).then(async () => {
-                if (tradeCancelled.value) {
-                    return;
-                }
-                await trade();
-
-                sessionStorage.setItem('purchaseCompleted', 'true');
-                await router.push('purchase-success');
-
-                storeBalance.purchaseStatus = '';
-                storeGoods.stashGoods = [];
-
-                $q.notify({
-                    type: 'positive',
-                    textColor: 'dark',
-                    message: "Pleasure doin' business!",
-                    position: 'bottom-right',
-                    classes: 'toast',
-                    actions: [{ icon: 'close', color: 'dark', dense: true, size: 'xs' }]
-                });
-
-                emit('update:modelValue', false);
-            })
-        ]);
     } catch (err) {
         console.error('Validation error:', err);
+        $q.notify({
+            type: 'negative',
+            message: 'Unexpected error occurred',
+            position: 'bottom-right',
+            classes: 'toast'
+        });
     } finally {
         pending.value = false;
     }
@@ -126,8 +136,8 @@ const cancelTrade = () => {
 };
 
 watchEffect(() => {
-    if (paymentType.value) {
-        selectedPaymentType = paymentType.value?.value;
+    if (paymentType.value?.value) {
+        selectedPaymentType = paymentType.value.value;
     }
 });
 </script>
@@ -148,7 +158,7 @@ watchEffect(() => {
                 </div>
 
                 <div>
-                    <q-form ref="my-form" class="q-gutter-md q-mt-lg" @submit.prevent="handleTrade">
+                    <q-form ref="myForm" class="q-gutter-md q-mt-lg" @submit.prevent="handleTrade">
                         <div class="flex" style="gap: 1rem">
                             <q-select
                                 v-model="paymentType"

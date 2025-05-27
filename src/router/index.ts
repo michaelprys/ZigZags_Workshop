@@ -40,6 +40,7 @@ export default defineRouter(function () {
     Router.beforeEach(async (to, from, next) => {
         const storeAuth = useStoreAuth();
         const storeInventory = useStoreInventory();
+
         await storeAuth.checkSession();
 
         if (!storeAuth.session) {
@@ -50,15 +51,20 @@ export default defineRouter(function () {
             if (to.name === 'black-market' || to.name === 'black-market-details') {
                 return next({ name: 'black-market-access' });
             }
-        } else {
-            if (to.name === 'black-market' || to.name === 'good-details') {
-                await storeInventory.checkInvitation();
 
-                if (!storeInventory.invitation || storeInventory.invitation.length === 0) {
-                    return next({ name: 'black-market-access' });
-                }
-                return next();
+            return next();
+        }
+
+        if (to.name === 'black-market') {
+            await storeInventory.checkInvitation();
+            if (!storeInventory.invitation || storeInventory.invitation.length === 0) {
+                return next({ name: 'black-market-access' });
             }
+            return next();
+        }
+
+        if (to.name === 'good-details') {
+            return next();
         }
 
         next();

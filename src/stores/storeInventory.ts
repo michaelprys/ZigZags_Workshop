@@ -33,6 +33,8 @@ export const useStoreInventory = defineStore('inventory', () => {
     const totalInventoryPages = computed(() => Math.ceil(totalInventoryGoods.value / 55));
 
     const saveGoodsToInventory = async () => {
+        console.log('Calling saveGoodsToInventory...');
+
         pending.value = true;
 
         try {
@@ -44,9 +46,17 @@ export const useStoreInventory = defineStore('inventory', () => {
                 await storeAuth.checkSession();
             }
 
-            const userId = Number(storeAuth.session?.id);
+            const userId = storeAuth.session?.id;
+
+            if (!userId) {
+                throw new Error('User ID is missing from session');
+            }
+
+            console.log('User ID:', userId);
+            console.log('stashGoods:', storeGoods.stashGoods);
 
             if (storeBalance.purchaseStatus === 'purchased') {
+                console.log('stashGoods:', storeGoods.stashGoods);
                 const goodsToInsert = storeGoods.stashGoods.map((good) => ({
                     good_id: good.id,
                     user_id: userId,
@@ -59,6 +69,7 @@ export const useStoreInventory = defineStore('inventory', () => {
                 });
 
                 if (error) {
+                    console.error('update_goods RPC error:', error);
                     throw new Error(error.message);
                 }
 
